@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9A Battery — NMC Traction Batteries for Electric Mopeds (U2)</title>
+<meta name="description" content="9A Battery manufactures NMC lithium traction packs (9A-6065 / 7245 / 7265) for seated electric mopeds and e-motorcycles such as the U2. Cold-resistant, smart BMS, UN38.3 tested. B2B wholesale for Russia & Central Asia.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#24272a; --bg2:#1d2023; --panel:#2d3135; --panel2:#353a3f;
+  --border:#3d4247; --border2:#4c5258;
+  --text:#eceef0; --muted:#a8aeb4; --faint:#7c8288;
+  --orange:#f26a1b; --orange2:#ff7d33; --orange-soft:rgba(242,106,27,.14);
+  --maxw:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,.display{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:600;line-height:1.08;letter-spacing:.01em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+section{padding:72px 0}
+.eyebrow{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:13px;color:var(--orange);margin-bottom:16px}
+.sec-head{max-width:740px;margin-bottom:44px}
+.sec-head h2{font-size:clamp(28px,4vw,42px)}
+.sec-head p{color:var(--muted);margin-top:14px;font-size:16px}
+.btn{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;padding:14px 26px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:transform .15s,background .2s,border-color .2s;min-height:48px}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-2px)}
+.btn-ghost{background:transparent;border-color:var(--border2);color:var(--text)}
+.btn-ghost:hover{border-color:var(--orange);color:var(--orange2)}
+/* header */
+header.site{position:sticky;top:0;z-index:50;background:rgba(36,39,42,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Oswald',sans-serif;font-weight:700;font-size:21px;letter-spacing:.02em}
+.brand .mark{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block}
+.brand small{display:block;font-family:'Manrope',sans-serif;font-size:10px;font-weight:500;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.nav-links{display:none;align-items:center;gap:26px}
+.nav-links a{font-size:14.5px;font-weight:600;color:var(--muted);padding:6px 0}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.lang{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden}
+.lang button{background:transparent;color:var(--muted);border:0;padding:8px 12px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;min-width:42px}
+.lang button.active{background:var(--orange);color:#fff}
+.burger{display:grid;place-items:center;width:44px;height:44px;background:transparent;border:1px solid var(--border2);border-radius:6px;cursor:pointer}
+.burger span{display:block;width:20px;height:2px;background:var(--text);position:relative}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--text)}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.mobile-menu{display:none;border-bottom:1px solid var(--border);background:var(--bg2)}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:15px 22px;font-weight:600;color:var(--muted);border-top:1px solid var(--border)}
+/* hero */
+.hero{position:relative;padding:0;min-height:90vh;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;ins:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center right;opacity:.5}
+.hero-bg::after{content:"";position:absolute;ins:0;background:linear-gradient(90deg,var(--bg) 26%,rgba(36,39,42,.78) 58%,rgba(36,39,42,.35)),linear-gradient(0deg,var(--bg),transparent 45%)}
+.hero .wrap{position:relative;z-index:2;padding-top:88px;padding-bottom:88px}
+.hero-inner{max-width:650px}
+.hero h1{font-size:clamp(38px,6.2vw,68px);margin:6px 0 20px}
+.hero h1 .accent{color:var(--orange)}
+.hero p.lead{font-size:clamp(16px,1.6vw,19px);color:#d2d6d9;max-width:560px;margin-bottom:34px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:36px;margin-top:54px;padding-top:30px;border-top:1px solid var(--border)}
+.hstat .num{font-family:'Oswald',sans-serif;font-size:30px;font-weight:600;color:var(--orange2)}
+.hstat .lab{font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+/* who we serve */
+.serve{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.serve-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.serve-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:30px 28px;display:flex;gap:20px}
+.serve-card .ic{width:52px;height:52px;border-radius:8px;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;flex-shrink:0}
+.serve-card h3{font-size:22px;margin-bottom:7px}
+.serve-card .tag{font-family:'Oswald';color:var(--orange2);font-size:14px;letter-spacing:.05em;margin-bottom:9px}
+.serve-card p{color:var(--muted);font-size:14.5px}
+/* products */
+.grid-3{display:grid;grid-template-columns:1fr;gap:22px}
+.product{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
+.product:hover{border-color:var(--border2);transform:translateY(-4px)}
+.product .ph{aspect-ratio:1/1;overflow:hidden;display:grid;place-items:center;
+  background:radial-gradient(120% 95% at 50% 0%,rgba(242,106,27,.10),transparent 55%),radial-gradient(circle at 50% 46%,#383d42,#222529 82%)}
+.product .ph img{width:100%;height:100%;object-fit:contain;padding:18px}
+.product .body{padding:22px;display:flex;flex-direction:column;gap:9px;flex:1}
+.product h3{font-size:23px}
+.product .specline{font-family:'Oswald';color:var(--orange2);font-size:14px;letter-spacing:.05em}
+.spec-tbl{width:100%;border-collapse:collapse;margin:6px 0;font-size:13.5px}
+.spec-tbl td{padding:5px 0;color:var(--muted);border-bottom:1px solid var(--border)}
+.spec-tbl td:last-child{text-align:right;color:var(--text);font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#46c47c;letter-spacing:.03em}
+.product .go{font-weight:700;font-size:14px;color:var(--orange);margin-top:auto;padding-top:8px}
+/* advantages */
+.adv{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.grid-adv{display:grid;grid-template-columns:1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.adv-cell{background:var(--panel);padding:28px 26px}
+.adv-cell .ic{width:42px;height:42px;display:grid;place-items:center;color:var(--orange);margin-bottom:16px}
+.adv-cell h3{font-size:19px;margin-bottom:8px}
+.adv-cell p{color:var(--muted);font-size:14px}
+/* applications */
+.app-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.app-card{position:relative;border-radius:10px;overflow:hidden;min-height:340px;display:flex;align-items:flex-end}
+.app-card img{position:absolute;ins:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.app-card:hover img{transform:scale(1.05)}
+.app-card::after{content:"";position:absolute;ins:0;background:linear-gradient(0deg,rgba(15,17,19,.96) 16%,rgba(15,17,19,.62) 44%,rgba(15,17,19,.18) 68%,transparent)}
+.app-card .cap{position:relative;z-index:2;padding:26px 28px;width:100%;
+  background:linear-gradient(0deg,rgba(14,16,18,.92),rgba(14,16,18,.55) 62%,rgba(14,16,18,0))}
+.app-card h3{font-size:26px;margin-bottom:6px}
+.app-card p{color:#d0d4d7;font-size:14.5px;max-width:430px}
+/* stock */
+.stock{background:var(--bg2);border-top:1px solid var(--border)}
+.stock-grid{display:grid;grid-template-columns:1fr;gap:18px}
+.stock-grid figure{border-radius:8px;overflow:hidden;border:1px solid var(--border);
+  background:radial-gradient(circle at 50% 36%,#383d42,#212428 84%);padding:18px}
+.stock-grid img{width:100%;height:auto;object-fit:contain}
+/* certifications */
+.cert-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.cert-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.cert-card .ph{background:#f0ebe0;display:grid;place-items:center;padding:18px}
+.cert-card .ph img{max-height:300px;width:auto}
+.cert-card .body{padding:20px 22px}
+.cert-card h3{font-size:19px;margin-bottom:6px}
+.cert-card .no{font-family:'Oswald';color:var(--orange2);font-size:13.5px;letter-spacing:.04em;margin-bottom:8px}
+.cert-card p{color:var(--muted);font-size:14px}
+/* about */
+.about{background:var(--bg2);border-top:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:1fr;gap:38px;align-items:center}
+.about-img{border-radius:10px;overflow:hidden;border:1px solid var(--border);
+  background:radial-gradient(circle at 50% 34%,#383d42,#212428 84%);padding:26px}
+.about-img img{width:100%;height:auto;object-fit:contain}
+.about-text h2{font-size:clamp(26px,3.4vw,38px);margin-bottom:18px}
+.about-text p{color:var(--muted);margin-bottom:16px}
+.about-list{list-style:none;margin-top:22px;display:grid;gap:12px}
+.about-list li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.about-list .tick{color:var(--orange);flex-shrink:0;margin-top:3px}
+/* contact */
+.contact-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.contact-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:26px;display:flex;gap:18px;align-items:center}
+.contact-card .ic{width:48px;height:48px;border-radius:8px;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;flex-shrink:0}
+.contact-card .k{font-size:13px;color:var(--muted)}
+.contact-card .v{font-weight:700;font-size:17px;word-break:break-all}
+.contact-card:hover{border-color:var(--border2)}
+/* social row */
+.social-row{margin-top:42px;text-align:center}
+.social-title{font-family:'Oswald';font-size:17px;color:var(--muted);margin-bottom:18px;letter-spacing:.05em}
+.social-icons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.social-icons a{width:50px;height:50px;border-radius:8px;border:1px solid var(--border2);display:grid;place-items:center;color:var(--muted);transition:.2s}
+.social-icons a:hover{color:#fff;border-color:var(--orange);background:var(--orange);transform:translateY(-2px)}
+.social-icons svg{width:23px;height:23px}
+/* footer */
+footer.site{background:#171a1c;border-top:1px solid var(--border);padding:48px 0 30px}
+.foot-grid{display:flex;flex-direction:column;gap:24px;margin-bottom:34px}
+.foot-grid p{color:var(--muted);font-size:14px;max-width:390px;margin-top:12px}
+.foot-links{display:flex;flex-wrap:wrap;gap:18px}
+.foot-links a{color:var(--muted);font-size:14px;font-weight:600}
+.foot-links a:hover{color:var(--orange2)}
+.foot-bottom{border-top:1px solid var(--border);padding-top:22px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;color:var(--faint);font-size:13px}
+@media(min-width:760px){
+  .nav-links{display:flex}.burger{display:none}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .serve-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-adv{grid-template-columns:repeat(2,1fr)}
+  .app-grid{grid-template-columns:repeat(2,1fr)}
+  .stock-grid{grid-template-columns:repeat(3,1fr)}
+  .cert-grid{grid-template-columns:repeat(3,1fr)}
+  .about-grid{grid-template-columns:1.05fr .95fr;gap:54px}
+  .contact-grid{grid-template-columns:repeat(3,1fr)}
+  .foot-grid{flex-direction:row;justify-content:space-between;align-items:flex-start}
+}
+@media(min-width:1000px){.grid-adv{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<!-- Header -->
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img class="mark" src="assets/logo.png" alt="9A logo"><span>BATTERY<small data-i18n="brandSub">Traction Battery</small></span></a>
+    <nav class="nav-links">
+      <a href="#products" data-i18n="navProducts">Products</a>
+      <a href="#advantages" data-i18n="navAdv">Why 9A</a>
+      <a href="#applications" data-i18n="navApp">Applications</a>
+      <a href="#certifications" data-i18n="navCert">Certifications</a>
+      <a href="#contact" data-i18n="navContact">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+        <button id="btnRu" onclick="setLang('ru')">RU</button>
+      </div>
+      <button class="burger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-menu" id="mobileMenu">
+    <a href="#products" onclick="toggleMenu()" data-i18n="navProducts">Products</a>
+    <a href="#advantages" onclick="toggleMenu()" data-i18n="navAdv">Why 9A</a>
+    <a href="#applications" onclick="toggleMenu()" data-i18n="navApp">Applications</a>
+    <a href="#certifications" onclick="toggleMenu()" data-i18n="navCert">Certifications</a>
+    <a href="#contact" onclick="toggleMenu()" data-i18n="navContact">Contact</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="hero-bg"><img src="assets/hero.jpg" alt="9A Battery pack on a U2 electric moped"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="eyebrow" data-i18n="heroKicker">Traction Battery Manufacturer</div>
+      <h1 data-i18n="heroTitle">NMC power for the U2 e-moped, <span class="accent">direct from 9A</span></h1>
+      <p class="lead" data-i18n="heroLead">Reliable hand-carried lithium packs for seated electric mopeds and e-motorcycles. Built for cold winters, engineered for dealers, riders and wholesalers.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://t.me/it9atech" target="_blank" rel="noopener" data-i18n="heroCta1">Contact on Telegram</a>
+        <a class="btn btn-ghost" href="#products" data-i18n="heroCta2">View products</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="num">63 / 74V</div><div class="lab" data-i18n="stat1">Nominal voltage</div></div>
+        <div class="hstat"><div class="num">4.8 kWh</div><div class="lab" data-i18n="stat2">Max pack energy</div></div>
+        <div class="hstat"><div class="num">300A</div><div class="lab" data-i18n="stat3">Peak discharge</div></div>
+        <div class="hstat"><div class="num">RU / CA</div><div class="lab" data-i18n="stat4">Russia &amp; Central Asia</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Who we serve -->
+<section class="serve" id="serve">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="serveKicker">Who We Serve</div>
+      <h2 data-i18n="serveTitle">Built around the people who ride every day</h2>
+    </div>
+    <div class="serve-grid">
+      <div class="serve-card">
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-2-2 2.3-2.3z"/></svg></span>
+        <div>
+          <div class="tag" data-i18n="s1Tag">RANGE FIRST</div>
+          <h3 data-i18n="s1Name">DIY builders &amp; conversion enthusiasts</h3>
+          <p data-i18n="s1Desc">Maximum range is the priority. High-capacity 65Ah packs, flexible form-factors and configurations tailored to your own build.</p>
+        </div>
+      </div>
+      <div class="serve-card">
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13v9H3zM16 10h3l2 3v3h-5"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span>
+        <div>
+          <div class="tag" data-i18n="s2Tag">ALL-WEATHER RUNTIME</div>
+          <h3 data-i18n="s2Name">Food delivery &amp; courier riders</h3>
+          <p data-i18n="s2Desc">All-day range that keeps working in freezing weather, with fast charging so you spend the shift earning, not waiting.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="prodKicker">Our Battery Packs</div>
+      <h2 data-i18n="prodTitle">Three UN38.3-tested NMC packs</h2>
+      <p data-i18n="prodSub">Hand-carried, swappable traction packs for the U2 and compatible electric mopeds. Same rugged housing, three voltage/capacity options — plus custom builds.</p>
+    </div>
+    <div class="grid-3">
+      <article class="product">
+        <div class="ph"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/GRVwbOKlsoI80ExTFTjcKvb8nSb" alt="9A-6065 NMC battery pack"></div>
+        <div class="body">
+          <h3>9A-6065</h3>
+          <div class="specline">63V · 65Ah · NMC</div>
+          <table class="spec-tbl">
+            <tr><td data-i18n="tEnergy">Energy</td><td>4095 Wh</td></tr>
+            <tr><td data-i18n="tCharge">Charge voltage</td><td>73.1V</td></tr>
+            <tr><td data-i18n="tDischarge">Cont. / peak</td><td>100 / 300A</td></tr>
+            <tr><td data-i18n="tWeight">Weight</td><td>19 kg</td></tr>
+          </table>
+          <span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>UN38.3 Pass</span>
+          <span class="go" data-i18n="askPrice">Ask for wholesale price</span>
+        </div>
+      </article>
+      <article class="product">
+        <div class="ph"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/GRVwbOKlsoI80ExTFTjcKvb8nSb" alt="9A-7245 NMC battery pack"></div>
+        <div class="body">
+          <h3>9A-7245</h3>
+          <div class="specline">74V · 45Ah · NMC</div>
+          <table class="spec-tbl">
+            <tr><td data-i18n="tEnergy">Energy</td><td>3330 Wh</td></tr>
+            <tr><td data-i18n="tCharge">Charge voltage</td><td>86V</td></tr>
+            <tr><td data-i18n="tDischarge">Cont. / peak</td><td>100 / 300A</td></tr>
+            <tr><td data-i18n="tWeight">Weight</td><td>18 kg</td></tr>
+          </table>
+          <span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>UN38.3 Pass</span>
+          <span class="go" data-i18n="askPrice">Ask for wholesale price</span>
+        </div>
+      </article>
+      <article class="product">
+        <div class="ph"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/GRVwbOKlsoI80ExTFTjcKvb8nSb" alt="9A-7265 NMC battery pack"></div>
+        <div class="body">
+          <h3>9A-7265</h3>
+          <div class="specline">74V · 65Ah · NMC</div>
+          <table class="spec-tbl">
+            <tr><td data-i18n="tEnergy">Energy</td><td>4810 Wh</td></tr>
+            <tr><td data-i18n="tCharge">Charge voltage</td><td>86V</td></tr>
+            <tr><td data-i18n="tDischarge">Cont. / peak</td><td>100 / 300A</td></tr>
+            <tr><td data-i18n="tWeight">Weight</td><td>23.5 kg</td></tr>
+          </table>
+          <span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>UN38.3 Pass</span>
+          <span class="go" data-i18n="askPrice">Ask for wholesale price</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Advantages -->
+<section class="adv" id="advantages">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="advKicker">Why 9A</div>
+      <h2 data-i18n="advTitle">Built for cold, built for business</h2>
+    </div>
+    <div class="grid-adv">
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M4 6l16 12M4 18l16-12M2 10h4M18 10h4M2 14h4M18 14h4"/></svg></div>
+        <h3 data-i18n="a1Name">Cold-resistant cells</h3>
+        <p data-i18n="a1Desc">NMC cells selected for low-temperature performance through Russian and Central Asian winters.</p>
+      </div>
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
+        <h3 data-i18n="a2Name">Smart BMS</h3>
+        <p data-i18n="a2Desc">Built-in management protects the cells, balances charge and prevents over-discharge; monitor data via app.</p>
+      </div>
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+        <h3 data-i18n="a3Name">Strong discharge</h3>
+        <p data-i18n="a3Desc">100A continuous and 300A peak current for confident acceleration, loaded or uphill.</p>
+      </div>
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l6-4v-3h6v3l6 4v11zM7 21v-6h10v6"/></svg></div>
+        <h3 data-i18n="a4Name">Factory direct</h3>
+        <p data-i18n="a4Desc">No middlemen — better wholesale pricing and consistent, reliable supply.</p>
+      </div>
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7 9 18l-5-5"/><path d="M7 3h13v13"/></svg></div>
+        <h3 data-i18n="a5Name">Fast charging</h3>
+        <p data-i18n="a5Desc">Up to 40A charge current with an adjustable charger — quick top-ups between runs.</p>
+      </div>
+      <div class="adv-cell">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V6l-8-3z"/></svg></div>
+        <h3 data-i18n="a6Name">Dealer terms</h3>
+        <p data-i18n="a6Desc">Best conditions for dealers and wholesalers, with flexible minimum order quantities and OEM/ODM.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Applications -->
+<section id="applications">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="appKicker">Applications</div>
+      <h2 data-i18n="appTitle">Powering seated electric two-wheelers</h2>
+    </div>
+    <div class="app-grid">
+      <div class="app-card">
+        <img src="assets/hero.jpg" alt="U2 electric moped">
+        <div class="cap">
+          <h3 data-i18n="app1Name">U2 electric moped</h3>
+          <p data-i18n="app1Desc">The U2 and comparable seated electric mopeds and e-motorcycles — drop-in, hand-carried traction packs.</p>
+        </div>
+      </div>
+      <div class="app-card">
+        <img src="assets/detail.jpg" alt="Swappable battery top and handle">
+        <div class="cap">
+          <h3 data-i18n="app2Name">Swappable battery use</h3>
+          <p data-i18n="app2Desc">Integrated carry handle and quick connectors for fast battery swaps in delivery and daily riding.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP Monitoring -->
+<section class="stock" id="app-monitor">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">APP Monitoring</div>
+      <h2 data-i18n="appTitle">Real-time monitoring via mobile app</h2>
+      <p data-i18n="appSub">Bluetooth connection — check voltage, current, battery health and temperature anytime, anywhere. Real BMS data, cell-by-cell voltage display, balance status and cycle count.</p>
+    </div>
+    <div style="text-align:center">
+      <img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/D9clbpEB5oDpwOxMMuvcHPN7n0e" alt="9A Battery APP monitoring interface" style="max-width:200px;width:100%">
+    </div>
+  </div>
+</section>
+
+<!-- Certifications -->
+<section id="certifications">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="certKicker">Certifications &amp; IP</div>
+      <h2 data-i18n="certTitle">Tested, patented and trademarked</h2>
+      <p data-i18n="certSub">Documented transport safety, a registered 9A trademark and our own industrial design — real credentials you can verify.</p>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="ph" style="background:radial-gradient(circle at 50% 40%,#383d42,#202327 84%)"><span style="font-family:Oswald;font-size:66px;color:#f26a1b;font-weight:700;line-height:1">UN<br>38.3</span></div>
+        <div class="body">
+          <h3 data-i18n="c1Name">UN38.3 transport tested</h3>
+          <div class="no">HST-B251180326-01-1 · 2025.11.27</div>
+          <p data-i18n="c1Desc">All three models pass T.1–T.8 (altitude, thermal, vibration, shock, short circuit, crush, overcharge, forced discharge) — cleared for air, sea and land export.</p>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ph"><img src="assets/cert-trademark.jpg" alt="9A trademark registration certificate"></div>
+        <div class="body">
+          <h3 data-i18n="c2Name">Registered trademark 9A</h3>
+          <div class="no">No. 35613597 · Class 9 · to 2029.11.13</div>
+          <p data-i18n="c2Desc">The 9A mark is registered for batteries, chargers and related goods in International Class 9.</p>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ph"><img src="assets/cert-patent.jpg" alt="Industrial design patent certificate"></div>
+        <div class="body">
+          <h3 data-i18n="c3Name">Industrial design patent</h3>
+          <div class="no">CN 307543416 S · granted 2022.09.13</div>
+          <p data-i18n="c3Desc">Patented design for the electric-vehicle energy-storage battery housing — a genuine, protected product design.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="eyebrow" data-i18n="aboutKicker">About 9A Battery</div>
+        <h2 data-i18n="aboutTitle">A traction-battery factory serving the CIS</h2>
+        <p data-i18n="aboutP1">9A Battery (Guangzhou ZhengqiTec Technology Co., Ltd.) manufactures NMC lithium traction batteries for seated electric mopeds such as the U2. We supply riders, dealers and wholesalers across Russia and Central Asia.</p>
+        <p data-i18n="aboutP2">Every pack is built factory-direct with a smart BMS, cold-resistant cells, a carry handle and full OEM/ODM support — so you get consistent quality and better margins.</p>
+        <ul class="about-list">
+          <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="aboutL1">Direct supply, no intermediaries</span></li>
+          <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="aboutL2">Cold-resistant NMC cells with smart BMS</span></li>
+          <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="aboutL3">Patented design, registered 9A brand</span></li>
+          <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="aboutL4">Flexible terms for dealers and wholesalers</span></li>
+        </ul>
+      </div>
+      <div style="max-width:260px;margin:0 auto"><img src="https://media.doubao.com/space/api/box/stream/download/all_by_mount_point/GRVwbOKlsoI80ExTFTjcKvb8nSb" alt="9A Battery NMC pack" style="width:100%;height:auto"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i18n="contactKicker">Get in touch</div>
+      <h2 data-i18n="contactTitle">Wholesale pricing &amp; OEM orders</h2>
+      <p data-i18n="contactSub">Reach us on your preferred channel — we reply fast and supply riders, dealers, fleets and manufacturers.</p>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-card" href="https://t.me/it9atech" target="_blank" rel="noopener">
+        <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19.6c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-7.9c.4-.3-.1-.5-.6-.2L6.4 13.5l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.5.2 1.2 1.4z"/></svg></span>
+        <span><span class="k" data-i18n="cTelegram">Telegram</span><br><span class="v">@it9atech</span></span>
+      </a>
+      <a class="contact-card" href="https://wa.me/447947027121" target="_blank" rel="noopener">
+        <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .2-3.1-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.5.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.2z"/></svg></span>
+        <span><span class="k" data-i18n="cWhatsapp">WhatsApp</span><br><span class="v">+44 7947 027 121</span></span>
+      </a>
+      <a class="contact-card" href="mailto:it9atech@outlook.com">
+        <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+        <span><span class="k" data-i18n="cEmail">Email</span><br><span class="v">it9atech@outlook.com</span></span>
+      </a>
+    </div>
+    <div class="social-row">
+      <p class="social-title" data-i18n="followUs">Follow 9A Battery</p>
+      <div class="social-icons">
+        <a href="https://www.tiktok.com/@china9a919" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.4 2.2 1.7 3.6 3.8 3.8v2.7c-1.3.2-2.6-.2-3.8-.9v5.9c0 3.3-2.3 5.6-5.4 5.6-2.9 0-5.2-2.3-5.2-5.1 0-3 2.4-5.3 5.5-5 .1 0 .3 0 .4.1v2.8c-.2-.1-.4-.1-.6-.1-1.4 0-2.5 1-2.5 2.3 0 1.3 1 2.3 2.3 2.3 1.4 0 2.4-1 2.4-2.7V3h2.5z"/></svg></a>
+        <a href="https://www.facebook.com/1362777350249851" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V7.5c0-.6.2-1 1.1-1H16V3.7c-.5-.1-1.4-.2-2.2-.2-2.3 0-3.8 1.4-3.8 3.9V9H7.5v3H10v8h3v-8h2.4l.4-3H14z"/></svg></a>
+        <a href="https://www.instagram.com/it9atec" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><img class="mark" src="assets/logo.png" alt="9A logo"><span>BATTERY</span></a>
+        <p data-i18n="footAbout">NMC lithium traction batteries for the U2 and electric mopeds. Factory-direct B2B supply for Russia &amp; Central Asia.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#products" data-i18n="navProducts">Products</a>
+        <a href="#advantages" data-i18n="navAdv">Why 9A</a>
+        <a href="#applications" data-i18n="navApp">Applications</a>
+        <a href="#certifications" data-i18n="navCert">Certifications</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 9A Battery. <span data-i18n="allRights">All rights reserved.</span></span>
+      <span data-i18n="footTag">Traction Battery · B2B</span>
+    </div>
+  </div>
+</footer>
+<script>
+const I18N = {
+en:{
+brandSub:"Traction Battery",
+navProducts:"Products",navAdv:"Why 9A",navApp:"Applications",navCert:"Certifications",navContact:"Contact",
+heroKicker:"Traction Battery Manufacturer",
+heroTitle:'NMC power for the U2 e-moped, <span class="accent">direct from 9A</span>',
+heroLead:"Reliable hand-carried lithium packs for seated electric mopeds and e-motorcycles. Built for cold winters, engineered for dealers, riders and wholesalers.",
+heroCta1:"Contact on Telegram",heroCta2:"View products",
+stat1:"Nominal voltage",stat2:"Max pack energy",stat3:"Peak discharge",stat4:"Russia & Central Asia",
+serveKicker:"Who We Serve",serveTitle:"Built around the people who ride every day",
+s1Tag:"RANGE FIRST",s1Name:"DIY builders & conversion enthusiasts",
+s1Desc:"Maximum range is the priority. High-capacity 65Ah packs, flexible form-factors and configurations tailored to your own build.",
+s2Tag:"ALL-WEATHER RUNTIME",s2Name:"Food delivery & courier riders",
+s2Desc:"All-day range that keeps working in freezing weather, with fast charging so you spend the shift earning, not waiting.",
+prodKicker:"Our Battery Packs",prodTitle:"Three UN38.3-tested NMC packs",
+prodSub:"Hand-carried, swappable traction packs for the U2 and compatible electric mopeds. Same rugged housing, three voltage/capacity options — plus custom builds.",
+tEnergy:"Energy",tCharge:"Charge voltage",tDischarge:"Cont. / peak",tWeight:"Weight",
+askPrice:"Ask for wholesale price",
+advKicker:"Why 9A",advTitle:"Built for cold, built for business",
+a1Name:"Cold-resistant cells",a1Desc:"NMC cells selected for low-temperature performance through Russian and Central Asian winters.",
+a2Name:"Smart BMS",a2Desc:"Built-in management protects the cells, balances charge and prevents over-discharge; monitor data via app.",
+a3Name:"Strong discharge",a3Desc:"100A continuous and 300A peak current for confident acceleration, loaded or uphill.",
+a4Name:"Factory direct",a4Desc:"No middlemen — better wholesale pricing and consistent, reliable supply.",
+a5Name:"Fast charging",a5Desc:"Up to 40A charge current with an adjustable charger — quick top-ups between runs.",
+a6Name:"Dealer terms",a6Desc:"Best conditions for dealers and wholesalers, with flexible MOQ and OEM/ODM.",
+appKicker:"Applications",appTitle:"Powering seated electric two-wheelers",
+app1Name:"U2 electric moped",app1Desc:"The U2 and comparable seated electric mopeds and e-motorcycles — drop-in, hand-carried traction packs.",
+app2Name:"Swappable battery use",app2Desc:"Integrated carry handle and quick connectors for fast battery swaps in delivery and daily riding.",
+stockKicker:"Ready Stock",stockTitle:"In stock and ready to ship",
+stockSub:"Real warehouse photos of finished packs — consistent supply for dealers and fleets.",
+certKicker:"Certifications & IP",certTitle:"Tested, patented and trademarked",
+certSub:"Documented transport safety, a registered 9A trademark and our own industrial design — real credentials you can verify.",
+c1Name:"UN38.3 transport tested",c1Desc:"All three models pass T.1–T.8 (altitude, thermal, vibration, shock, short circuit, crush, overcharge, forced discharge) — cleared for air, sea and land export.",
+c2Name:"Registered trademark 9A",c2Desc:"The 9A mark is registered for batteries, chargers and related goods in International Class 9.",
+c3Name:"Industrial design patent",c3Desc:"Patented design for the electric-vehicle energy-storage battery housing — a genuine, protected product design.",
+aboutKicker:"About 9A Battery",aboutTitle:"A traction-battery factory serving the CIS",
+aboutP1:"9A Battery (Guangzhou ZhengqiTec Technology Co., Ltd.) manufactures NMC lithium traction batteries for seated electric mopeds such as the U2. We supply riders, dealers and wholesalers across Russia and Central Asia.",
+aboutP2:"Every pack is built factory-direct with a smart BMS, cold-resistant cells, a carry handle and full OEM/ODM support — so you get consistent quality and better margins.",
+aboutL1:"Direct supply, no intermediaries",aboutL2:"Cold-resistant NMC cells with smart BMS",
+aboutL3:"Patented design, registered 9A brand",aboutL4:"Flexible terms for dealers and wholesalers",
+contactKicker:"Get in touch",contactTitle:"Wholesale pricing & OEM orders",
+contactSub:"Reach us on your preferred channel — we reply fast and supply riders, dealers, fleets and manufacturers.",
+cTelegram:"Telegram",cWhatsapp:"WhatsApp",cEmail:"Email",followUs:"Follow 9A Battery",
+footAbout:"NMC lithium traction batteries for the U2 and electric mopeds. Factory-direct B2B supply for Russia & Central Asia.",
+allRights:"All rights reserved.",footTag:"Traction Battery · B2B"
+},
+ru:{
+brandSub:"Тяговые батареи",
+navProducts:"Продукция",navAdv:"Почему 9A",navApp:"Применение",navCert:"Сертификаты",navContact:"Контакты",
+heroKicker:"Производитель тяговых батарей",
+heroTitle:'Питание NMC для электромопеда U2, <span class="accent">напрямую от 9A</span>',
+heroLead:"Надёжные переносные литиевые батареи для электромопедов с сиденьем и электроскутеров. Созданы для холодной зимы, для дилеров, райдеров и оптовиков.",
+heroCta1:"Связаться в Telegram",heroCta2:"Смотреть продукцию",
+stat1:"Номинальное напряжение",stat2:"Макс. энергия батареи",stat3:"Пиковый ток",stat4:"Россия и Центральная Азия",
+serveKicker:"Для кого мы работаем",serveTitle:"Создано для тех, кто ездит каждый день",
+s1Tag:"ПРИОРИТЕТ — ЗАПАС ХОДА",s1Name:"DIY-мастера и энтузиасты апгрейда",
+s1Desc:"Главное — максимальный запас хода. Высокоёмкие батареи 65Ah, гибкие корпуса и конфигурации под вашу сборку.",
+s2Tag:"ХОД В ЛЮБУЮ ПОГОДУ",s2Name:"Курьеры доставки еды",
+s2Desc:"Запас хода на весь день, работа в мороз и быстрая зарядка — чтобы смену зарабатывать, а не ждать.",
+prodKicker:"Наши батареи",prodTitle:"Три батареи NMC с тестом UN38.3",
+prodSub:"Переносные сменные тяговые батареи для U2 и совместимых электромопедов. Один прочный корпус, три варианта напряжения/ёмкости — плюс заказные решения.",
+tEnergy:"Энергия",tCharge:"Зарядное напряжение",tDischarge:"Пост. / пик",tWeight:"Масса",
+askPrice:"Узнать оптовую цену",
+advKicker:"Почему 9A",advTitle:"Созданы для холода и для бизнеса",
+a1Name:"Морозостойкие ячейки",a1Desc:"Ячейки NMC для работы при низких температурах зимой в России и Центральной Азии.",
+a2Name:"Умный BMS",a2Desc:"Система защищает ячейки, балансирует заряд, не допускает переразряд; данные через приложение.",
+a3Name:"Мощная отдача",a3Desc:"Постоянный ток 100A и пиковый 300A для уверенного разгона с грузом и в гору.",
+a4Name:"Напрямую с завода",a4Desc:"Без посредников — выгодные оптовые цены и стабильные поставки.",
+a5Name:"Быстрая зарядка",a5Desc:"Ток заряда до 40A с регулируемым зарядным устройством — быстрые дозаправки между заказами.",
+a6Name:"Условия для дилеров",a6Desc:"Лучшие условия для дилеров и оптовиков, гибкий минимальный заказ и OEM/ODM.",
+appKicker:"Применение",appTitle:"Питание для двухколёсного транспорта с сиденьем",
+app1Name:"Электромопед U2",app1Desc:"U2 и похожие электромопеды с сиденьем и электроскутеры — готовые переносные тяговые батареи.",
+app2Name:"Сменная батарея",app2Desc:"Встроенная ручка и быстрые разъёмы для быстрой замены батареи при доставке и ежедневной езде.",
+stockKicker:"Готовый товар",stockTitle:"В наличии, готово к отгрузке",
+stockSub:"Реальные фото готовых батарей на складе — стабильные поставки дилерам и автопаркам.",
+certKicker:"Сертификаты и права",certTitle:"Протестировано, запатентовано, с товарным знаком",
+certSub:"Подтверждённая безопасность при перевозке, зарегистрированный товарный знак 9A и собственный промышленный образец — реальные проверяемые документы.",
+c1Name:"Тест UN38.3 при перевозке",c1Desc:"Все три модели прошли T.1–T.8 (высота, температура, вибрация, удар, короткое замыкание, сжатие, перезаряд, принудительный разряд) — допуск к экспорту авиа-, море- и наземным транспортом.",
+c2Name:"Зарегистрированный товарный знак 9A",c2Desc:"Знак 9A зарегистрирован для батарей, зарядных устройств и сопутствующих товаров 9-го класса.",
+c3Name:"Патент на промышленный образец",c3Desc:"Запатентован дизайн корпуса аккумуляторной батареи для электротранспорта — подлинная защищённая разработка.",
+aboutKicker:"О компании 9A Battery",aboutTitle:"Завод тяговых батарей для стран СНГ",
+aboutP1:"9A Battery (Guangzhou ZhengqiTec Technology Co., Ltd.) производит литиевые тяговые батареи NMC для электромопедов с сиденьем, таких как U2. Мы поставляем райдерам, дилерам и оптовикам в России и Центральной Азии.",
+aboutP2:"Каждая батарея производится напрямую с умным BMS, морозостойкими ячейками, ручкой для переноски и поддержкой OEM/ODM — для стабильного качества и лучшей маржи.",
+aboutL1:"Прямые поставки без посредников",aboutL2:"Морозостойкие ячейки NMC с умным BMS",
+aboutL3:"Запатентованный дизайн, бренд 9A",aboutL4:"Гибкие условия для дилеров и оптовиков",
+contactKicker:"Связаться",contactTitle:"Оптовые цены и OEM-заказы",
+contactSub:"Напишите удобным способом — мы быстро отвечаем и поставляем райдерам, дилерам, автопаркам и производителям.",
+cTelegram:"Телеграм",cWhatsapp:"Ватсап",cEmail:"Эл. почта",followUs:"Мы в социальных сетях",
+footAbout:"Литиевые тяговые батареи NMC для U2 и электромопедов. Поставки B2B напрямую с завода для России и Центральной Азии.",
+allRights:"Все права защищены.",footTag:"Тяговая батарея · B2B"
+}
+};
+function setLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n'); var val=I18N[lang][key];
+    if(val===undefined)return;
+    if(key==='heroTitle'){el.innerHTML=val;}else{el.textContent=val;}
+  });
+  document.documentElement.lang=lang;
+  document.getElementById('btnEn').classList.toggle('active',lang==='en');
+  document.getElementById('btnRu').classList.toggle('active',lang==='ru');
+  try{localStorage.setItem('9a-lang',lang);}catch(e){}
+}
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');}
+(function(){var saved='en';try{saved=localStorage.getItem('9a-lang')||'en';}catch(e){}setLang(saved);})();
+</script>
+</body>
+</html>
