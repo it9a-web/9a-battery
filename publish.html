@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>发布助手 · 9A Battery</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#24272a; --bg2:#1d2023; --panel:#2d3135; --panel2:#353a3f;
+  --border:#3d4247; --border2:#4c5258;
+  --text:#eceef0; --muted:#a8aeb4; --faint:#7c8288;
+  --orange:#f26a1b; --orange2:#ff7d33; --orange-soft:rgba(242,106,27,.14);
+  --green:#35b06b; --red:#e05c4a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+h1,h2,h3,.display{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:600;line-height:1.15}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 18px}
+header.site{position:sticky;top:0;z-index:50;background:rgba(36,39,42,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Oswald',sans-serif;font-weight:700;font-size:20px}
+.brand .mark{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block}
+.brand small{display:block;font-family:'Manrope',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.nav a.back{font-size:14px;font-weight:700;color:var(--muted);padding:8px 0}
+.nav a.back:hover{color:var(--orange2)}
+main{padding:34px 0 60px}
+.eyebrow{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--orange);margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,34px);margin-bottom:6px}
+.sub{color:var(--muted);font-size:14.5px;margin-bottom:28px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:18px}
+.card h3{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
+input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 13px;outline:none}
+input:focus,textarea:focus{border-color:var(--orange)}
+textarea{min-height:84px;resize:vertical}
+.hint{font-size:12px;color:var(--faint);margin-top:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.plats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:860px){.plats{grid-template-columns:repeat(2,1fr)}}
+.plat{border:1.5px solid var(--border2);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;user-select:none}
+.plat .ico{font-size:20px;line-height:1}
+.plat .nm{display:block;font-size:12px;font-weight:700;margin-top:6px}
+.plat .st{display:block;font-size:10.5px;color:var(--faint);margin-top:2px}
+.plat.on{border-color:var(--orange);background:var(--orange-soft)}
+.plat.on::after{content:"✓";position:absolute;top:6px;right:8px;color:var(--orange);font-weight:800}
+.plat .warn{display:none}
+.plat.no .warn{display:block;color:var(--faint);font-size:9.5px;margin-top:3px}
+.field{margin-bottom:14px}
+.row{margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16px;padding:15px 30px;border-radius:6px;cursor:pointer;border:1px solid transparent;min-height:52px;width:100%;transition:transform .15s,background .2s,opacity .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange2)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#result{margin-top:16px;display:none}
+#result.ok{border:1px solid var(--green);background:rgba(53,176,107,.1);border-radius:8px;padding:14px 16px;color:#d8f3e3}
+#result.err{border:1px solid var(--red);background:rgba(224,92,74,.1);border-radius:8px;padding:14px 16px;color:#f6d6d0}
+#login{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:30px 26px;text-align:center}
+.login-box h2{font-size:22px;margin-bottom:6px}
+.login-box p{color:var(--muted);font-size:13px;margin-bottom:20px}
+.login-box input{margin-bottom:12px}
+.login-box .err{color:var(--red);font-size:12.5px;min-height:18px;margin-bottom:8px}
+.login-box .btn{background:var(--orange);color:#fff;font-weight:800}
+footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <img src="assets/logo.png" alt="9A" style="width:52px;height:52px;border-radius:50%;margin:0 auto 14px">
+    <h2>发布助手</h2>
+    <p>9A Battery · 内部发布工具</p>
+    <input type="password" id="pass" placeholder="输入访问密码" autocomplete="off">
+    <div class="err" id="loginErr"></div>
+    <button class="btn" onclick="tryLogin()">进入</button>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><img class="mark" src="assets/logo.png" alt="9A"><span>9A Battery<small>Publish Center</small></span></a>
+    <a class="back" href="index.html">← 返回官网</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Publish Center / Центр публикаций</div>
+    <h1>多平台内容发布</h1>
+    <p class="sub">选择平台、填写各平台文案，一键发布。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
+
+    <div class="card">
+      <h3><span class="n">1</span> 发布目标（选择要发布的平台）</h3>
+      <div class="plats" id="plats"></div>
+      <div class="hint">未勾选的平台不会发布；默认全部勾选。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="n">2</span> 产品信息</h3>
+      <div class="grid2">
+        <div class="field"><label>产品名（选填）</label><input type="text" id="product" placeholder="例如：72V 60Ah 锂电池"></div>
+        <div class="field"><label>整体描述（选填，各平台未填文案时使用）</label><input type="text" id="desc" placeholder="俄语或英语均可"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>图片链接（选填）</label><input type="url" id="image_url" placeholder="https://…（产品主图直链）"><div class="hint">需要可直接访问的图片直链（https）。</div></div>
+        <div class="field"><label>视频链接（选填）</label><input type="url" id="video_url" placeholder="https://…（视频直链）"><div class="hint">有视频链接时优先发视频。</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="n">3</span> 各平台文案（可分别填写）</h3>
+      <div id="txts"></div>
+    </div>
+
+    <button class="btn btn-primary" id="pubBtn" onclick="publish()">发布到所选平台</button>
+    <div id="result"></div>
+  </div>
+</main>
+
+<footer class="site">© 2026 9A Battery · 内部工具 · 请勿外传</footer>
+
+<script>
+var PASS='9A@2026';
+var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
+var WEBHOOK='https://9a-n8n.cpolar.top/webhook/publish-trigger';
+
+var PLATS=[
+ {k:'tg', nm:'Telegram', ico:'✈️', st:'TG 客户群', def:'9A Battery | Литиевая батарея 72V 60Ah | Активная BMS | Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'ig', nm:'Instagram', ico:'📷', st:'Ins', def:'⚡ Литиевая батарея 72V 60Ah от 9A Battery\nАктивная BMS · CE/UN38.3 · Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'tt', nm:'TikTok', ico:'🎵', st:'TikTok（待接入）', def:'Литиевая батарея 72V 60Ah | 9A Battery | Опт\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'yt', nm:'YouTube', ico:'▶️', st:'YouTube', def:'Литиевая батарея 72V 60Ah | 9A Battery | Активная BMS\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'fb', nm:'Facebook', ico:'📘', st:'Facebook', def:'⚡ Литиевая батарея 72V 60Ah от 9A Battery\nАктивная BMS · CE/UN38.3 · Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'}
+];
+var selected={}; Object.keys(PLATS).forEach(function(i){selected[PLATS[i].k]=true;});
+
+function tryLogin(){
+  var v=document.getElementById('pass').value;
+  if(v===PASS){document.getElementById('login').style.display='none';}
+  else{document.getElementById('loginErr').textContent='密码错误，请重试';}
+}
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+
+function renderPlats(){
+  var box=document.getElementById('plats'); box.innerHTML='';
+  PLATS.forEach(function(p){
+    var d=document.createElement('div');
+    d.className='plat'+(selected[p.k]?' on':'')+(p.k==='tt'?' no':'');
+    d.innerHTML='<span class="ico">'+p.ico+'</span><span class="nm">'+p.nm+'</span><span class="st">'+p.st+'</span>'+(p.k==='tt'?'<span class="warn">审核中</span>':'');
+    d.onclick=function(){selected[p.k]=!selected[p.k]; renderPlats();};
+    box.appendChild(d);
+  });
+}
+function renderTxts(){
+  var box=document.getElementById('txts'); box.innerHTML='';
+  PLATS.forEach(function(p){
+    var f=document.createElement('div');
+    f.className='field';
+    f.innerHTML='<label>'+(p.nm+' 文案')+(p.k==='tt'?'（TikTok 待接入，可先填）':'')+'</label>'+
+      '<textarea data-k="'+p.k+'" placeholder="留空则使用默认俄语文案">'+(selected[p.k]?p.def:'')+'</textarea>'+
+      '<div class="hint">默认：'+p.def.replace(/\n/g,' ').slice(0,90)+'…</div>';
+    box.appendChild(f);
+  });
+}
+renderPlats(); renderTxts();
+
+function publish(){
+  var btn=document.getElementById('pubBtn');
+  var res=document.getElementById('result');
+  res.className=''; res.style.display='none';
+  if(PUBLISH_KEY.indexOf('__')===0){showRes('err','发布密钥未配置（页面需要填入 n8n 发布密钥后才能发布）。');return;}
+  var chosen=PLATS.filter(function(p){return selected[p.k];});
+  if(!chosen.length){showRes('err','请至少选择一个平台。');return;}
+  var body={
+    title: document.getElementById('product').value || '9A Battery',
+    description: document.getElementById('desc').value || '',
+    image_url: document.getElementById('image_url').value.trim() || '',
+    video_url: document.getElementById('video_url').value.trim() || '',
+    product: document.getElementById('product').value || ''
+  };
+  PLATS.forEach(function(p){
+    var ta=document.querySelector('textarea[data-k="'+p.k+'"]');
+    var v=ta?ta.value.trim():'';
+    body[p.k+'_text']=v || p.def;
+  });
+  btn.disabled=true; btn.textContent='发布中…请稍候';
+  fetch(WEBHOOK,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-publish-key':PUBLISH_KEY},
+    body:JSON.stringify(body)
+  }).then(function(r){return r.text().then(function(t){return {s:r.status,t:t};});})
+  .then(function(o){
+    btn.disabled=false; btn.textContent='发布到所选平台';
+    if(o.s===200){showRes('ok','✅ 发布请求已发送：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
+    else{showRes('err','发布失败（HTTP '+o.s+'）：'+o.t.slice(0,200));}
+  })
+  .catch(function(e){
+    btn.disabled=false; btn.textContent='发布到所选平台';
+    showRes('err','发布失败：'+(e.message||e));
+  });
+}
+function showRes(cls,msg){
+  var r=document.getElementById('result');
+  r.className=cls; r.style.display='block'; r.textContent=msg;
+}
+</script>
+</body>
+</html>
