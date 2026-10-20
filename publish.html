@@ -52,6 +52,13 @@ textarea{min-height:84px;resize:vertical}
 .plat.no .warn{display:block;color:var(--faint);font-size:9.5px;margin-top:3px}
 .field{margin-bottom:14px}
 .row{margin-bottom:14px}
+.upload-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.upload-row input[type=url]{flex:1;min-width:200px}
+.upbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:13px;font-weight:700;padding:11px 16px;cursor:pointer;min-height:42px;white-space:nowrap;transition:border-color .15s,background .15s}
+.upbtn:hover{border-color:var(--orange);color:var(--orange2)}
+.upbtn:disabled{opacity:.5;cursor:wait}
+.upbtn.busy::before{content:"";width:12px;height:12px;border:2px solid var(--faint);border-top-color:var(--orange);border-radius:50%;display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16px;padding:15px 30px;border-radius:6px;cursor:pointer;border:1px solid transparent;min-height:52px;width:100%;transition:transform .15s,background .2s,opacity .2s}
 .btn-primary{background:var(--orange);color:#fff}
 .btn-primary:hover{background:var(--orange2)}
@@ -108,8 +115,22 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
         <div class="field"><label>整体描述（选填，各平台未填文案时使用）</label><input type="text" id="desc" placeholder="俄语或英语均可"></div>
       </div>
       <div class="grid2">
-        <div class="field"><label>图片链接（选填）</label><input type="url" id="image_url" placeholder="https://…（产品主图直链）"><div class="hint">需要可直接访问的图片直链（https）。</div></div>
-        <div class="field"><label>视频链接（选填）</label><input type="url" id="video_url" placeholder="https://…（视频直链）"><div class="hint">有视频链接时优先发视频。</div></div>
+        <div class="field">
+          <label>图片链接（选填）</label>
+          <div class="upload-row">
+            <input type="url" id="image_url" placeholder="https://…（产品主图直链）">
+            <button class="upbtn" id="upImg" onclick="pickMedia('image')">📎 选图片上传</button>
+          </div>
+          <div class="hint">可粘贴图片直链，或点「选图片上传」从手机/电脑选图（自动生成链接）。</div>
+        </div>
+        <div class="field">
+          <label>视频链接（选填）</label>
+          <div class="upload-row">
+            <input type="url" id="video_url" placeholder="https://…（视频直链）">
+            <button class="upbtn" id="upVid" onclick="pickMedia('video')">📎 选视频上传</button>
+          </div>
+          <div class="hint">有视频链接时优先发视频；支持从手机/电脑选择视频上传。</div>
+        </div>
       </div>
     </div>
 
@@ -207,6 +228,36 @@ function publish(){
 function showRes(cls,msg){
   var r=document.getElementById('result');
   r.className=cls; r.style.display='block'; r.textContent=msg;
+}
+
+// 文件上传：从手机/电脑选图片或视频 → 上传到发布服务器 → 自动填入链接框
+var UPLOAD_WEBHOOK='https://9a-n8n.cpolar.top/webhook/upload-media';
+function pickMedia(kind){
+  var input=document.createElement('input');
+  input.type='file';
+  input.accept=kind==='image'?'image/*':'video/*';
+  var btn=document.getElementById(kind==='image'?'upImg':'upVid');
+  var box=document.getElementById(kind==='image'?'image_url':'video_url');
+  var label=kind==='image'?'📎 选图片上传':'📎 选视频上传';
+  input.onchange=function(){
+    var f=input.files&&input.files[0];
+    if(!f)return;
+    var fd=new FormData();
+    fd.append('file',f);
+    btn.disabled=true; btn.classList.add('busy'); btn.textContent=' 上传中…';
+    fetch(UPLOAD_WEBHOOK,{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
+      if(d&&d.success&&d.url){box.value=d.url;showRes('ok','✅ 上传成功，链接已自动填入'+(kind==='image'?'图片':'视频')+'框。');}
+      else{showRes('err','上传失败：'+(d&&d.error||'服务器无响应'));}
+    })
+    .catch(function(e){
+      btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
+      showRes('err','上传失败：'+(e.message||e)+'（请确认发布服务器已启动）');
+    });
+  };
+  input.click();
 }
 </script>
 </body>
