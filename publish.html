@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>发布助手 · 9A Battery（两套切换版）</title>
+<title>9A 工作台 · 视频复刻 + 发布</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap">
@@ -13,12 +13,13 @@
   --border:#3d4247; --border2:#4c5258;
   --text:#eceef0; --muted:#a8aeb4; --faint:#7c8288;
   --orange:#f26a1b; --orange2:#ff7d33; --orange-soft:rgba(242,106,27,.14);
-  --green:#35b06b; --red:#e05c4a; --blue:#3f8cf0; --blue-soft:rgba(63,140,240,.14);
+  --green:#35b06b; --green-soft:rgba(53,176,107,.1); --red:#e05c4a; --red-soft:rgba(224,92,74,.1);
+  --blue:#3f8cf0; --blue-soft:rgba(63,140,240,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
 h1,h2,h3,.display{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:600;line-height:1.15}
-.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 18px}
+.wrap{width:100%;max-width:900px;margin:0 auto;padding:0 18px}
 header.site{position:sticky;top:0;z-index:50;background:rgba(36,39,42,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{display:flex;align-items:center;gap:11px;font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;color:#fff;text-decoration:none}
@@ -26,20 +27,63 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(36,39,42,.92);backd
 .brand small{display:block;font-family:'Manrope',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
 .nav a.back{font-size:14px;font-weight:700;color:var(--muted);padding:8px 0}
 .nav a.back:hover{color:var(--orange2)}
-main{padding:34px 0 60px}
-.eyebrow{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--orange);margin-bottom:10px}
+main{padding:30px 0 60px}
+.eyebrow{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--orange);margin-bottom:8px}
 h1{font-size:clamp(24px,4vw,34px);margin-bottom:6px}
-.sub{color:var(--muted);font-size:14.5px;margin-bottom:28px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:18px}
-.card h3{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card h3 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px}
-label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
-input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 13px;outline:none}
+.sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{flex:1;min-width:150px;text-align:center;padding:14px 10px;border:1.5px solid var(--border2);border-radius:8px;cursor:pointer;font-weight:800;font-size:15px;color:var(--muted);background:var(--panel);transition:border-color .15s,background .15s,color .15s;user-select:none}
+.tab .ti{display:block;font-size:11px;color:var(--faint);font-weight:600;margin-bottom:2px}
+.tab.on{border-color:var(--orange);background:var(--orange-soft);color:var(--orange2)}
+.view{display:none}
+.view.on{display:block}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--faint);margin:0 0 16px}
+.flow b{color:var(--muted);font-weight:700}
+.flow .arr{color:var(--orange)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 18px;margin-bottom:16px}
+.card h3{font-size:16px;margin-bottom:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .n{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px;border-radius:6px;background:var(--orange);color:#fff;font-size:12px}
+.card .tac{font-size:11.5px;color:var(--faint);margin-left:auto;display:inline-flex;align-items:center;gap:5px}
+label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:0 0 6px}
+input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;padding:11px 12px;outline:none}
+textarea{font-size:14px}
 input:focus,textarea:focus{border-color:var(--orange)}
-textarea{min-height:84px;resize:vertical}
 .hint{font-size:12px;color:var(--faint);margin-top:5px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.upgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.upgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.upgrid{grid-template-columns:1fr}}
+.upcell{border:1.5px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.upcell:hover{border-color:var(--orange)}
+.upcell .ui{font-size:20px;line-height:1;opacity:.85}
+.upcell .un{font-size:12.5px;font-weight:700}
+.upcell .us{font-size:10.5px;color:var(--faint)}
+.upcell.has{border-style:solid;border-color:var(--orange);background:var(--orange-soft)}
+.upcell.has::after{content:"✓ 已选";position:absolute;top:6px;right:8px;color:var(--orange);font-weight:800;font-size:10px}
+.upcell .fn{font-size:10.5px;color:var(--muted);word-break:break-all;max-width:100%}
+input[type=file]{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:15px;padding:14px 26px;border-radius:6px;cursor:pointer;border:1px solid transparent;min-height:50px;width:100%;transition:transform .15s,background .2s,opacity .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange2)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.busy::before{content:"";width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result{margin-top:14px;display:none;border-radius:8px;padding:13px 15px;font-size:13.5px}
+.result.ok{border:1px solid var(--green);background:var(--green-soft);color:#d8f3e3}
+.result.err{border:1px solid var(--red);background:var(--red-soft);color:#f6d6d0}
+.result.info{border:1px solid var(--border2);background:rgba(255,255,255,.03);color:var(--muted)}
+.copyList{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:820px){.copyList{grid-template-columns:1fr}}
+.copy{border:1.5px solid var(--border2);border-radius:9px;padding:14px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;background:var(--bg2)}
+.copy:hover{border-color:var(--orange2)}
+.copy.on{border-color:var(--orange);background:var(--orange-soft)}
+.copy.on::after{content:"✓ 已选此方案";position:absolute;top:8px;right:10px;color:var(--orange);font-weight:800;font-size:11px}
+.copy .ch{font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;margin-bottom:7px;color:#fff;padding-right:74px}
+.copy .cb{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.copy .cc{font-size:13px;white-space:pre-wrap;color:var(--text)}
+.copy .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--panel2);color:var(--orange2);margin-top:8px}
+.demo-flag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-soft);border:1px solid rgba(63,140,240,.4);padding:3px 9px;border-radius:5px;margin-left:8px}
 .sets{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:640px){.sets{grid-template-columns:1fr}}
 .set{border:1.5px solid var(--border2);border-radius:8px;padding:16px 14px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;user-select:none;text-align:center}
@@ -58,21 +102,12 @@ textarea{min-height:84px;resize:vertical}
 .plat .warn{display:none}
 .plat.no .warn{display:block;color:var(--faint);font-size:9.5px;margin-top:3px}
 .field{margin-bottom:14px}
-.row{margin-bottom:14px}
 .upload-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .upload-row input[type=url]{flex:1;min-width:200px}
 .upbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:13px;font-weight:700;padding:11px 16px;cursor:pointer;min-height:42px;white-space:nowrap;transition:border-color .15s,background .15s}
 .upbtn:hover{border-color:var(--orange);color:var(--orange2)}
 .upbtn:disabled{opacity:.5;cursor:wait}
 .upbtn.busy::before{content:"";width:12px;height:12px;border:2px solid var(--faint);border-top-color:var(--orange);border-radius:50%;display:inline-block;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16px;padding:15px 30px;border-radius:6px;cursor:pointer;border:1px solid transparent;min-height:52px;width:100%;transition:transform .15s,background .2s,opacity .2s}
-.btn-primary{background:var(--orange);color:#fff}
-.btn-primary:hover{background:var(--orange2)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-#result{margin-top:16px;display:none}
-#result.ok{border:1px solid var(--green);background:rgba(53,176,107,.1);border-radius:8px;padding:14px 16px;color:#d8f3e3}
-#result.err{border:1px solid var(--red);background:rgba(224,92,74,.1);border-radius:8px;padding:14px 16px;color:#f6d6d0}
 #login{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-box{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:30px 26px;text-align:center}
 .login-box h2{font-size:22px;margin-bottom:6px}
@@ -80,16 +115,16 @@ textarea{min-height:84px;resize:vertical}
 .login-box input{margin-bottom:12px}
 .login-box .err{color:var(--red);font-size:12.5px;min-height:18px;margin-bottom:8px}
 .login-box .btn{background:var(--orange);color:#fff;font-weight:800}
-footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint);font-size:12.5px;text-align:center}
+footer.site{border-top:1px solid var(--border);padding:20px 0;color:var(--faint);font-size:12px;text-align:center}
 </style>
 </head>
 <body>
 
 <div id="login">
   <div class="login-box">
-    <img src="assets/logo.png" alt="9A" style="width:52px;height:52px;border-radius:50%;margin:0 auto 14px">
-    <h2>发布助手</h2>
-    <p>9A Battery · 内部发布工具（两套切换版）</p>
+    <img src="assets/logo.png" alt="9A" style="width:52px;height:52px;border-radius:50%;margin:0 auto 14px;display:block">
+    <h2>9A 工作台</h2>
+    <p>9A Battery · 视频复刻 + 多平台发布</p>
     <input type="password" id="pass" placeholder="输入访问密码" autocomplete="off">
     <div class="err" id="loginErr"></div>
     <button class="btn" onclick="tryLogin()">进入</button>
@@ -98,62 +133,113 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
 
 <header class="site">
   <div class="wrap nav">
-    <a class="brand" href="index.html"><img class="mark" src="assets/logo.png" alt="9A"><span>9A Battery<small>Publish Center</small></span></a>
+    <a class="brand" href="index.html"><img class="mark" src="assets/logo.png" alt="9A"><span>9A Battery<small>Workbench</small></span></a>
     <a class="back" href="index.html">← 返回官网</a>
   </div>
 </header>
 
 <main>
   <div class="wrap">
-    <div class="eyebrow">Publish Center / Центр публикаций</div>
-    <h1>多平台内容发布（两套切换）</h1>
-    <p class="sub">先选发布套别：选第一套发第一套，选第二套发第二套。其余操作完全一致。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
+    <div class="eyebrow">9A Workbench / Рабочий центр</div>
+    <h1>9A 工作台</h1>
+    <p class="sub">一个页面走完闭环：先视频复刻出片 → 再选套别发布。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
 
-    <div class="card">
-      <h3><span class="n">0</span> 发布套别（选哪套发哪套）</h3>
-      <div class="sets" id="sets"></div>
-      <div class="hint" id="setHint"></div>
+    <div class="tabs">
+      <div class="tab on" id="tabRep" onclick="switchView('replicate')"><span class="ti">① 先做视频</span>视频复刻</div>
+      <div class="tab" id="tabPub" onclick="switchView('publish')"><span class="ti">② 再发布</span>多平台发布</div>
     </div>
 
-    <div class="card">
-      <h3><span class="n">1</span> 发布目标（选择要发布的平台）</h3>
-      <div class="plats" id="plats"></div>
-      <div class="hint">未勾选的平台不会发布；默认全部勾选。</div>
-    </div>
+    <!-- ===== 视图：视频复刻 ===== -->
+    <div class="view on" id="viewReplicate">
+      <div class="flow">丢爆款链接 <span class="arr">→</span> 传素材 <span class="arr">→</span> AI 拆解 <span class="arr">→</span> <b>3 套文案</b> <span class="arr">→</span> 选一套 <span class="arr">→</span> 生成视频 <span class="arr">→</span> 预览/去发布</div>
 
-    <div class="card">
-      <h3><span class="n">2</span> 产品信息</h3>
-      <div class="grid2">
-        <div class="field"><label>产品名（选填）</label><input type="text" id="product" placeholder="例如：72V 60Ah 锂电池"></div>
-        <div class="field"><label>整体描述（选填，各平台未填文案时使用）</label><input type="text" id="desc" placeholder="俄语或英语均可"></div>
+      <div class="card step">
+        <h3><span class="n">1</span> 爆款视频链接</h3>
+        <input type="url" id="link" placeholder="https://…（抖音 / TikTok / YouTube 爆款视频链接）" autocomplete="off">
+        <div class="hint">把你想复刻的爆款链接粘进来，AI 会读取它的脚本、镜头、节奏和钩子。</div>
       </div>
-      <div class="grid2">
-        <div class="field">
-          <label>图片链接（选填）</label>
-          <div class="upload-row">
-            <input type="url" id="image_url" placeholder="https://…（产品主图直链）">
-            <button class="upbtn" id="upImg" onclick="pickMedia('image')">📎 选图片上传</button>
-          </div>
-          <div class="hint">可粘贴图片直链，或点「选图片上传」从手机/电脑选图（自动生成链接，随当前套别上传）。</div>
+
+      <div class="card step">
+        <h3><span class="n">2</span> 上传你的素材（人物 / 背景 / 声音 / 产品原图）</h3>
+        <div class="upgrid" id="upgrid"></div>
+        <div class="hint">主体用你的原素材，AI 只按爆款结构排顺序、卡节奏，绝不乱改你的东西。</div>
+      </div>
+
+      <div class="card step">
+        <h3><span class="n">3</span> 开始拆解<span class="tac">已上传素材：<b id="assetCount" style="color:var(--orange)">0</b></span></h3>
+        <button class="btn btn-primary" id="analyzeBtn" onclick="analyze()">开始拆解</button>
+        <div class="result" id="rAnalyze"></div>
+      </div>
+
+      <div class="card step" id="copyCard" style="display:none">
+        <h3><span class="n">4</span> AI 生成的 3 套文案<span class="demo-flag" id="demoFlag">演示文案 · 后端接通后为真实俄语</span><span class="tac">选 1 套</span></h3>
+        <div class="copyList" id="copyList"></div>
+        <div class="hint">三套各自独立，点选你想要的一套，选定后文案锁定、不会改动。</div>
+        <div class="result" id="rCopy"></div>
+      </div>
+
+      <div class="card step" id="genCard" style="display:none">
+        <h3><span class="n">5</span> 生成视频<span class="tac" id="selName" style="color:var(--orange)"></span></h3>
+        <button class="btn btn-primary" id="genBtn" onclick="generate()">按选定文案生成视频</button>
+        <div class="result" id="rGen"></div>
+      </div>
+
+      <div class="card step" id="doneCard" style="display:none">
+        <h3><span class="n">6</span> 完成<span class="tac" id="doneLink">视频已生成</span></h3>
+        <div class="result ok" id="rDone" style="display:block"></div>
+        <button class="btn btn-primary" onclick="previewVideo()">先预览视频（在线看效果）</button>
+        <div class="grid2" style="margin-top:12px">
+          <button class="btn btn-primary" onclick="downloadVideo()">下载视频到手机</button>
+          <button class="btn btn-primary" onclick="goPublish()">带着结果去发布 →</button>
         </div>
-        <div class="field">
-          <label>视频链接（选填）</label>
-          <div class="upload-row">
-            <input type="url" id="video_url" placeholder="https://…（视频直链）">
-            <button class="upbtn" id="upVid" onclick="pickMedia('video')">📎 选视频上传</button>
-          </div>
-          <div class="hint">有视频链接时优先发视频；支持从手机/电脑选择视频上传。</div>
-        </div>
+        <div class="hint">满意后可下载，或点「带着结果去发布」把视频链接和文案带到发布区。</div>
       </div>
     </div>
 
-    <div class="card">
-      <h3><span class="n">3</span> 各平台文案（可分别填写）</h3>
-      <div id="txts"></div>
+    <!-- ===== 视图：多平台发布 ===== -->
+    <div class="view" id="viewPublish">
+      <div class="card">
+        <h3><span class="n">0</span> 发布套别（选哪套发哪套）</h3>
+        <div class="sets" id="sets"></div>
+        <div class="hint" id="setHint"></div>
+      </div>
+      <div class="card">
+        <h3><span class="n">1</span> 发布目标（选择要发布的平台）</h3>
+        <div class="plats" id="plats"></div>
+        <div class="hint">未勾选的平台不会发布；默认全部勾选。</div>
+      </div>
+      <div class="card">
+        <h3><span class="n">2</span> 产品信息</h3>
+        <div class="grid2">
+          <div class="field"><label>产品名（选填）</label><input type="text" id="product" placeholder="例如：72V 60Ah 锂电池"></div>
+          <div class="field"><label>整体描述（复刻文案自动带入 · 所有平台共用）</label><input type="text" id="desc" placeholder="俄语或英语均可"></div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>图片链接（选填）</label>
+            <div class="upload-row">
+              <input type="url" id="image_url" placeholder="https://…（产品主图直链）">
+              <button class="upbtn" id="upImg" onclick="pickMedia('image')">📎 选图片上传</button>
+            </div>
+            <div class="hint">可粘贴图片直链，或点「选图片上传」自动生成链接。</div>
+          </div>
+          <div class="field">
+            <label>视频链接（复刻生成的会自动带入）</label>
+            <div class="upload-row">
+              <input type="url" id="video_url" placeholder="https://…（视频直链）">
+              <button class="upbtn" id="upVid" onclick="pickMedia('video')">📎 选视频上传</button>
+            </div>
+            <div class="hint" id="vidHint">有视频链接时优先发视频；支持从手机/电脑选择视频上传。</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><span class="n">3</span> 各平台文案（可分别填写）</h3>
+        <div id="txts"></div>
+      </div>
+      <button class="btn btn-primary" id="pubBtn" onclick="publish()">发布到所选平台</button>
+      <div id="result"></div>
     </div>
-
-    <button class="btn btn-primary" id="pubBtn" onclick="publish()">发布到所选平台</button>
-    <div id="result"></div>
   </div>
 </main>
 
@@ -162,14 +248,148 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
 <script>
 var PASS='9A@2026';
 var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
+// 预留后端（N8N 工作流未接通前为演示模式；接通后由真实 webhook 返回）
+var API={analyze:'https://9a-n8n.cpolar.top/webhook/video-replicate/analyze',render:'https://9a-n8n.cpolar.top/webhook/video-replicate/render'};
+var DEMO_MODE=true; // 后端工作流接通后置为 false
 
-// 两套配置：切换套别即切换对应 webhook（其余逻辑完全一致）
+/* ============ 通用：登录 + 视图切换 ============ */
+function tryLogin(){
+  var v=document.getElementById('pass').value;
+  if(v===PASS){document.getElementById('login').style.display='none';}
+  else{document.getElementById('loginErr').textContent='密码错误，请重试';}
+}
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+
+function switchView(v){
+  var rep=document.getElementById('viewReplicate'),pub=document.getElementById('viewPublish');
+  var t1=document.getElementById('tabRep'),t2=document.getElementById('tabPub');
+  if(v==='publish'){rep.classList.remove('on');pub.classList.add('on');t1.classList.remove('on');t2.classList.add('on');}
+  else{pub.classList.remove('on');rep.classList.add('on');t2.classList.remove('on');t1.classList.add('on');}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showRes(id,cls,msg){var r=document.getElementById(id);r.className='result '+cls;r.style.display='block';r.textContent=msg;}
+function hideRes(id){document.getElementById(id).style.display='none';}
+
+/* ============ 视图①：视频复刻 ============ */
+var ASSETS=[
+ {k:'person', nm:'人物', ui:'人物素材', us:'视频或图片', accept:'video/*,image/*'},
+ {k:'bg',     nm:'背景', ui:'背景场景', us:'视频或图片', accept:'video/*,image/*'},
+ {k:'sound',  nm:'声音', ui:'配音/音频', us:'mp3/wav 等', accept:'audio/*'},
+ {k:'product',nm:'产品原图', ui:'电池/车辆', us:'图片', accept:'image/*'}
+];
+var files={person:null,bg:null,sound:null,product:null};
+var copies=[], selCopy=null, replicate={videoUrl:'',copyText:'',copyTitle:''};
+
+function renderUp(){
+  var box=document.getElementById('upgrid'); box.innerHTML='';
+  ASSETS.forEach(function(a){
+    var d=document.createElement('div'); d.className='upcell'+(files[a.k]?' has':''); d.id='cell_'+a.k;
+    d.innerHTML='<span class="ui">'+a.ui+'</span><span class="un">'+a.nm+'</span><span class="us">'+a.us+'</span>'+(files[a.k]?'<span class="fn">'+files[a.k].name+'</span>':'');
+    d.onclick=function(){document.getElementById('file_'+a.k).click();};
+    box.appendChild(d);
+    var inp=document.createElement('input'); inp.type='file'; inp.id='file_'+a.k; inp.accept=a.accept;
+    inp.onchange=function(){ if(inp.files&&inp.files[0]){ files[a.k]=inp.files[0]; renderUp(); updateCount(); } };
+    box.appendChild(inp);
+  });
+}
+function updateCount(){
+  var n=ASSETS.filter(function(a){return files[a.k];}).length;
+  document.getElementById('assetCount').textContent=n;
+}
+renderUp();
+
+function analyze(){
+  var link=document.getElementById('link').value.trim();
+  var n=ASSETS.filter(function(a){return files[a.k];}).length;
+  hideRes('rAnalyze');
+  if(!link){showRes('rAnalyze','err','请先粘贴爆款视频链接。');return;}
+  if(n<1){showRes('rAnalyze','err','请至少上传 1 个素材（人物/背景/声音/产品原图任选）。');return;}
+  var btn=document.getElementById('analyzeBtn');
+  btn.disabled=true; btn.classList.add('busy'); btn.textContent='正在拆解爆款…';
+  var done=function(cs){
+    btn.disabled=false; btn.classList.remove('busy'); btn.textContent='开始拆解';
+    copies=cs; selCopy=null;
+    renderCopies(); document.getElementById('copyCard').style.display='block';
+    document.getElementById('copyCard').scrollIntoView({behavior:'smooth',block:'center'});
+    showRes('rAnalyze','ok','已拆解完成：出 '+cs.length+' 套文案，请选择其中 1 套。');
+  };
+  var fail=function(m){btn.disabled=false;btn.classList.remove('busy');btn.textContent='开始拆解';showRes('rAnalyze','err',m);};
+  if(DEMO_MODE){ setTimeout(function(){done(demoCopies(link));},1300); }
+  else{
+    fetch(API.analyze,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({link:link,assets:Object.keys(files).filter(function(k){return files[k];})})})
+    .then(function(r){return r.json();}).then(function(d){done(d.copies||[]);}).catch(function(e){fail('拆解失败：'+(e.message||e));});
+  }
+}
+function renderCopies(){
+  var box=document.getElementById('copyList'); box.innerHTML='';
+  copies.forEach(function(c,i){
+    var d=document.createElement('div');
+    d.className='copy'+(selCopy===i?' on':'');
+    d.innerHTML='<div class="ch">方案 '+(i+1)+' · '+c.title+'</div><div class="cb">'+c.brief+'</div><div class="cc">'+c.text+'</div><span class="tag">'+c.tag+'</span>';
+    d.onclick=function(){selCopy=i; renderCopies(); document.getElementById('selName').textContent='已选：方案 '+(i+1); hideRes('rCopy');};
+    box.appendChild(d);
+  });
+  document.getElementById('genCard').style.display='block';
+}
+function generate(){
+  hideRes('rGen');
+  if(selCopy===null){showRes('rGen','err','请先在 3 套文案中选 1 套。');return;}
+  var btn=document.getElementById('genBtn');
+  btn.disabled=true; btn.classList.add('busy'); btn.textContent='正在按方案 '+(selCopy+1)+' 生成视频…';
+  var done=function(res){
+    btn.disabled=false; btn.classList.remove('busy'); btn.textContent='按选定文案生成视频';
+    replicate.videoUrl=res.url||''; replicate.copyText=copies[selCopy].text; replicate.copyTitle=copies[selCopy].title;
+    var card=document.getElementById('doneCard'); card.style.display='block';
+    document.getElementById('rDone').textContent=res.msg;
+    document.getElementById('doneLink').textContent=(res.url&&!DEMO_MODE)?'视频链接已生成，可预览后去发布':'视频已生成（演示）';
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  var fail=function(m){btn.disabled=false;btn.classList.remove('busy');btn.textContent='按选定文案生成视频';showRes('rGen','err',m);};
+  if(DEMO_MODE){ setTimeout(function(){done({msg:'（演示）视频已按「方案 '+(selCopy+1)+'」生成完成，正式接通后端后这里会给真实文件。',url:''});},1500); }
+  else{
+    fetch(API.render,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({copy:copies[selCopy]})})
+    .then(function(r){return r.json();}).then(function(d){done({msg:d.msg||'已生成',url:d.url||''});}).catch(function(e){fail('生成失败：'+(e.message||e));});
+  }
+}
+function previewVideo(){
+  if(DEMO_MODE){showRes('rDone','info','（演示模式）正式接通后端后，这里会打开你生成视频的在线链接。');return;}
+  if(replicate.videoUrl){window.open(replicate.videoUrl,'_blank');}
+}
+function downloadVideo(){
+  if(DEMO_MODE){showRes('rDone','info','（演示模式）后端接通后这里会提供真实视频文件下载。');return;}
+  if(replicate.videoUrl){window.open(replicate.videoUrl,'_blank');}
+}
+function goPublish(){
+  switchView('publish');
+  if(replicate.videoUrl){
+    var v=document.getElementById('video_url');
+    if(!v.value.trim()){ v.value=replicate.videoUrl; document.getElementById('vidHint').textContent='已自动带入复刻生成的视频链接。'; }
+  }
+  if(replicate.copyText){
+    var d=document.getElementById('desc');
+    if(d && !d.value.trim()){ d.value=replicate.copyText; }
+    showRes('result','info','已带入「'+replicate.copyTitle+'」到整体描述，发布时各平台将使用它；各平台文案可手动填或留空用它。');
+  } else {
+    showRes('result','info','已切换到发布区，请选择套别与平台发布。');
+  }
+}
+function demoCopies(link){
+  return [
+   {title:'功能与 BMS', brief:'主打主动均衡 BMS 与续航，直给卖点', tag:'硬核参数向',
+    text:'9A Battery 锂电池 72V 60Ah，主动均衡 BMS，零下 30 度续航 100 公里。大电流放电不掉压，配送改装首选。\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт'},
+   {title:'使用场景', brief:'外卖骑手换电、配送一天不慌，代入感强', tag:'场景剧情向',
+    text:'一整天配送，一块 9A 电池就够了。72V 60Ah 大容量，支持 250A 瞬时放电，改装外卖车跑一天不断电。\n\n#9ABattery #72V60Ah #электровелосипед #доставка #аккумулятор #опт'},
+   {title:'客户好评', brief:'客户视角讲述，建立信任感', tag:'口碑信任向',
+    text:'俄罗斯客户实测反馈：9A Battery 装车跑半年，续航稳定、BMS 均衡到位。批发合作，量大从优。\n\n#9ABattery #72V60Ah #литиеваябатарея #отзыв #опт #доставкапоРоссии'}
+  ];
+}
+
+/* ============ 视图②：多平台发布 ============ */
 var SETS={
   set1:{nm:'第一套', desc:'TG/FB/IG/YT 主账号 · TikTok 审核中', webhook:'https://9a-n8n.cpolar.top/webhook/publish-trigger', upload:'https://9a-n8n.cpolar.top/webhook/upload-media'},
   set2:{nm:'第二套', desc:'TG+Ins+YT+FB · 独立 TikTok 账号（审核中）', webhook:'https://9a-n8n.cpolar.top/webhook/publish-trigger-2', upload:'https://9a-n8n.cpolar.top/webhook/upload-media-2'}
 };
 var currentSet='set1';
-
 var PLATS=[
  {k:'tg', nm:'Telegram', ico:'✈️', st:'TG 客户群', def:'9A Battery | Литиевая батарея 72V 60Ah | Активная BMS | Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
  {k:'ig', nm:'Instagram', ico:'📷', st:'Ins', def:'⚡ Литиевая батарея 72V 60Ah от 9A Battery\nАктивная BMS · CE/UN38.3 · Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
@@ -179,27 +399,17 @@ var PLATS=[
 ];
 var selected={}; Object.keys(PLATS).forEach(function(i){selected[PLATS[i].k]=true;});
 
-function tryLogin(){
-  var v=document.getElementById('pass').value;
-  if(v===PASS){document.getElementById('login').style.display='none';}
-  else{document.getElementById('loginErr').textContent='密码错误，请重试';}
-}
-document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
-
-// 套别切换
 function renderSets(){
   var box=document.getElementById('sets'); box.innerHTML='';
   Object.keys(SETS).forEach(function(k){
-    var s=SETS[k];
-    var d=document.createElement('div');
+    var s=SETS[k], d=document.createElement('div');
     d.className='set'+(currentSet===k?' on':'');
     d.innerHTML='<span class="snm">'+s.nm+'</span><span class="sds">'+s.desc+'</span>';
-    d.onclick=function(){currentSet=k; renderSets(); showRes('ok','已切换到【'+s.nm+'】，发布将发往 '+s.nm+'（'+s.webhook+'）');};
+    d.onclick=function(){currentSet=k; renderSets(); showRes('result','ok','已切换到【'+s.nm+'】，发布将发往 '+s.nm+'。');};
     box.appendChild(d);
   });
   document.getElementById('setHint').textContent='当前发布套别：'+SETS[currentSet].nm+' · '+SETS[currentSet].desc;
 }
-
 function renderPlats(){
   var box=document.getElementById('plats'); box.innerHTML='';
   PLATS.forEach(function(p){
@@ -213,24 +423,22 @@ function renderPlats(){
 function renderTxts(){
   var box=document.getElementById('txts'); box.innerHTML='';
   PLATS.forEach(function(p){
-    var f=document.createElement('div');
-    f.className='field';
-    f.innerHTML='<label>'+(p.nm+' 文案')+(p.k==='tt'?'（TikTok 待接入，可先填）':'')+'</label>'+
-      '<textarea data-k="'+p.k+'" placeholder="留空则使用默认俄语文案">'+(selected[p.k]?p.def:'')+'</textarea>'+
-      '<div class="hint">默认：'+p.def.replace(/\n/g,' ').slice(0,90)+'…</div>';
+    var f=document.createElement('div'); f.className='field';
+    f.innerHTML='<label>'+p.nm+' 文案（手动）</label>'+
+      '<textarea data-k="'+p.k+'" placeholder="留空则使用整体描述（复刻文案）"></textarea>'+
+      '<div class="hint">手动填写；留空时发布将使用「整体描述」里的文案。</div>';
     box.appendChild(f);
   });
 }
 renderSets(); renderPlats(); renderTxts();
 
 function publish(){
-  var btn=document.getElementById('pubBtn');
-  var res=document.getElementById('result');
+  var btn=document.getElementById('pubBtn'), res=document.getElementById('result');
   res.className=''; res.style.display='none';
-  if(PUBLISH_KEY.indexOf('__')===0){showRes('err','发布密钥未配置（页面需要填入 n8n 发布密钥后才能发布）。');return;}
+  if(PUBLISH_KEY.indexOf('__')===0){showRes('result','err','发布密钥未配置。');return;}
   var WEBHOOK=SETS[currentSet].webhook;
   var chosen=PLATS.filter(function(p){return selected[p.k];});
-  if(!chosen.length){showRes('err','请至少选择一个平台。');return;}
+  if(!chosen.length){showRes('result','err','请至少选择一个平台。');return;}
   var body={
     title: document.getElementById('product').value || '9A Battery',
     description: document.getElementById('desc').value || '',
@@ -238,58 +446,40 @@ function publish(){
     video_url: document.getElementById('video_url').value.trim() || '',
     product: document.getElementById('product').value || ''
   };
+  var descVal=body.description.trim()||'';
   PLATS.forEach(function(p){
     var ta=document.querySelector('textarea[data-k="'+p.k+'"]');
     var v=ta?ta.value.trim():'';
-    body[p.k+'_text']=v || p.def;
+    body[p.k+'_text']=v || descVal || p.def;
   });
   btn.disabled=true; btn.textContent='发布中…（'+SETS[currentSet].nm+'）请稍候';
-  fetch(WEBHOOK,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-publish-key':PUBLISH_KEY},
-    body:JSON.stringify(body)
-  }).then(function(r){return r.text().then(function(t){return {s:r.status,t:t};});})
+  fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json','x-publish-key':PUBLISH_KEY},body:JSON.stringify(body)})
+  .then(function(r){return r.text().then(function(t){return {s:r.status,t:t};});})
   .then(function(o){
     btn.disabled=false; btn.textContent='发布到所选平台';
-    if(o.s===200){showRes('ok','✅ 已发往【'+SETS[currentSet].nm+'】：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
-    else{showRes('err','发布失败（HTTP '+o.s+'）：'+o.t.slice(0,200));}
+    if(o.s===200){showRes('result','ok','✅ 已发往【'+SETS[currentSet].nm+'】：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
+    else{showRes('result','err','发布失败（HTTP '+o.s+'）：'+o.t.slice(0,200));}
   })
-  .catch(function(e){
-    btn.disabled=false; btn.textContent='发布到所选平台';
-    showRes('err','发布失败：'+(e.message||e));
-  });
+  .catch(function(e){btn.disabled=false; btn.textContent='发布到所选平台'; showRes('result','err','发布失败：'+(e.message||e));});
 }
-function showRes(cls,msg){
-  var r=document.getElementById('result');
-  r.className=cls; r.style.display='block'; r.textContent=msg;
-}
-
-// 文件上传：从手机/电脑选图片或视频 → 上传到当前套别 → 自动填入链接框
 function pickMedia(kind){
   var UPLOAD_WEBHOOK=SETS[currentSet].upload;
-  var input=document.createElement('input');
-  input.type='file';
-  input.accept=kind==='image'?'image/*':'video/*';
+  var input=document.createElement('input'); input.type='file'; input.accept=kind==='image'?'image/*':'video/*';
   var btn=document.getElementById(kind==='image'?'upImg':'upVid');
   var box=document.getElementById(kind==='image'?'image_url':'video_url');
   var label=kind==='image'?'📎 选图片上传':'📎 选视频上传';
   input.onchange=function(){
-    var f=input.files&&input.files[0];
-    if(!f)return;
-    var fd=new FormData();
-    fd.append('file',f);
+    var f=input.files&&input.files[0]; if(!f)return;
+    var fd=new FormData(); fd.append('file',f);
     btn.disabled=true; btn.classList.add('busy'); btn.textContent=' 上传中…';
     fetch(UPLOAD_WEBHOOK,{method:'POST',body:fd})
     .then(function(r){return r.json();})
     .then(function(d){
       btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
-      if(d&&d.success&&d.url){box.value=d.url;showRes('ok','✅ 已上传到【'+SETS[currentSet].nm+'】，链接已自动填入'+(kind==='image'?'图片':'视频')+'框。');}
-      else{showRes('err','上传失败：'+(d&&d.error||'服务器无响应'));}
+      if(d&&d.success&&d.url){box.value=d.url;showRes('result','ok','✅ 已上传到【'+SETS[currentSet].nm+'】，链接已自动填入。');}
+      else{showRes('result','err','上传失败：'+(d&&d.error||'服务器无响应'));}
     })
-    .catch(function(e){
-      btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
-      showRes('err','上传失败：'+(e.message||e)+'（请确认发布服务器已启动）');
-    });
+    .catch(function(e){btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label; showRes('result','err','上传失败：'+(e.message||e));});
   };
   input.click();
 }
