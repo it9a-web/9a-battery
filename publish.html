@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>发布助手 · 9A Battery</title>
+<title>发布助手 · 9A Battery（两套切换版）</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap">
@@ -13,7 +13,7 @@
   --border:#3d4247; --border2:#4c5258;
   --text:#eceef0; --muted:#a8aeb4; --faint:#7c8288;
   --orange:#f26a1b; --orange2:#ff7d33; --orange-soft:rgba(242,106,27,.14);
-  --green:#35b06b; --red:#e05c4a;
+  --green:#35b06b; --red:#e05c4a; --blue:#3f8cf0; --blue-soft:rgba(63,140,240,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
@@ -40,6 +40,13 @@ textarea{min-height:84px;resize:vertical}
 .hint{font-size:12px;color:var(--faint);margin-top:5px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.sets{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.sets{grid-template-columns:1fr}}
+.set{border:1.5px solid var(--border2);border-radius:8px;padding:16px 14px;cursor:pointer;transition:border-color .15s,background .15s;position:relative;user-select:none;text-align:center}
+.set .snm{font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;display:block}
+.set .sds{font-size:12px;color:var(--faint);display:block;margin-top:4px;line-height:1.5}
+.set.on{border-color:var(--orange);background:var(--orange-soft)}
+.set.on::after{content:"✓ 当前套别";position:absolute;top:8px;right:10px;color:var(--orange);font-weight:800;font-size:11px}
 .plats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 @media(max-width:860px){.plats{grid-template-columns:repeat(2,1fr)}}
 .plat{border:1.5px solid var(--border2);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;user-select:none}
@@ -82,7 +89,7 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
   <div class="login-box">
     <img src="assets/logo.png" alt="9A" style="width:52px;height:52px;border-radius:50%;margin:0 auto 14px">
     <h2>发布助手</h2>
-    <p>9A Battery · 内部发布工具</p>
+    <p>9A Battery · 内部发布工具（两套切换版）</p>
     <input type="password" id="pass" placeholder="输入访问密码" autocomplete="off">
     <div class="err" id="loginErr"></div>
     <button class="btn" onclick="tryLogin()">进入</button>
@@ -99,8 +106,14 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
 <main>
   <div class="wrap">
     <div class="eyebrow">Publish Center / Центр публикаций</div>
-    <h1>多平台内容发布</h1>
-    <p class="sub">选择平台、填写各平台文案，一键发布。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
+    <h1>多平台内容发布（两套切换）</h1>
+    <p class="sub">先选发布套别：选第一套发第一套，选第二套发第二套。其余操作完全一致。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
+
+    <div class="card">
+      <h3><span class="n">0</span> 发布套别（选哪套发哪套）</h3>
+      <div class="sets" id="sets"></div>
+      <div class="hint" id="setHint"></div>
+    </div>
 
     <div class="card">
       <h3><span class="n">1</span> 发布目标（选择要发布的平台）</h3>
@@ -121,7 +134,7 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
             <input type="url" id="image_url" placeholder="https://…（产品主图直链）">
             <button class="upbtn" id="upImg" onclick="pickMedia('image')">📎 选图片上传</button>
           </div>
-          <div class="hint">可粘贴图片直链，或点「选图片上传」从手机/电脑选图（自动生成链接）。</div>
+          <div class="hint">可粘贴图片直链，或点「选图片上传」从手机/电脑选图（自动生成链接，随当前套别上传）。</div>
         </div>
         <div class="field">
           <label>视频链接（选填）</label>
@@ -149,7 +162,13 @@ footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint)
 <script>
 var PASS='9A@2026';
 var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
-var WEBHOOK='https://9a-n8n.cpolar.top/webhook/publish-trigger';
+
+// 两套配置：切换套别即切换对应 webhook（其余逻辑完全一致）
+var SETS={
+  set1:{nm:'第一套', desc:'TG/FB/IG/YT 主账号 · TikTok 审核中', webhook:'https://9a-n8n.cpolar.top/webhook/publish-trigger', upload:'https://9a-n8n.cpolar.top/webhook/upload-media'},
+  set2:{nm:'第二套', desc:'TG+Ins+YT+FB · 独立 TikTok 账号（审核中）', webhook:'https://9a-n8n.cpolar.top/webhook/publish-trigger-2', upload:'https://9a-n8n.cpolar.top/webhook/upload-media-2'}
+};
+var currentSet='set1';
 
 var PLATS=[
  {k:'tg', nm:'Telegram', ico:'✈️', st:'TG 客户群', def:'9A Battery | Литиевая батарея 72V 60Ah | Активная BMS | Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
@@ -166,6 +185,20 @@ function tryLogin(){
   else{document.getElementById('loginErr').textContent='密码错误，请重试';}
 }
 document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+
+// 套别切换
+function renderSets(){
+  var box=document.getElementById('sets'); box.innerHTML='';
+  Object.keys(SETS).forEach(function(k){
+    var s=SETS[k];
+    var d=document.createElement('div');
+    d.className='set'+(currentSet===k?' on':'');
+    d.innerHTML='<span class="snm">'+s.nm+'</span><span class="sds">'+s.desc+'</span>';
+    d.onclick=function(){currentSet=k; renderSets(); showRes('ok','已切换到【'+s.nm+'】，发布将发往 '+s.nm+'（'+s.webhook+'）');};
+    box.appendChild(d);
+  });
+  document.getElementById('setHint').textContent='当前发布套别：'+SETS[currentSet].nm+' · '+SETS[currentSet].desc;
+}
 
 function renderPlats(){
   var box=document.getElementById('plats'); box.innerHTML='';
@@ -188,13 +221,14 @@ function renderTxts(){
     box.appendChild(f);
   });
 }
-renderPlats(); renderTxts();
+renderSets(); renderPlats(); renderTxts();
 
 function publish(){
   var btn=document.getElementById('pubBtn');
   var res=document.getElementById('result');
   res.className=''; res.style.display='none';
   if(PUBLISH_KEY.indexOf('__')===0){showRes('err','发布密钥未配置（页面需要填入 n8n 发布密钥后才能发布）。');return;}
+  var WEBHOOK=SETS[currentSet].webhook;
   var chosen=PLATS.filter(function(p){return selected[p.k];});
   if(!chosen.length){showRes('err','请至少选择一个平台。');return;}
   var body={
@@ -209,7 +243,7 @@ function publish(){
     var v=ta?ta.value.trim():'';
     body[p.k+'_text']=v || p.def;
   });
-  btn.disabled=true; btn.textContent='发布中…请稍候';
+  btn.disabled=true; btn.textContent='发布中…（'+SETS[currentSet].nm+'）请稍候';
   fetch(WEBHOOK,{
     method:'POST',
     headers:{'Content-Type':'application/json','x-publish-key':PUBLISH_KEY},
@@ -217,7 +251,7 @@ function publish(){
   }).then(function(r){return r.text().then(function(t){return {s:r.status,t:t};});})
   .then(function(o){
     btn.disabled=false; btn.textContent='发布到所选平台';
-    if(o.s===200){showRes('ok','✅ 发布请求已发送：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
+    if(o.s===200){showRes('ok','✅ 已发往【'+SETS[currentSet].nm+'】：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
     else{showRes('err','发布失败（HTTP '+o.s+'）：'+o.t.slice(0,200));}
   })
   .catch(function(e){
@@ -230,9 +264,9 @@ function showRes(cls,msg){
   r.className=cls; r.style.display='block'; r.textContent=msg;
 }
 
-// 文件上传：从手机/电脑选图片或视频 → 上传到发布服务器 → 自动填入链接框
-var UPLOAD_WEBHOOK='https://9a-n8n.cpolar.top/webhook/upload-media';
+// 文件上传：从手机/电脑选图片或视频 → 上传到当前套别 → 自动填入链接框
 function pickMedia(kind){
+  var UPLOAD_WEBHOOK=SETS[currentSet].upload;
   var input=document.createElement('input');
   input.type='file';
   input.accept=kind==='image'?'image/*':'video/*';
@@ -249,7 +283,7 @@ function pickMedia(kind){
     .then(function(r){return r.json();})
     .then(function(d){
       btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
-      if(d&&d.success&&d.url){box.value=d.url;showRes('ok','✅ 上传成功，链接已自动填入'+(kind==='image'?'图片':'视频')+'框。');}
+      if(d&&d.success&&d.url){box.value=d.url;showRes('ok','✅ 已上传到【'+SETS[currentSet].nm+'】，链接已自动填入'+(kind==='image'?'图片':'视频')+'框。');}
       else{showRes('err','上传失败：'+(d&&d.error||'服务器无响应'));}
     })
     .catch(function(e){
