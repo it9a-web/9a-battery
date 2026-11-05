@@ -250,7 +250,8 @@ var PASS='9A@2026';
 var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
 // 预留后端（N8N 工作流未接通前为演示模式；接通后由真实 webhook 返回）
 var API={analyze:'https://9a-n8n.cpolar.top/webhook/video-replicate/analyze',render:'https://9a-n8n.cpolar.top/webhook/video-replicate/render'};
-var DEMO_MODE=true; // 后端工作流接通后置为 false
+var DEMO_MODE=false;   // analyze 后端已接通，走真实 AI 拆解出 3 套俄语文案
+var DEMO_RENDER=true;  // render 视频生成工作流待接通，暂用演示
 
 /* ============ 通用：登录 + 视图切换 ============ */
 function tryLogin(){
@@ -325,7 +326,7 @@ function renderCopies(){
   copies.forEach(function(c,i){
     var d=document.createElement('div');
     d.className='copy'+(selCopy===i?' on':'');
-    d.innerHTML='<div class="ch">方案 '+(i+1)+' · '+c.title+'</div><div class="cb">'+c.brief+'</div><div class="cc">'+c.text+'</div><span class="tag">'+c.tag+'</span>';
+    d.innerHTML='<div class="ch">方案 '+(i+1)+' · '+(c.title||'')+'</div>'+(c.brief?'<div class="cb">'+c.brief+'</div>':'')+'<div class="cc">'+(c.text||'')+'</div>'+(c.tag?'<span class="tag">'+c.tag+'</span>':'');
     d.onclick=function(){selCopy=i; renderCopies(); document.getElementById('selName').textContent='已选：方案 '+(i+1); hideRes('rCopy');};
     box.appendChild(d);
   });
@@ -341,22 +342,22 @@ function generate(){
     replicate.videoUrl=res.url||''; replicate.copyText=copies[selCopy].text; replicate.copyTitle=copies[selCopy].title;
     var card=document.getElementById('doneCard'); card.style.display='block';
     document.getElementById('rDone').textContent=res.msg;
-    document.getElementById('doneLink').textContent=(res.url&&!DEMO_MODE)?'视频链接已生成，可预览后去发布':'视频已生成（演示）';
+    document.getElementById('doneLink').textContent=(res.url&&!DEMO_RENDER)?'视频链接已生成，可预览后去发布':'视频已生成（演示）';
     card.scrollIntoView({behavior:'smooth',block:'center'});
   };
   var fail=function(m){btn.disabled=false;btn.classList.remove('busy');btn.textContent='按选定文案生成视频';showRes('rGen','err',m);};
-  if(DEMO_MODE){ setTimeout(function(){done({msg:'（演示）视频已按「方案 '+(selCopy+1)+'」生成完成，正式接通后端后这里会给真实文件。',url:''});},1500); }
+  if(DEMO_RENDER){ setTimeout(function(){done({msg:'（演示）视频已按「方案 '+(selCopy+1)+'」生成完成，正式接通后端后这里会给真实文件。',url:''});},1500); }
   else{
     fetch(API.render,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({copy:copies[selCopy]})})
     .then(function(r){return r.json();}).then(function(d){done({msg:d.msg||'已生成',url:d.url||''});}).catch(function(e){fail('生成失败：'+(e.message||e));});
   }
 }
 function previewVideo(){
-  if(DEMO_MODE){showRes('rDone','info','（演示模式）正式接通后端后，这里会打开你生成视频的在线链接。');return;}
+  if(DEMO_RENDER){showRes('rDone','info','（演示模式）正式接通后端后，这里会打开你生成视频的在线链接。');return;}
   if(replicate.videoUrl){window.open(replicate.videoUrl,'_blank');}
 }
 function downloadVideo(){
-  if(DEMO_MODE){showRes('rDone','info','（演示模式）后端接通后这里会提供真实视频文件下载。');return;}
+  if(DEMO_RENDER){showRes('rDone','info','（演示模式）后端接通后这里会提供真实视频文件下载。');return;}
   if(replicate.videoUrl){window.open(replicate.videoUrl,'_blank');}
 }
 function goPublish(){
