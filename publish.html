@@ -251,7 +251,7 @@ var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
 // 预留后端（N8N 工作流未接通前为演示模式；接通后由真实 webhook 返回）
 var API={analyze:'https://9a-n8n.cpolar.top/webhook/video-replicate/analyze',render:'https://9a-n8n.cpolar.top/webhook/video-replicate/render'};
 var DEMO_MODE=false;   // analyze 后端已接通，走真实 AI 拆解出 3 套俄语文案
-var DEMO_RENDER=true;  // render 视频生成工作流待接通，暂用演示
+var DEMO_RENDER=false; // render 已接通：Seedance 2.0 真实出片，5 秒测试档
 
 /* ============ 通用：登录 + 视图切换 ============ */
 function tryLogin(){
