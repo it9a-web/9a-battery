@@ -29,10 +29,17 @@ padding:11px 22px;border-radius:999px;font-size:14px;font-weight:600}
     link.rel = 'stylesheet';
     link.href = '/erp/assets/index-XGviJfu2.css?v=3';
     document.head.appendChild(link);
+    var h5css = document.createElement('link');
+    h5css.rel = 'stylesheet';
+    h5css.href = '/erp/mobile.css?v=4';
+    document.head.appendChild(h5css);
     var script = document.createElement('script');
     script.type = 'module';
     script.src = '/erp/assets/index-TCj8c-Zp.js?v=3';
     document.body.appendChild(script);
+    var h5js = document.createElement('script');
+    h5js.src = '/erp/mobile.js?v=4';
+    document.body.appendChild(h5js);
     return;
   }
   document.body.innerHTML =
