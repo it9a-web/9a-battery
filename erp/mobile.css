@@ -1,0 +1,121 @@
+/* ============================================================
+   9A ERP · H5 / 平板 / 电脑 自适应层  v1
+   独立于打包产物的补充样式，只做响应式改造，不改变原有配色与功能
+   断点：<=1023px 抽屉式侧栏 / <=640px 单列内容 / >=1024px 保持原桌面布局
+   ============================================================ */
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* ---------- 手机顶栏 ---------- */
+#h5-bar{
+  position:fixed;left:0;right:0;top:0;z-index:1000;
+  display:none;align-items:center;gap:10px;
+  height:calc(52px + env(safe-area-inset-top));
+  padding:env(safe-area-inset-top) 12px 0;
+  background:#1e293b;color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,.08);
+  box-sizing:border-box;
+}
+#h5-burger{
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  width:40px;height:40px;margin-left:-6px;padding:0 9px;
+  background:none;border:0;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+#h5-burger i{
+  display:block;width:100%;height:2px;border-radius:2px;background:#fff;
+  transition:transform .2s ease,opacity .2s ease;
+}
+body.h5-nav-open #h5-burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+body.h5-nav-open #h5-burger i:nth-child(2){opacity:0}
+body.h5-nav-open #h5-burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+#h5-bar .h5-title{
+  font-size:14px;font-weight:600;letter-spacing:.2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#h5-bar .h5-title span{color:#ff5e00}
+#h5-bar .h5-home{
+  margin-left:auto;padding:9px 8px;font-size:12px;
+  color:#cbd5e1;text-decoration:none;white-space:nowrap;
+}
+
+/* ---------- 遮罩 ---------- */
+#h5-overlay{
+  position:fixed;inset:0;z-index:1001;
+  background:rgba(15,23,42,.45);
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease;
+}
+body.h5-nav-open #h5-overlay{opacity:1;pointer-events:auto}
+
+/* ---------- 平板 / 手机：侧栏改为抽屉 ---------- */
+@media (max-width:1023px){
+  html,body{overflow-x:hidden}
+  #h5-bar{display:flex;z-index:1002}
+  .h-screen{height:100vh;height:100dvh}
+
+  /* 抽屉从顶栏下方展开，左上角按钮始终可见（打开时变成叉号） */
+  aside{
+    position:fixed!important;
+    top:calc(52px + env(safe-area-inset-top));left:0;bottom:0;
+    width:min(84vw,268px)!important;
+    max-width:268px!important;
+    height:auto!important;
+    z-index:1001;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:12px 0 40px rgba(15,23,42,.3);
+    overflow-y:auto;
+  }
+  body.h5-nav-open aside{transform:translateX(0)}
+
+  /* 遮罩从顶栏下方开始，顶栏与按钮保持可点 */
+  #h5-overlay{top:calc(52px + env(safe-area-inset-top));z-index:1000}
+
+  /* 内容区挤到顶栏下方，避免被遮住 */
+  main{
+    padding-top:calc(52px + env(safe-area-inset-top));
+    overflow-x:hidden;
+  }
+}
+
+/* ---------- 平板竖屏微调 ---------- */
+@media (min-width:641px) and (max-width:1023px){
+  div.p-8{padding:20px 20px 28px!important}
+  div.p-6{padding:18px 18px!important}
+}
+
+/* ---------- 手机 ---------- */
+@media (max-width:640px){
+  div.p-8{padding:14px 12px 26px!important}
+  div.p-6{padding:14px 12px!important}
+  .p-6.pt-0{padding:10px 12px 14px!important}
+
+  /* 首页三张统计卡改为整行堆叠，不再挤成竖排文字 */
+  .grid.grid-cols-3.gap-4{grid-template-columns:1fr!important}
+
+  .text-2xl{font-size:20px!important;line-height:1.35}
+  h1.text-2xl{font-size:19px!important}
+  h1.text-xl{font-size:17px!important}
+
+  table{font-size:12px}
+
+  /* 弹窗不超出屏幕 */
+  [role="dialog"]{
+    max-width:calc(100vw - 20px)!important;
+    width:calc(100vw - 20px)!important;
+  }
+}
+
+/* ---------- 小屏手机：登录卡片 ---------- */
+@media (max-width:480px){
+  .min-h-screen>.w-96{
+    width:calc(100vw - 28px)!important;
+    max-width:384px!important;
+  }
+}
+
+/* ---------- 桌面：完全保持原样 ---------- */
+@media (min-width:1024px){
+  #h5-bar,#h5-overlay{display:none!important}
+}
