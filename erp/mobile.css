@@ -67,7 +67,7 @@ body.h5-nav-open #h5-overlay{opacity:1;pointer-events:auto}
     box-shadow:12px 0 40px rgba(15,23,42,.3);
     overflow-y:auto;
   }
-  body.h5-nav-open aside{transform:translateX(0)}
+  body.h5-nav-open aside{transform:translateX(0)!important}
 
   /* 遮罩从顶栏下方开始，顶栏与按钮保持可点 */
   #h5-overlay{top:calc(52px + env(safe-area-inset-top));z-index:1000}
