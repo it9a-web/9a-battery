@@ -1,0 +1,58 @@
+[
+  {
+    "path": "/",
+    "file": "index.html"
+  },
+  {
+    "path": "/login",
+    "file": "index.html"
+  },
+  {
+    "path": "/purchase",
+    "file": "index.html"
+  },
+  {
+    "path": "/inventory",
+    "file": "index.html"
+  },
+  {
+    "path": "/sales",
+    "file": "index.html"
+  },
+  {
+    "path": "/customers",
+    "file": "index.html"
+  },
+  {
+    "path": "/suppliers",
+    "file": "index.html"
+  },
+  {
+    "path": "/reconciliation",
+    "file": "index.html"
+  },
+  {
+    "path": "/income",
+    "file": "index.html"
+  },
+  {
+    "path": "/expense",
+    "file": "index.html"
+  },
+  {
+    "path": "/ledger",
+    "file": "index.html"
+  },
+  {
+    "path": "/report",
+    "file": "index.html"
+  },
+  {
+    "path": "/logistics",
+    "file": "index.html"
+  },
+  {
+    "path": "/users",
+    "file": "index.html"
+  }
+]
