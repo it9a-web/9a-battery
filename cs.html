@@ -97,6 +97,43 @@ h1{font-size:19px;margin:0;font-weight:600}
   <div class="pager" id="pager"></div>
   <div class="hint" id="hint"></div>
 </div>
+
+<script>
+/* ---------------- 语言跟随系统（中 / 英 / 俄） ---------------- */
+const I18N = { en: {"客服台 · 询盘分级": "Inbox · lead grading", "Telegram 私聊自动回复 + A/B/C 分级": "Telegram DM auto-reply + A/B/C grading", "← 工作台": "← Workbench", "总询盘": "Total leads", "A 级（问价/批量）": "A (price / bulk)", "B 级（问参数/物流）": "B (specs / shipping)", "全部": "All", "只看 A 级": "A only", "只看 B 级": "B only", "只看 C 级": "C only", "加载中…": "Loading…"}, ru: {"客服台 · 询盘分级": "Заявки · оценка лидов", "Telegram 私聊自动回复 + A/B/C 分级": "Автоответ в Telegram + оценка A/B/C", "← 工作台": "← Workbench", "总询盘": "Всего заявок", "A 级（问价/批量）": "A (цена / опт)", "B 级（问参数/物流）": "B (параметры / доставка)", "全部": "Все", "只看 A 级": "Только A", "只看 B 级": "Только B", "只看 C 级": "Только C", "加载中…": "Загрузка…"} };
+function pickLang(){
+  const q = new URLSearchParams(location.search).get('lang');
+  if(q === 'zh' || q === 'en' || q === 'ru') return q;
+  const saved = localStorage.getItem('9a_lang');
+  if(saved === 'zh' || saved === 'en' || saved === 'ru') return saved;
+  const l = (navigator.language || (navigator.languages && navigator.languages[0]) || 'zh').toLowerCase();
+  if(l.indexOf('ru') === 0) return 'ru';
+  if(l.indexOf('zh') === 0) return 'zh';
+  if(l.indexOf('en') === 0) return 'en';
+  return 'en';
+}
+const LANG = pickLang();
+const L = function(zh, en_, ru_){
+  return LANG === 'ru' ? (ru_ === undefined ? en_ : ru_) : (LANG === 'en' ? en_ : zh);
+};
+function applyLang(){
+  if(LANG === 'zh'){ document.documentElement.lang = 'zh-CN'; return; }
+  const d = I18N[LANG] || I18N.en;
+  document.documentElement.lang = LANG;
+  document.title = d['客服台 · 询盘分级'] || document.title;
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+  const nodes = []; while(w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(function(n){
+    const t = (n.nodeValue || '').trim();
+    if(t && d[t]) n.nodeValue = n.nodeValue.replace(t, d[t]);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[placeholder]'), function(el){
+    const t = (el.getAttribute('placeholder') || '').trim();
+    if(t && d[t]) el.setAttribute('placeholder', d[t]);
+  });
+}
+applyLang();
+</script>
 <script>
 const API_BASE = 'https://9a-studio.cpolar.top';
 const LS_TOKEN = '9a_token';
@@ -111,14 +148,16 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;
 function ts2t(ts){
   if(!ts) return '';
   const d = new Date(ts*1000), p = n => String(n).padStart(2,'0');
-  return (d.getMonth()+1)+'月'+p(d.getDate())+'日 '+p(d.getHours())+':'+p(d.getMinutes());
+  if(LANG === 'zh') return (d.getMonth()+1)+'月'+p(d.getDate())+'日 '+p(d.getHours())+':'+p(d.getMinutes());
+  return p(d.getDate())+'.'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());
 }
 function render(){
   $('#cAll').textContent = statsTotal !== null ? statsTotal : (filter ? total : (total || rows.length));
   $('#cA').textContent = document.querySelector('.chip[data-lv="A"]').dataset.cnt || 0;
   $('#cB').textContent = document.querySelector('.chip[data-lv="B"]').dataset.cnt || 0;
   if(!rows.length){
-    $('#list').innerHTML = '<div class="empty">' + (filter ? '这个等级还没有询盘。' : '还没有询盘。有人私聊机器人后会出现在这里。') + '</div>';
+    $('#list').innerHTML = '<div class="empty">' + L('这个等级还没有询盘。', 'No leads at this level yet.', 'На этом уровне заявок нет.')
+      && (filter ? L('这个等级还没有询盘。','No leads at this level yet.','На этом уровне заявок нет.') : L('还没有询盘。有人私聊机器人后会出现在这里。','No leads yet. New Telegram DMs show up here.','Заявок пока нет. Новые сообщения в Telegram появятся здесь.')) + '</div>';
     return;
   }
   $('#list').innerHTML = rows.map(r=>{
@@ -127,21 +166,21 @@ function render(){
     return `
     <div class="row">
       <div class="rh">
-        <span class="lv ${esc(r.level)}">${esc(r.level)} 级</span>
-        <span class="nm">${esc(r.name) || '未署名'}</span>
+        <span class="lv ${esc(r.level)}">${esc(r.level)} ${L('级','','')}</span>
+        <span class="nm">${esc(r.name) || L('未署名','No name','Без имени')}</span>
         <a class="un" href="${un}" target="_blank" rel="noopener">${unTxt}</a>
         <span class="tag">TG</span>
         <span class="tag">${esc(r.lang || '—')}</span>
         <span class="sp"></span>
         <span class="t">${ts2t(r.ts)}</span>
       </div>
-      <div class="msg">${esc(r.message) || '（空消息）'}</div>
+      <div class="msg">${esc(r.message) || L('（空消息）','(empty message)','(пустое сообщение)')}</div>
       <div class="rf">
         <span>ID ${esc(r.tg_id || '—')}</span>
         <span>·</span>
-        <span>${r.replied ? '已自动回复' : '未回复'}</span>
-        ${r.reason?`<span>·</span><span>分级：${esc(r.reason)}</span>`:''}
-        <a href="${un}" target="_blank" rel="noopener">打开对话 →</a>
+        <span>${r.replied ? L('已自动回复','Auto-replied','Автоответ отправлен') : L('未回复','Not replied','Без ответа')}</span>
+        ${r.reason?`<span>·</span><span>${L('分级：','Grade: ','Оценка: ')}${esc(r.reason)}</span>`:''}
+        <a href="${un}" target="_blank" rel="noopener">${L('打开对话 →','Open chat →','Открыть чат →')}</a>
       </div>
       ${r.error?`<div class="msg" style="color:#ff7b72;background:rgba(255,123,114,.08)">${esc(r.error)}</div>`:''}
     </div>`;
@@ -153,10 +192,10 @@ function renderPager(){
   const from = Math.max(1, Math.min(page-2, pages-4)), to = Math.min(pages, from+4);
   for(let i=from;i<=to;i++) nums.push(`<div class="num${i===page?' on':''}" data-p="${i}">${i}</div>`);
   $('#pager').innerHTML = `
-    <button id="pPrev" ${page<=1?'disabled':''}>上一页</button>
+    <button id="pPrev" ${page<=1?'disabled':''}">${L('上一页','Prev','Назад')}</button>
     ${nums.join('')}
-    <button id="pNext" ${page>=pages?'disabled':''}>下一页</button>
-    <span class="info">第 ${page} / ${pages} 页 · 共 ${total} 条</span>`;
+    <button id="pNext" ${page>=pages?'disabled':''}">${L('下一页','Next','Вперёд')}</button>
+    <span class="info">${L('第 '+page+' / '+pages+' 页 · 共 '+total+' 条', 'Page '+page+' / '+pages+' · '+total+' items', 'Стр. '+page+' / '+pages+' · всего '+total)}</span>`;
   $('#pPrev').onclick = ()=>{ if(page>1){ page--; load(); } };
   $('#pNext').onclick = ()=>{ if(page<pages){ page++; load(); } };
   document.querySelectorAll('#pager .num').forEach(n=>{
@@ -171,7 +210,7 @@ async function load(){
       const mr = await fetch(abs('/api/me'), {headers:ah()});
       if(mr.status === 200){
         const m = await mr.json();
-        $('#who').textContent = '当前账号：' + (m.name || m.username) + '（' + m.role + '）';
+        $('#who').textContent = L('当前账号：','Signed in: ','Аккаунт: ') + (m.name || m.username) + ' (' + m.role + ')';
       }else{
         // 没登录：不在这页停留，直接送回工作台去登录
         location.replace(BACK_URL);
@@ -181,11 +220,11 @@ async function load(){
     const url = '/api/leads?limit='+PAGE_SIZE+'&page='+page+(filter?('&level='+filter):'');
     const r = await fetch(abs(url), {headers:ah()});
     if(r.status === 401){
-      $('#list').innerHTML = '<div class="empty">没登录。<a style="color:#e76126" href="/publish.html">去工作台用管理员账号登录</a>，登录后这页会自动更新。</div>';
+      $('#list').innerHTML = '<div class="empty">'+L('没登录。','Not signed in. ','Нет входа. ')+'<a style="color:#e76126" href="/publish.html">'+L('去工作台用管理员账号登录','Sign in as admin in Workbench','Войдите как администратор в Workbench')+'</a>'+L('，登录后这页会自动更新。',' — this page refreshes automatically after sign-in.',' — страница обновится после входа.')+'</div>';
       $('#pager').innerHTML = ''; if(btn) btn.disabled=false; return;
     }
     if(r.status === 403){
-      $('#list').innerHTML = '<div class="empty">客服询盘只对管理员开放，当前登录的是演示账号。<a style="color:#e76126" href="/publish.html">换管理员账号登录</a>，登录后这页会自动更新。</div>';
+      $('#list').innerHTML = '<div class="empty">'+L('客服询盘只对管理员开放，当前登录的是演示账号。','Leads are admin-only; you are signed in as the demo account. ','Заявки доступны только администратору; вы в демо-аккаунте. ')+'<a style="color:#e76126" href="/publish.html">'+L('换管理员账号登录','Switch to admin','Сменить на администратора')+'</a>'+L('，登录后这页会自动更新。',' — this page refreshes automatically after sign-in.',' — страница обновится после входа.')+'</div>';
       $('#pager').innerHTML = ''; if(btn) btn.disabled=false; return;
     }
     const d = await r.json();
@@ -195,9 +234,9 @@ async function load(){
     document.querySelector('.chip[data-lv=""]').dataset.cnt = d.total || 0;
     render();
     renderPager();
-    $('#hint').textContent = '每页 ' + PAGE_SIZE + ' 条，按时间倒序；点页码或上一页/下一页翻。';
+    $('#hint').textContent = L('每页 '+PAGE_SIZE+' 条，按时间倒序；点页码或上一页/下一页翻。', PAGE_SIZE+' per page, newest first; use the numbers or Prev/Next.', 'По '+PAGE_SIZE+' на страницу, сначала новые; листайте цифрами или Назад/Вперёд.');
   }catch(e){
-    $('#list').innerHTML = '<div class="empty">读取失败：'+esc(e.message)+'</div>';
+    $('#list').innerHTML = '<div class="empty">'+L('读取失败：','Load failed: ','Ошибка загрузки: ')+esc(e.message)+'</div>';
   }finally{ if(btn) btn.disabled = false; }
 }
 let statsTotal = null;
