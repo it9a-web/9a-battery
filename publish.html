@@ -233,11 +233,11 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 
   <div id="main" style="display:none">
     <div class="tiles">
-      <button class="tile on" id="tabCopy"><small>① 先做视频</small><b>视频复刻</b></button>
-      <button class="tile" id="tabPub"><small>② 再发布</small><b>多平台发布</b></button>
-      <button class="tile" id="tabAcc"><small>③ 账号</small><b>发布账号</b></button>
-      <button class="tile" id="tabUser" style="display:none"><small>④ 人员</small><b>员工账号</b></button>
-      <a class="tile" id="tabCS" href="cs.html" style="display:block;text-decoration:none"><small>⑤ 客户</small><b>客服台</b></a>
+      <div class="tile on" id="tabCopy"><small>① 先做视频</small><b>视频复刻</b></div>
+      <div class="tile" id="tabPub"><small>② 再发布</small><b>多平台发布</b></div>
+      <div class="tile" id="tabAcc"><small>③ 账号</small><b>发布账号</b></div>
+      <div class="tile" id="tabUser" style="display:none"><small>④ 人员</small><b>员工账号</b></div>
+      <div class="tile" id="tabCS" style="display:block"><small>⑤ 客户</small><b>客服台</b></div>
     </div>
 
     <div id="demoBar" style="display:none;background:rgba(240,165,0,.14);border:1px solid #f0a500;color:#f0b64d;padding:10px 12px;border-radius:10px;margin:0 0 10px;font-size:13px;line-height:1.5">演示账号：只能查看，不能生成文案、生成视频、上传素材或发布。</div>
@@ -297,8 +297,8 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
       <div class="card">
         <div class="hd"><div class="num">0</div><h3>要发哪一条</h3></div>
         <div class="chips" style="margin-bottom:10px">
-          <button class="chip on" id="modeTask"><div class="ck">✓</div><b>复刻出的片</b><span>从任务里挑</span></button>
-          <button class="chip" id="modeLocal"><div class="ck"></div><b>人工发布</b><span>手机/电脑选视频</span></button>
+          <div class="chip on" id="modeTask"><div class="ck">✓</div><b>复刻出的片</b><span>从任务里挑</span></div>
+          <div class="chip" id="modeLocal"><div class="ck"></div><b>人工发布</b><span>手机/电脑选视频</span></div>
         </div>
         <div id="boxTask">
           <select id="taskPick" class="inp">
@@ -1261,6 +1261,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
   $('#tabPub').onclick = ()=>switchTab('pub');
   $('#tabAcc').onclick = ()=>switchTab('acc');
   $('#tabUser').onclick = ()=>switchTab('user');
+  $('#tabCS').onclick = () => { location.href = 'cs.html' + (location.search.indexOf('app=1')>-1 ? ('?app=1&nc=' + Date.now()) : ''); };
   function switchTab(which){
     setTimeout(function(){ try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){} }, 0);   // 点击后立刻失焦
     ['copy','pub','acc','user'].forEach(k=>{
