@@ -1375,7 +1375,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
       const appMode = new URLSearchParams(location.search).get('app')==='1';
       if(q==='user' && (!user || user.role!=='admin')) switchTab('copy');
       else if(q) switchTab(q);
-      else if(appMode) switchTab('pub');   // 装成 APP 时一进来就是发布页
+      else if(appMode){ switchTab('pub'); setTimeout(()=>{ try{ document.activeElement && document.activeElement.blur(); }catch(e){} }, 300); }   // 装成 APP 时一进来就是发布页
     }catch(e){ $('#loginBox').style.display='block'; }
   })();
 })();
