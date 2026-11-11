@@ -1262,6 +1262,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
   $('#tabAcc').onclick = ()=>switchTab('acc');
   $('#tabUser').onclick = ()=>switchTab('user');
   function switchTab(which){
+    setTimeout(function(){ try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){} }, 0);   // 点击后立刻失焦
     ['copy','pub','acc','user'].forEach(k=>{
       const tile = $('#tab'+k.charAt(0).toUpperCase()+k.slice(1));
       const pane = $('#pane'+k.charAt(0).toUpperCase()+k.slice(1));
@@ -1354,7 +1355,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
   };
   // 点完立刻失焦：避免 WebView 在卡片外面画直角焦点框
   document.addEventListener('click', function(e){
-    var t=e.target; if(t && t.closest && t.closest('input,textarea,select,button,a')) return;
+    var t=e.target; if(t && t.closest && t.closest('input,textarea,select')) return;
     setTimeout(function(){ try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(err){} },0);
   }, true);
   document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) autoRefresh(); });
