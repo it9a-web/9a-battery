@@ -135,6 +135,15 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 .acc .two{margin-top:8px}
 .acc-fields{margin-top:6px}
 .acc-fields label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+/* 平台开通 / 充值入口 */
+.guide{display:grid;gap:8px;margin-top:2px}
+.gitem{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);
+  background:var(--card2);border-radius:11px;flex-wrap:wrap}
+.gitem .gn{font-size:14px;font-weight:600;min-width:108px}
+.gitem .gk{font-size:12px;color:var(--muted);flex:1;min-width:140px;line-height:1.5}
+.gitem a{font-size:12.5px;font-weight:700;color:var(--brand);border:1px solid rgba(231,97,38,.42);
+  background:var(--brand-soft);padding:6px 10px;border-radius:8px;text-decoration:none;white-space:nowrap}
+.gitem a:hover{background:rgba(231,97,38,.24)}
 .acc-acts{display:flex;gap:8px;margin-top:10px}
 .fold summary{cursor:pointer;font-size:14px;color:var(--muted);padding:4px 0;list-style:none}
 .fold summary::-webkit-details-marker{display:none}
@@ -327,6 +336,27 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     <!-- ============ 发布账号管理 ============ -->
     <section id="paneAcc" style="display:none">
       <div class="card">
+        <div class="hd"><div class="num">◎</div><h3>平台开通入口（客户自己点链接去注册）</h3></div>
+        <div class="guide">
+          <div class="gitem"><span class="gn">Telegram</span><span class="gk">注册账号，找 @BotFather 建机器人拿 token，再把机器人拉进群拿 chat_id</span><a href="https://telegram.org/" target="_blank" rel="noopener">去注册</a><a href="https://t.me/BotFather" target="_blank" rel="noopener">建机器人</a></div>
+          <div class="gitem"><span class="gn">Facebook</span><span class="gk">注册个人号 → 建主页 → 开发者后台建应用拿 page_id / token</span><a href="https://www.facebook.com/r.php" target="_blank" rel="noopener">去注册</a><a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">开发者后台</a></div>
+          <div class="gitem"><span class="gn">Instagram</span><span class="gk">注册专业号，绑定到 Facebook 主页，用 Meta 的接口发 Reels</span><a href="https://www.instagram.com/accounts/emailsignup/" target="_blank" rel="noopener">去注册</a><a href="https://developers.facebook.com/docs/instagram-platform" target="_blank" rel="noopener">接口文档</a></div>
+          <div class="gitem"><span class="gn">YouTube</span><span class="gk">注册谷歌账号 → 建频道 → Cloud 控制台建 OAuth 拿 client_id / client_secret / refresh_token</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">去注册</a><a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">建 OAuth 凭据</a></div>
+          <div class="gitem"><span class="gn">VK</span><span class="gk">注册 VK 账号 → 建社区 → 开发者后台拿 token / group_id</span><a href="https://vk.com/" target="_blank" rel="noopener">去注册</a><a href="https://dev.vk.com/" target="_blank" rel="noopener">开发者后台</a></div>
+          <div class="gitem"><span class="gn">TikTok</span><span class="gk">注册账号 → 申请开发者应用，拿到 access_token / open_id 才能发视频</span><a href="https://www.tiktok.com/signup" target="_blank" rel="noopener">去注册</a><a href="https://developers.tiktok.com/" target="_blank" rel="noopener">开发者后台</a></div>
+        </div>
+        <div class="hint">注册好拿到凭据，回到下面「发布账号」点“＋ 加一个账号”填进来，就能用来发。</div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><div class="num">¥</div><h3>AI 额度（火山方舟 token，用谁的就充谁的）</h3></div>
+        <div class="guide">
+          <div class="gitem"><span class="gn">火山方舟</span><span class="gk">生成文案和出片都走你自己的方舟账号，额度充在你自己名下，我们这边不代扣</span><a href="https://console.volcengine.com/ark" target="_blank" rel="noopener">控制台</a><a href="https://console.volcengine.com/finance" target="_blank" rel="noopener">去充值</a></div>
+        </div>
+        <div class="hint">充完把 Key 填到下面「三套老凭据」里的 ark_api_key，点保存就生效。</div>
+      </div>
+
+      <div class="card">
         <div class="hd"><div class="num">+</div><h3>发布账号（<span id="accCount">0</span>）</h3></div>
         <button id="btnAccAdd" class="btn">＋ 加一个账号</button>
         <button id="btnAccImportOpen" class="btn ghost" style="margin-top:8px">一键导入</button>
@@ -372,8 +402,9 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
           <div class="seg" id="roleSeg">
             <button type="button" data-v="staff" class="on">运营<br><small>只管自己的任务</small></button>
             <button type="button" data-v="admin">管理员<br><small>能管账号和配置</small></button>
+            <button type="button" data-v="demo">演示<br><small>只能看，不能发</small></button>
           </div>
-          <select id="usRole" style="display:none"><option value="staff">运营</option><option value="admin">管理员</option></select>
+          <select id="usRole" style="display:none"><option value="staff">运营</option><option value="admin">管理员</option><option value="demo">演示</option></select>
           <label>口令（留空自动生成 8 位）</label>
           <input id="usPwd" class="inp" placeholder="不想设就留空，保存后口令会显示出来">
           <button id="btnUserSave" class="btn">存下来</button>
@@ -920,7 +951,8 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
       if(!u.active){ ava.classList.add('mute'); }
       const nm = row.querySelector('.n');
       const nmTxt = el('span','', who);
-      const bg = el('span','badge ' + (u.role==='admin' ? 'on' : 'off'), u.role==='admin' ? '管理员' : '运营');
+      const bg = el('span','badge ' + (u.role==='admin' ? 'on' : (u.role==='demo' ? 'warn' : 'off')),
+        u.role==='admin' ? '管理员' : (u.role==='demo' ? '演示' : '运营'));
       nm.append(nmTxt, bg);
       if(!u.active){ nm.appendChild(el('span','badge off','已停用')); }
       row.querySelector('.s').textContent = '登录名 ' + u.username;
