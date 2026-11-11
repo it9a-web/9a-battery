@@ -36,9 +36,9 @@ input,select{font:inherit;color:inherit}
 .top{display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
   border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:var(--bg)}
 .logo{width:44px;height:44px;flex:0 0 44px;border-radius:50%;object-fit:cover;background:var(--bg2)}
-.brandtxt{display:flex;flex-direction:column;line-height:1.1}
-.brandtxt b{font-size:19px;letter-spacing:.2px}
-.brandtxt span{font-size:11.5px;letter-spacing:3.2px;color:var(--muted);margin-top:3px}
+.brandtxt{display:flex;flex-direction:column;line-height:1.3;gap:2px}
+.brandtxt b{font-size:18.5px;letter-spacing:.4px}
+.brandtxt span{font-size:11px;letter-spacing:3.4px;color:var(--muted);margin-top:5px}
 .top .right{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:12px}
 .top .right .lnk{color:#c9cccf}
 .wrap{padding:14px 14px 0;max-width:720px;margin:0 auto}
@@ -484,10 +484,11 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     localStorage.removeItem(LS_TOKEN); localStorage.removeItem(LS_USER);
     $('#loginBox').style.display='block'; $('#main').style.display='none';
     $('#who').textContent='';
-    $('#btnSwitch').style.display='none';
+    var sw = $('#btnSwitch'); if(sw) sw.style.display='none';
   }
 
-  document.getElementById('btnSwitch').onclick = ()=>{
+  var swBtn = document.getElementById('btnSwitch');
+  if (swBtn) swBtn.onclick = function(){
     logoutUI();
     $('#lu').value=''; $('#lp').value='';
     window.scrollTo(0,0);
@@ -511,7 +512,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     const roleTxt = user.role==='admin' ? ' · 管理员' : (user.role==='demo' ? ' · 演示' : ' · 运营');
     const nm = user.name || user.username || '';
     $('#who').textContent = nm + ((roleTxt && nm.trim() !== roleTxt.replace(' ·','').trim()) ? roleTxt : '');
-    $('#btnSwitch').style.display = 'inline';
+    var sw1 = $('#btnSwitch'); if(sw1) sw1.style.display='inline';
     $('#tabUser').style.display = (user && user.role==='admin') ? 'block' : 'none';
     applyDemoLock();
     loadAccounts(); loadPlatforms(); loadTasks(); loadPublishedTasks();
