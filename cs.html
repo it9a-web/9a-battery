@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- 官网版客服台：接口走 https://9a-studio.cpolar.top，登录态用 localStorage 9a_token -->
 <meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://9a-studio.cpolar.top" crossorigin>
+<link rel="dns-prefetch" href="https://9a-studio.cpolar.top">
 <title>9A 客服台 · 询盘分级</title>
 <link rel="icon" href="/assets/logo.png">
 <link rel="apple-touch-icon" href="/assets/logo.png">
@@ -164,6 +166,19 @@ const abs = u => (!u ? u : (/^https?:/.test(u) ? u : API_BASE + u));
 const ah = () => (token ? {'X-Token': token} : {});
 const PAGE_SIZE = 20;
 const BACK_URL = '/publish.html';      // 没登录就回工作台登录，不许直接进这页
+// 列表缓存：再次进这页先画缓存，网络回来再覆盖，不用干等隧道
+const CS_KEY = '9a_cs_cache';
+function cRead(u){
+  try{
+    const o = JSON.parse(sessionStorage.getItem(CS_KEY) || 'null');
+    if(!o || o.u !== u || String(o.tok || '') !== String(token || '')) return null;
+    if(Date.now() - o.t > 180000) return null;
+    return o.d;
+  }catch(e){ return null; }
+}
+function cWrite(u, d){
+  try{ sessionStorage.setItem(CS_KEY, JSON.stringify({u: u, tok: token, t: Date.now(), d: d})); }catch(e){}
+}
 let page = 1, filter = '', total = 0, pages = 1, rows = [];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -226,10 +241,14 @@ function renderPager(){
 }
 async function load(){
   const btn = $('#btnRefresh'); if (btn) btn.disabled = true;
+  const url = '/api/leads?limit='+PAGE_SIZE+'&page='+page+(filter?('&level='+filter):'');
+  // 身份查询和列表一起发，不再一前一后排队
+  const pMe = fetch(abs('/api/me'), {headers:ah()});
+  const pLeads = fetch(abs(url), {headers:ah()});
   try{
     // 先看当前是谁登录的，出错时能把原因说清楚
     try{
-      const mr = await fetch(abs('/api/me'), {headers:ah()});
+      const mr = await pMe;
       if(mr.status === 200){
         const m = await mr.json();
         $('#who').textContent = L('当前账号：','Signed in: ','Аккаунт: ') + tName(m.name || m.username) + ' (' + m.role + ')';
@@ -239,8 +258,7 @@ async function load(){
         return;
       }
     }catch(e){}
-    const url = '/api/leads?limit='+PAGE_SIZE+'&page='+page+(filter?('&level='+filter):'');
-    const r = await fetch(abs(url), {headers:ah()});
+    const r = await pLeads;
     if(r.status === 401){
       $('#list').innerHTML = '<div class="empty">'+L('没登录。','Not signed in. ','Нет входа. ')+'<a style="color:#e76126" href="/publish.html">'+L('去工作台用管理员账号登录','Sign in as admin in Workbench','Войдите как администратор в Workbench')+'</a>'+L('，登录后这页会自动更新。',' — this page refreshes automatically after sign-in.',' — страница обновится после входа.')+'</div>';
       $('#pager').innerHTML = ''; if(btn) btn.disabled=false; return;
@@ -250,32 +268,39 @@ async function load(){
       $('#pager').innerHTML = ''; if(btn) btn.disabled=false; return;
     }
     const d = await r.json();
-    rows = d.leads || []; total = d.total || rows.length; pages = d.pages || 1; page = d.page || 1;
-    if(page > pages && pages > 0){ page = pages; return load(); }
-    // 顶部计数用接口给的总数（按等级分开统计）
-    document.querySelector('.chip[data-lv=""]').dataset.cnt = d.total || 0;
-    render();
-    renderPager();
-    $('#hint').textContent = L('每页 '+PAGE_SIZE+' 条，按时间倒序；点页码或上一页/下一页翻。', PAGE_SIZE+' per page, newest first; use the numbers or Prev/Next.', 'По '+PAGE_SIZE+' на страницу, сначала новые; листайте цифрами или Назад/Вперёд.');
+    cWrite(url, d);
+    if(!applyLeads(d)) return;
   }catch(e){
     $('#list').innerHTML = '<div class="empty">'+L('读取失败：','Load failed: ','Ошибка загрузки: ')+esc(e.message)+'</div>';
   }finally{ if(btn) btn.disabled = false; }
 }
+function applyLeads(d){
+  if(!d) return false;
+  const isFirst = (rows.length === 0 && total === 0);
+  rows = d.leads || []; total = d.total || rows.length; pages = d.pages || 1;
+  if(d.page) page = d.page;
+  if(page > pages && pages > 0){ page = pages; load(); return false; }
+  const chip0 = document.querySelector('.chip[data-lv=""]');
+  if(chip0) chip0.dataset.cnt = d.total || 0;
+  render();
+  renderPager();
+  const hint = $('#hint');
+  if(hint) hint.textContent = L('每页 '+PAGE_SIZE+' 条，按时间倒序；点页码或上一页/下一页翻。', PAGE_SIZE+' per page, newest first; use the numbers or Prev/Next.', 'По '+PAGE_SIZE+' на страницу, сначала новые; листайте цифрами или Назад/Вперёд.');
+  return true;
+}
 let statsTotal = null;
 async function loadCounts(){
   try{
-    // 分级计数走列表接口的 total（跟翻页同一套接口，最稳）
-    for(const lv of ['A','B','C']){
-      const r = await fetch(abs('/api/leads?limit=1&page=1&level='+lv), {headers:ah()});
-      if(r.status !== 200) continue;
-      const d = await r.json();
+    // 一次拿 A/B/C + 总数（原来要发 4 次，串行就是 2 秒）
+    const r = await fetch(abs('/api/leads/stats'), {headers:ah()});
+    if(r.status !== 200) return;
+    const d = await r.json();
+    const setChip = (lv, v) => {
       const chip = document.querySelector('.chip[data-lv="'+lv+'"]');
-      if(chip) chip.dataset.cnt = String(d.total || 0);
-      if(lv==='A') $('#cA').textContent = d.total || 0;
-      if(lv==='B') $('#cB').textContent = d.total || 0;
-    }
-    const all = await fetch(abs('/api/leads?limit=1&page=1'), {headers:ah()});
-    if(all.status === 200){ const d = await all.json(); statsTotal = d.total || 0; $('#cAll').textContent = statsTotal; }
+      if(chip) chip.dataset.cnt = String(v || 0);
+    };
+    setChip('A', d.A); setChip('B', d.B); setChip('C', d.C); setChip('', d.total);
+    statsTotal = d.total || 0;
     render();
   }catch(e){}
 }
@@ -287,10 +312,23 @@ document.querySelectorAll('.chip').forEach(c=>{
   };
 });
 $('#btnRefresh') && ($('#btnRefresh').onclick = ()=>{ load(); loadCounts(); });
-load().then(loadCounts);
+load(); loadCounts();   // 两个请求同时发
 // 自动刷新：每 60 秒一次；从后台切回前台也立刻拉一次（不需要"刷新"按钮）
 setInterval(()=>{ if(!document.hidden){ load(); loadCounts(); } }, 60000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ load(); loadCounts(); } });
+// 从工作台点进来时，返回直接 history.back()：工作台还在浏览器 bfcache 里，秒回
+(function(){
+  const a = document.getElementById('backWork');
+  if(!a) return;
+  a.addEventListener('click', function(e){
+    try{
+      if(document.referrer && document.referrer.indexOf(location.host) > -1 && document.referrer.indexOf('publish') > -1){
+        e.preventDefault();
+        history.back();
+      }
+    }catch(err){}
+  });
+})();
 </script>
 </body>
 </html>
