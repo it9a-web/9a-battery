@@ -572,6 +572,13 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
       ks.forEach(k=>sessionStorage.removeItem(k));
     }catch(e){}
   }
+  // 同一接口并发只打一次：showMain 与 switchTab 同时触发时共用同一个请求，避免重复往返
+  const _infl = {};
+  function once(k, fn){
+    if(_infl[k]) return _infl[k];
+    _infl[k] = (async ()=>{ try{ return await fn(); } finally { _infl[k] = null; } })();
+    return _infl[k];
+  }
   let pubMode = 'task';     // task=复刻出的片 local=人工发布
   let localVideo = null;    // 人工上传的视频 {name,url}
   let autoFilled = false;   // 文案是不是复刻自动带进来的
@@ -800,26 +807,26 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     renderSetFields();
   }
   async function loadSets(){
-    try{
+    return once('/api/sets', async ()=>{
       const d = await api('/api/sets');
       cSet('/api/sets', d);
       if(!(platforms||[]).length){ await loadPlatforms(); }
       applySets(d);
-    }catch(e){ $('#setHint').textContent = '凭据要管理员才能看：' + e.message; }
+    }).catch(function(e){ $('#setHint').textContent = '凭据要管理员才能看：' + ((e&&e.message)||'网络异常'); });
   }
   async function warmSets(){
     const k = '/api/sets', c = cGet(k);
     if(c){
-      if(!(platforms||[]).length){ try{ const p = await api('/api/platforms'); cSet('/api/platforms', p); applyPlatforms(p); }catch(e){} }
+      if(!(platforms||[]).length){ await warmPlatforms(); }
       applySets(c.d);
       if(Date.now() - c.t < GC_FRESH) return;
     }
-    try{
+    await once(k, async ()=>{
       const d = await api(k);
       cSet(k, d);
-      if(!(platforms||[]).length){ await loadPlatforms(); }
+      if(!(platforms||[]).length){ await warmPlatforms(); }
       applySets(d);
-    }catch(e){ $('#setHint').textContent = '凭据要管理员才能看：' + e.message; }
+    }).catch(function(e){ $('#setHint').textContent = '凭据要管理员才能看：' + ((e&&e.message)||'网络异常'); });
   }
   function renderSetPick(){
     const box = $('#setPick');
@@ -926,19 +933,16 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     renderPubPerPlat();
   }
   async function loadAccounts(){
-    try{
+    return once('/api/accounts', async ()=>{
       const d = await api('/api/accounts');
       cSet('/api/accounts', d);
       applyAccounts(d);
-    }catch(e){ /* 未登录忽略 */ }
+    }).catch(function(){ /* 未登录忽略 */ });
   }
   async function warmAccounts(){
     const k = '/api/accounts', c = cGet(k);
     if(c){ applyAccounts(c.d); if(Date.now() - c.t < GC_FRESH) return; }
-    try{
-      const d = await api(k);
-      cSet(k, d); applyAccounts(d);
-    }catch(e){ /* 未登录忽略 */ }
+    await once(k, async ()=>{ const d = await api(k); cSet(k, d); applyAccounts(d); }).catch(function(){});
   }
 
   function renderAccounts(){
@@ -967,19 +971,16 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     if(setsData && setsData[curSet]) renderSetPlats();
   }
   async function loadPlatforms(){
-    try{
+    return once('/api/platforms', async ()=>{
       const d = await api('/api/platforms');
       cSet('/api/platforms', d);
       applyPlatforms(d);
-    }catch(e){ netWarn('平台', e); }
+    }).catch(function(e){ netWarn('平台', e); });
   }
   async function warmPlatforms(){
     const k = '/api/platforms', c = cGet(k);
     if(c){ applyPlatforms(c.d); if(Date.now() - c.t < GC_FRESH) return; }
-    try{
-      const d = await api(k);
-      cSet(k, d); applyPlatforms(d);
-    }catch(e){ netWarn('平台', e); }
+    await once(k, async ()=>{ const d = await api(k); cSet(k, d); applyPlatforms(d); }).catch(function(e){ netWarn('平台', e); });
   }
   // ---------- 发布账号管理 ----------
   const ACC_FIELDS = {
@@ -1126,23 +1127,20 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     renderUserList((d && d.users) || []);
   }
   async function loadUsers(){
-    try{
+    return once('/api/users', async ()=>{
       const d = await api('/api/users');
       cSet('/api/users', d);
       applyUsers(d);
-    }catch(e){
-      const box = $('#userList'); if(box) box.innerHTML = '<div class="empty">加载失败：' + (e.message||'网络异常') + '，重进一次试试</div>';
+    }).catch(function(e){
+      const box = $('#userList'); if(box) box.innerHTML = '<div class="empty">加载失败：' + ((e&&e.message)||'网络异常') + '，重进一次试试</div>';
       $('#userCount').textContent = '—';
       netWarn('人员', e);
-    }
+    });
   }
   async function warmUsers(){
     const k = '/api/users', c = cGet(k);
     if(c){ applyUsers(c.d); if(Date.now() - c.t < GC_FRESH) return; }
-    try{
-      const d = await api(k);
-      cSet(k, d); applyUsers(d);
-    }catch(e){ netWarn('人员', e); }
+    await once(k, async ()=>{ const d = await api(k); cSet(k, d); applyUsers(d); }).catch(function(e){ netWarn('人员', e); });
   }
   function renderUserList(us){
     const box = $('#userList'); if(!box) return;
@@ -1230,19 +1228,16 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     fillTaskPick((d && d.tasks) || []);
   }
   async function loadTasks(){
-    try{
+    return once('/api/tasks', async ()=>{
       const d = await api('/api/tasks');
       cSet('/api/tasks', d);
       applyTasksData(d);
-    }catch(e){ netWarn('任务', e); }
+    }).catch(function(e){ netWarn('任务', e); });
   }
   async function warmTasks(){
     const k = '/api/tasks', c = cGet(k);
     if(c){ applyTasksData(c.d); if(Date.now() - c.t < GC_FRESH) return; }
-    try{
-      const d = await api(k);
-      cSet(k, d); applyTasksData(d);
-    }catch(e){ netWarn('任务', e); }
+    await once(k, async ()=>{ const d = await api(k); cSet(k, d); applyTasksData(d); }).catch(function(e){ netWarn('任务', e); });
   }
   function renderTasks(tasks, storage){
     const box = $('#taskList');
