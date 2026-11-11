@@ -57,6 +57,7 @@ h1{font-size:19px;margin:0;font-weight:600}
     <div><h1>客服台 · 询盘分级</h1><div class="sub">Telegram 私聊自动回复 + A/B/C 分级（已迁到本系统，不再依赖 n8n）</div></div>
     <div class="spacer"></div>
     <span class="sub" id="who"></span>
+    <a class="btn ghost" id="backWork" href="/publish.html" style="text-decoration:none">← 工作台</a>
     <button class="btn ghost" id="btnRefresh">刷新</button>
   </div>
 
@@ -142,11 +143,11 @@ async function load(){
     const url = '/api/leads?limit='+PAGE_SIZE+'&page='+page+(filter?('&level='+filter):'');
     const r = await fetch(abs(url), {headers:ah()});
     if(r.status === 401){
-      $('#list').innerHTML = '<div class="empty">没登录。<a style="color:#e76126" href="/publish.html/publish.html">去工作台用管理员账号登录</a>，再刷新这页。</div>';
+      $('#list').innerHTML = '<div class="empty">没登录。<a style="color:#e76126" href="/publish.html">去工作台用管理员账号登录</a>，再刷新这页。</div>';
       $('#pager').innerHTML = ''; btn.disabled=false; return;
     }
     if(r.status === 403){
-      $('#list').innerHTML = '<div class="empty">客服询盘只对管理员开放，当前登录的是演示账号。<a style="color:#e76126" href="/publish.html/publish.html">换管理员账号登录</a> 后再刷新这页。</div>';
+      $('#list').innerHTML = '<div class="empty">客服询盘只对管理员开放，当前登录的是演示账号。<a style="color:#e76126" href="/publish.html">换管理员账号登录</a> 后再刷新这页。</div>';
       $('#pager').innerHTML = ''; btn.disabled=false; return;
     }
     const d = await r.json();
