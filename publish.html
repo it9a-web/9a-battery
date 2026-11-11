@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="9A WORKBENCH">
 <link rel="manifest" href="https://9a-studio.cpolar.top/manifest.webmanifest">
+<link rel="preconnect" href="https://9a-studio.cpolar.top" crossorigin>
+<link rel="dns-prefetch" href="https://9a-studio.cpolar.top">
+<link rel="prefetch" href="/cs.html" as="document" crossorigin="anonymous">
 <link rel="apple-touch-icon" href="/assets/logo.png">
 <link rel="icon" href="/assets/logo.png">
 <!-- 官网 9abms.com/publish.html：整套换成 9A 工作台，接口走 https://9a-studio.cpolar.top -->
@@ -545,6 +548,30 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
   let perPlatVals = {};   // 每平台单独文案（跟着勾选的账号走）
   const API_BASE = 'https://9a-studio.cpolar.top';   // 本机跑留空；放到官网 9abms.com/publish.html 时由构建脚本改成后端公网地址
   const abs = u => (!u ? u : (/^https?:/.test(u) ? u : API_BASE + u));
+  // ---------- 本地缓存：切页 / 返回工作台先用缓存出画面，再静默刷新 ----------
+  const GC_PREFIX = '9a_gc:';
+  const GC_TTL   = 300000;   // 5 分钟内缓存可用于首屏渲染
+  const GC_FRESH = 20000;    // 20 秒内认为够新，不再打网络
+  function cGet(k){
+    try{
+      const s = sessionStorage.getItem(GC_PREFIX + k);
+      if(!s) return null;
+      const o = JSON.parse(s);
+      if(!o || typeof o.t !== 'number' || !o.d) return null;
+      if(Date.now() - o.t > GC_TTL) return null;
+      return o;
+    }catch(e){ return null; }
+  }
+  function cSet(k, d){
+    try{ sessionStorage.setItem(GC_PREFIX + k, JSON.stringify({t: Date.now(), d: d})); }catch(e){}
+  }
+  function cClear(){
+    try{
+      const ks = [];
+      for(let i=0;i<sessionStorage.length;i++){ const k = sessionStorage.key(i); if(k && k.indexOf(GC_PREFIX)===0) ks.push(k); }
+      ks.forEach(k=>sessionStorage.removeItem(k));
+    }catch(e){}
+  }
   let pubMode = 'task';     // task=复刻出的片 local=人工发布
   let localVideo = null;    // 人工上传的视频 {name,url}
   let autoFilled = false;   // 文案是不是复刻自动带进来的
@@ -613,7 +640,7 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     var sw1 = $('#btnSwitch'); if(sw1) sw1.style.display='inline';
     $('#tabUser').style.display = (user && user.role==='admin') ? 'block' : 'none';
     applyDemoLock();
-    loadAccounts(); loadPlatforms(); loadTasks(); loadPublishedTasks();
+    warmAccounts(); warmPlatforms(); warmTasks();
   }
 
   // 演示账号：界面全部可看，凡是会产生消耗/对外动作的按钮一律锁掉（后端同时返回 403）
@@ -766,14 +793,32 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
 
   // ---------- 套别凭据 ----------
   let setsData = {}, setFieldsMeta = [], curSet = '1';
+  function applySets(d){
+    setsData = (d && d.sets) || {};
+    setFieldsMeta = (d && d.fields) || [];
+    renderSetPick();
+    renderSetFields();
+  }
   async function loadSets(){
     try{
       const d = await api('/api/sets');
-      setsData = d.sets || {};
-      setFieldsMeta = d.fields || [];
+      cSet('/api/sets', d);
       if(!(platforms||[]).length){ await loadPlatforms(); }
-      renderSetPick();
-      renderSetFields();
+      applySets(d);
+    }catch(e){ $('#setHint').textContent = '凭据要管理员才能看：' + e.message; }
+  }
+  async function warmSets(){
+    const k = '/api/sets', c = cGet(k);
+    if(c){
+      if(!(platforms||[]).length){ try{ const p = await api('/api/platforms'); cSet('/api/platforms', p); applyPlatforms(p); }catch(e){} }
+      applySets(c.d);
+      if(Date.now() - c.t < GC_FRESH) return;
+    }
+    try{
+      const d = await api(k);
+      cSet(k, d);
+      if(!(platforms||[]).length){ await loadPlatforms(); }
+      applySets(d);
     }catch(e){ $('#setHint').textContent = '凭据要管理员才能看：' + e.message; }
   }
   function renderSetPick(){
@@ -874,15 +919,25 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
   }
 
   // ---------- 账号 / 平台 ----------
+  function applyAccounts(d){
+    accounts = (d && d.accounts) || [];
+    renderAccounts();
+    renderAccList();
+    renderPubPerPlat();
+  }
   async function loadAccounts(){
     try{
       const d = await api('/api/accounts');
-      accounts = d.accounts || [];
-
-      renderAccounts();
-
-      renderAccList();
-      renderPubPerPlat();
+      cSet('/api/accounts', d);
+      applyAccounts(d);
+    }catch(e){ /* 未登录忽略 */ }
+  }
+  async function warmAccounts(){
+    const k = '/api/accounts', c = cGet(k);
+    if(c){ applyAccounts(c.d); if(Date.now() - c.t < GC_FRESH) return; }
+    try{
+      const d = await api(k);
+      cSet(k, d); applyAccounts(d);
     }catch(e){ /* 未登录忽略 */ }
   }
 
@@ -907,11 +962,23 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     });
   }
 
+  function applyPlatforms(d){
+    platforms = (d && d.platforms) || [];
+    if(setsData && setsData[curSet]) renderSetPlats();
+  }
   async function loadPlatforms(){
     try{
       const d = await api('/api/platforms');
-      platforms = d.platforms || [];
-      if(setsData && setsData[curSet]) renderSetPlats();
+      cSet('/api/platforms', d);
+      applyPlatforms(d);
+    }catch(e){ netWarn('平台', e); }
+  }
+  async function warmPlatforms(){
+    const k = '/api/platforms', c = cGet(k);
+    if(c){ applyPlatforms(c.d); if(Date.now() - c.t < GC_FRESH) return; }
+    try{
+      const d = await api(k);
+      cSet(k, d); applyPlatforms(d);
     }catch(e){ netWarn('平台', e); }
   }
   // ---------- 发布账号管理 ----------
@@ -1055,15 +1122,27 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
   }
 
   // ---------- 员工账号管理 ----------
+  function applyUsers(d){
+    renderUserList((d && d.users) || []);
+  }
   async function loadUsers(){
     try{
       const d = await api('/api/users');
-      renderUserList(d.users||[]);
+      cSet('/api/users', d);
+      applyUsers(d);
     }catch(e){
       const box = $('#userList'); if(box) box.innerHTML = '<div class="empty">加载失败：' + (e.message||'网络异常') + '，重进一次试试</div>';
       $('#userCount').textContent = '—';
       netWarn('人员', e);
     }
+  }
+  async function warmUsers(){
+    const k = '/api/users', c = cGet(k);
+    if(c){ applyUsers(c.d); if(Date.now() - c.t < GC_FRESH) return; }
+    try{
+      const d = await api(k);
+      cSet(k, d); applyUsers(d);
+    }catch(e){ netWarn('人员', e); }
   }
   function renderUserList(us){
     const box = $('#userList'); if(!box) return;
@@ -1135,10 +1214,34 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
   }
 
 
+  function fillTaskPick(list){
+    const sel = $('#taskPick'); if(!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— 选一条已出片的视频 —</option>';
+    (list || []).forEach(t=>{
+      if(t.status !== 'done') return;
+      const o = el('option'); o.value = String(t.id); o.textContent = '#'+t.id+' · '+(t.title||'').slice(0,34);
+      sel.appendChild(o);
+    });
+    if(cur) sel.value = cur;
+  }
+  function applyTasksData(d){
+    renderTasks((d && d.tasks) || [], (d && d.storage) || {});
+    fillTaskPick((d && d.tasks) || []);
+  }
   async function loadTasks(){
     try{
       const d = await api('/api/tasks');
-      renderTasks(d.tasks || [], d.storage || {});
+      cSet('/api/tasks', d);
+      applyTasksData(d);
+    }catch(e){ netWarn('任务', e); }
+  }
+  async function warmTasks(){
+    const k = '/api/tasks', c = cGet(k);
+    if(c){ applyTasksData(c.d); if(Date.now() - c.t < GC_FRESH) return; }
+    try{
+      const d = await api(k);
+      cSet(k, d); applyTasksData(d);
     }catch(e){ netWarn('任务', e); }
   }
   function renderTasks(tasks, storage){
@@ -1208,19 +1311,11 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     m.querySelector('video').src = abs(url);
   }
 
-  async function loadPublishedTasks(){
-    try{
-      const d = await api('/api/tasks');
-      const sel = $('#taskPick');
-      const cur = sel.value;
-      sel.innerHTML = '<option value="">— 选一条已出片的视频 —</option>';
-      (d.tasks||[]).forEach(t=>{
-        if(t.status!=='done') return;
-        const o = el('option'); o.value = String(t.id); o.textContent = '#'+t.id+' · '+(t.title||'').slice(0,34);
-        sel.appendChild(o);
-      });
-      if(cur) sel.value = cur;
-    }catch(e){}
+  // 不再单独发一次 /api/tasks，直接用刚拉回来的那份
+  function loadPublishedTasks(){
+    const c = cGet('/api/tasks');
+    if(c){ fillTaskPick((c.d && c.d.tasks) || []); return; }
+    loadTasks();
   }
 
   // ---------- 发布 ----------
@@ -1377,9 +1472,9 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
       if(tile) tile.classList.toggle('on', k===which);
       if(pane) pane.style.display = (k===which)?'block':'none';
     });
-    if(which==='pub'){ loadAccounts(); loadPlatforms(); loadPublishedTasks(); loadTasks(); }
-    if(which==='acc'){ loadAccounts(); loadPlatforms(); loadSets(); }
-    if(which==='user'){ initRoleSeg(); loadUsers(); }
+    if(which==='pub'){ warmAccounts(); warmPlatforms(); warmTasks(); }
+    if(which==='acc'){ warmAccounts(); warmPlatforms(); warmSets(); }
+    if(which==='user'){ initRoleSeg(); warmUsers(); }
   }
   $('#btnAccAdd').onclick = addAccDraft;
   $('#btnAccImportOpen').onclick = ()=>{
@@ -1484,16 +1579,35 @@ function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][
     const saved = localStorage.getItem(LS_USER);
     if(saved){ try{ user = JSON.parse(saved); }catch(e){} }
     if(!token){ $('#loginBox').style.display='block'; return; }
-    try{
-      user = await api('/api/me');
-      showMain();
+
+    function enterAndSwitch(){
+      try{ showMain(); }catch(e){}
       if(user && user.role === 'admin'){ $('#tabUser').style.display='block'; }
       const q = (location.search.match(/tab=(copy|pub|acc|user)/)||[])[1];
       const appMode = new URLSearchParams(location.search).get('app')==='1';
       if(q==='user' && (!user || user.role!=='admin')) switchTab('copy');
       else if(q) switchTab(q);
-      else if(appMode){ switchTab('pub'); setTimeout(()=>{ try{ document.activeElement && document.activeElement.blur(); }catch(e){} }, 300); }   // 装成 APP 时一进来就是发布页
-      setTimeout(function(){ try{ applyLang(); }catch(e){} }, 120);   // 登录后把动态出现的文案也翻一遍
+      else if(appMode){ switchTab('pub'); setTimeout(()=>{ try{ document.activeElement && document.activeElement.blur(); }catch(e){} }, 300); }
+      setTimeout(function(){ try{ applyLang(); }catch(e){} }, 120);
+    }
+
+    if(user){
+      // 本地已经有登录信息：界面立刻出来，令牌放后台校验（不再白等一个隧道往返）
+      enterAndSwitch();
+      api('/api/me').then(function(u){
+        user = u;
+        try{ localStorage.setItem(LS_USER, JSON.stringify(u)); }catch(e){}
+        $('#tabUser').style.display = (u && u.role==='admin') ? 'block' : 'none';
+        const who = $('#who');
+        if(who) who.textContent = (u.name||u.username||'') + (u.role==='admin' ? ' · 管理员' : (u.role==='demo' ? ' · 演示' : ' · 运营'));
+      }).catch(function(e){ /* 401 已由 api() 里 logoutUI 处理 */ });
+      return;
+    }
+
+    // 第一次用 / 清过缓存：只能等一次校验
+    try{
+      user = await api('/api/me');
+      enterAndSwitch();
     }catch(e){ $('#loginBox').style.display='block'; }
   })();
 })();
