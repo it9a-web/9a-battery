@@ -213,6 +213,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
   <div class="brandtxt"><b>9A Battery</b><span>WORKBENCH</span></div>
   <div class="right">
     <span id="who" class="lnk"></span>
+    <a id="btnSwitch" class="lnk" href="javascript:void(0)" style="margin-left:10px;display:none">切换账号</a>
   </div>
 </div>
 
@@ -483,7 +484,15 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     localStorage.removeItem(LS_TOKEN); localStorage.removeItem(LS_USER);
     $('#loginBox').style.display='block'; $('#main').style.display='none';
     $('#who').textContent='';
+    $('#btnSwitch').style.display='none';
   }
+
+  document.getElementById('btnSwitch').onclick = ()=>{
+    logoutUI();
+    $('#lu').value=''; $('#lp').value='';
+    window.scrollTo(0,0);
+    toast('已退出，换账号登录');
+  };
 
   async function doLogin(){
     const u = $('#lu').value.trim(), p = $('#lp').value;
@@ -499,9 +508,10 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 
   function showMain(){
     $('#loginBox').style.display='none'; $('#main').style.display='block';
-    const roleTxt = user.role==='admin' ? ' · 管理员' : (user.role==='demo' ? ' · 演示' : '');
+    const roleTxt = user.role==='admin' ? ' · 管理员' : (user.role==='demo' ? ' · 演示' : ' · 运营');
     const nm = user.name || user.username || '';
     $('#who').textContent = nm + ((roleTxt && nm.trim() !== roleTxt.replace(' ·','').trim()) ? roleTxt : '');
+    $('#btnSwitch').style.display = 'inline';
     $('#tabUser').style.display = (user && user.role==='admin') ? 'block' : 'none';
     applyDemoLock();
     loadAccounts(); loadPlatforms(); loadTasks(); loadPublishedTasks();
