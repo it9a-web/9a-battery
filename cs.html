@@ -113,6 +113,28 @@ function pickLang(){
   return 'en';
 }
 const LANG = pickLang();
+const REASON = {
+  '通用问候/闲聊': ['General hello / chit-chat', 'Общее приветствие / болтовня'],
+  '问价格/批量订单': ['Price / bulk order', 'Цена / оптовая заявка'],
+  '问参数/物流': ['Specs / shipping', 'Параметры / доставка'],
+  '售后/投诉': ['After-sales / complaint', 'Сервис / жалоба']
+};
+const NAMEMAP = {
+  '管理员': ['Administrator', 'Администратор'],
+  '老板': ['Owner', 'Владелец'],
+  '运营': ['Operator', 'Оператор'],
+  '演示账号': ['Demo account', 'Демо-аккаунт']
+};
+function tReason(x){
+  if(LANG === 'zh') return x;
+  const m = REASON[String(x||'').trim()];
+  return m ? (LANG === 'ru' ? m[1] : m[0]) : x;
+}
+function tName(x){
+  if(LANG === 'zh') return x;
+  const m = NAMEMAP[String(x||'').trim()];
+  return m ? (LANG === 'ru' ? m[1] : m[0]) : x;
+}
 const L = function(zh, en_, ru_){
   return LANG === 'ru' ? (ru_ === undefined ? en_ : ru_) : (LANG === 'en' ? en_ : zh);
 };
@@ -179,7 +201,7 @@ function render(){
         <span>ID ${esc(r.tg_id || '—')}</span>
         <span>·</span>
         <span>${r.replied ? L('已自动回复','Auto-replied','Автоответ отправлен') : L('未回复','Not replied','Без ответа')}</span>
-        ${r.reason?`<span>·</span><span>${L('分级：','Grade: ','Оценка: ')}${esc(r.reason)}</span>`:''}
+        ${r.reason?`<span>·</span><span>${L('分级：','Grade: ','Оценка: ')}${esc(tReason(r.reason))}</span>`:''}
         <a href="${un}" target="_blank" rel="noopener">${L('打开对话 →','Open chat →','Открыть чат →')}</a>
       </div>
       ${r.error?`<div class="msg" style="color:#ff7b72;background:rgba(255,123,114,.08)">${esc(r.error)}</div>`:''}
@@ -210,7 +232,7 @@ async function load(){
       const mr = await fetch(abs('/api/me'), {headers:ah()});
       if(mr.status === 200){
         const m = await mr.json();
-        $('#who').textContent = L('当前账号：','Signed in: ','Аккаунт: ') + (m.name || m.username) + ' (' + m.role + ')';
+        $('#who').textContent = L('当前账号：','Signed in: ','Аккаунт: ') + tName(m.name || m.username) + ' (' + m.role + ')';
       }else{
         // 没登录：不在这页停留，直接送回工作台去登录
         location.replace(BACK_URL);
