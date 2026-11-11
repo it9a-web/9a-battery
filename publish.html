@@ -49,7 +49,7 @@ input,select{font:inherit;color:inherit}
   text-align:center;transition:.16s;color:var(--muted)}
 .tile small{display:block;font-size:12px;margin-bottom:4px;opacity:.85}
 .tile b{font-size:16.5px;color:#d5d7d9}
-.tile.on{border-color:var(--brand-soft);background:var(--brand-soft);color:var(--brand);box-shadow:none}
+.tile.on{border-color:var(--brand);background:var(--card);color:var(--brand);box-shadow:none}
 .tile.on b{color:var(--brand)}
 
 /* 卡片 */
@@ -63,6 +63,7 @@ input,select{font:inherit;color:inherit}
 .tile:focus,.tile:focus-visible,.tile:focus-within,.tile:active{outline:none!important;box-shadow:none!important}
 *:focus,*:focus-visible,*:focus-within{outline:none!important}
 *{-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
 
 /* 输入 */
