@@ -365,6 +365,11 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 例：俄罗斯TG主群|tg|RU|token=123:abc,chat_id=-100123"></textarea>
           <button id="btnAccImport" class="btn ghost" style="margin-top:8px">导入进去</button>
           <div class="hint" id="accImportHint">平台写 tg/fb/ig/yt/vk/tt；国家可写 RU/KZ/UZ 或留空；每行一个账号。也可粘 JSON 数组。</div>
+          <div style="height:10px"></div>
+          <label>或者上传表格（Excel .xlsx / CSV），一次全部进去</label>
+          <button id="btnAccImportFile" class="btn ghost" style="margin-top:8px">选择表格文件</button>
+          <input id="accImportFile" type="file" accept=".xlsx,.xlsm,.csv" style="display:none">
+          <div class="hint" id="accImportFileHint">表头要有「账号名」「平台」，再加「国家」和各平台凭据列（token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id），用哪列填哪列，空着不管。</div>
         </div>
         <div id="accList" style="margin-top:12px"></div>
         <div class="hint" id="accAdminHint"></div>
@@ -498,7 +503,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     const demo = user && user.role === 'demo';
     $('#demoBar').style.display = demo ? 'block' : 'none';
     if(!demo) return;
-    ['#btnAnalyze','#btnGen','#btnPub','#btnAccAdd','#btnAccImportOpen','#btnAccImport',
+    ['#btnAnalyze','#btnGen','#btnPub','#btnAccAdd','#btnAccImportOpen','#btnAccImport','#btnAccImportFile',
      '#btnSetSave','#btnSetImport','#btnUserSave','#upPerson','#upScene','#upAudio',
      '#upProduct','#upLocalVideo'].forEach(s=>{
       const el2 = $(s);
@@ -1251,6 +1256,27 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     b.style.display = (b.style.display === 'none') ? 'block' : 'none';
   };
   $('#btnAccImport').onclick = importAccounts;
+  (function(){
+    const btn = $('#btnAccImportFile'), inp = $('#accImportFile');
+    if(!btn || !inp) return;
+    btn.onclick = ()=>inp.click();
+    inp.addEventListener('change', async ()=>{
+      const f = inp.files && inp.files[0]; if(!f) return;
+      const h = $('#accImportFileHint');
+      h.textContent = '正在读表格…';
+      try{
+        const b64 = await fileToB64(f);
+        const r = await api('/api/accounts/import-file', {body:{name:f.name, data:b64}});
+        const s = (r.saved||[]).length, k = (r.skipped||[]).length;
+        h.textContent = '导入完成：' + s + ' 个账号进去了'
+          + (k ? ('，跳过 ' + k + ' 个（' + (r.skipped||[]).join('、') + '）') : '')
+          + ((r.errors||[]).length ? ('；还有问题：' + (r.errors||[]).join('；')) : '');
+        toast('导入完成：' + s + ' 个账号');
+        loadAccounts();
+      }catch(e){ h.textContent = '导入失败：' + e.message; toast('导入失败：' + e.message); }
+      finally{ inp.value = ''; }
+    });
+  })();
   $('#btnSetSave').onclick = saveSet;
   $('#btnSetImport').onclick = importSets;
   $('#btnUserSave').onclick = saveUser;
