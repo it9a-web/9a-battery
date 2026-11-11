@@ -1,1502 +1,264 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#24272a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="9A WORKBENCH">
-<link rel="manifest" href="https://9a-studio.cpolar.top/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/assets/logo.png">
-<link rel="icon" href="/assets/logo.png">
-<!-- 官网 9abms.com/publish.html：整套换成 9A 工作台，接口走 https://9a-studio.cpolar.top -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>发布助手 · 9A Battery</title>
 <meta name="robots" content="noindex,nofollow">
-<title>9A Battery · WORKBENCH</title>
+<link rel="icon" type="image/png" href="assets/logo.webp">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap">
 <style>
 :root{
-  --bg:#24272a; --bg2:#1d2023; --card:#2d3135; --card2:#353a3f; --line:#3d4247; --line2:#4c5258;
-  --txt:#eceef0; --muted:#a8aeb4; --brand:#e76126; --brand2:#f0793c; --brand-soft:rgba(231,97,38,.14);
-  --ok:#46c47c; --warn:#f0a500; --bad:#ff4d4f;
-  --r:14px;
+  --bg:#24272a; --bg2:#1d2023; --panel:#2d3135; --panel2:#353a3f;
+  --border:#3d4247; --border2:#4c5258;
+  --text:#eceef0; --muted:#a8aeb4; --faint:#7c8288;
+  --orange:#f26a1b; --orange2:#ff7d33; --orange-soft:rgba(242,106,27,.14);
+  --green:#35b06b; --red:#e05c4a;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,sans-serif;
-  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-body{padding-bottom:calc(24px + env(safe-area-inset-bottom));overflow-x:hidden}
-img,video{max-width:100%}
-.wrap{overflow:hidden}
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input,select{font:inherit;color:inherit}
-
-/* 顶栏 */
-.top{display:flex;align-items:center;gap:15px;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
-  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:var(--bg)}
-.logo{width:44px;height:44px;flex:0 0 44px;border-radius:50%;object-fit:cover;background:var(--bg2)}
-.brandtxt{display:flex;flex-direction:column;line-height:1.22;gap:2px}
-.brandtxt b{font-size:18px;letter-spacing:.4px}
-.brandtxt span{font-size:10.5px;letter-spacing:3.2px;color:var(--muted);margin-top:4px}
-.top .right{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:12px}
-.top .right .lnk{color:#c9cccf}
-.wrap{padding:14px 14px 0;max-width:720px;margin:0 auto}
-
-/* 两个大块 */
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.tile{border:1px solid var(--line);background:var(--card);border-radius:var(--r);padding:14px 12px;
-  text-align:center;transition:.16s;color:var(--muted)}
-.tile small{display:block;font-size:12px;margin-bottom:4px;opacity:.85}
-.tile b{font-size:16.5px;color:#d5d7d9}
-.tile.on{border-color:var(--brand);background:var(--card);color:var(--brand);box-shadow:none}
-.tile.on b{color:var(--brand)}
-
-/* 卡片 */
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 14px;margin-bottom:13px}
-.hd{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:9px;margin-bottom:11px}
-.num{width:24px;height:24px;border-radius:7px;background:var(--brand);color:#1a1a1a;
-  font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
-.num.w2{width:auto;min-width:24px;padding:0 6px;flex:0 0 auto}
-.hd h3{flex:1;min-width:0;margin:0;font-size:16px;font-weight:600;line-height:1.35}
-.hdlogo{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--card)}
-.tile:focus,.tile:focus-visible,.tile:focus-within,.tile:active{outline:none!important;box-shadow:none!important}
-*:focus,*:focus-visible,*:focus-within{outline:none!important}
-*{-webkit-tap-highlight-color:transparent}
-*,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
-.hint{color:var(--muted);font-size:13px;margin-top:8px}
-
-/* 输入 */
-.inp{width:100%;height:46px;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;
-  padding:0 12px;color:var(--txt);outline:none}
-.inp:focus{border-color:var(--brand)}
-textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
-
-/* 流程条 */
-.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--muted);font-size:12.5px;margin:2px 0 13px}
-.flow i{color:var(--brand);font-style:normal}
-
-/* 四宫格上传 */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.up{border:1px dashed var(--line2);border-radius:11px;min-height:104px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;padding:10px;position:relative;overflow:hidden;color:var(--muted)}
-.up b{color:#d9dbdd;font-size:15px;font-weight:600;display:block;margin-bottom:3px}
-.up span{font-size:12px}
-.up.has{border-style:solid;border-color:var(--brand);color:var(--brand)}
-.up img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
-.up .cap{position:relative;z-index:2}
-.up .clr{display:none;position:absolute;top:6px;right:6px;z-index:3;width:26px;height:26px;line-height:24px;
-  border-radius:50%;border:1px solid var(--brand);background:rgba(0,0,0,.35);color:var(--brand);
-  font-size:16px;text-align:center;cursor:pointer;padding:0;font-weight:700}
-.up.has .clr{display:block}
-.up .clr:hover{background:var(--brand);color:#1a1a1a}
-
-/* 按钮 */
-.btn{display:block;width:100%;height:52px;border-radius:12px;background:var(--brand);color:#1a1a1a;
-  font-weight:700;font-size:16.5px;text-align:center;line-height:52px}
-.btn:disabled{opacity:.45}
-.btn.ghost{background:transparent;border:1px solid var(--line2);color:var(--txt);font-weight:500;line-height:50px}
-.btn.dark{background:var(--card2);color:var(--txt);font-weight:600}
-
-/* 文案三列 */
-.copies{display:grid;gap:10px;margin-top:4px}
-.copy{background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:12px;position:relative}
-.copy.on{border-color:var(--brand);background:var(--card);box-shadow:none}
-.copy .t{font-size:15px;font-weight:600;margin-bottom:5px;padding-right:40px}
-.copy .c{font-size:13px;color:#c8cace;white-space:pre-wrap;max-height:150px;overflow:auto}
-.copy .tag{font-size:12px;color:var(--muted);margin-top:7px;word-break:break-all}
-.copy .pick{position:absolute;top:11px;right:11px;width:22px;height:22px;border-radius:50%;
-  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted)}
-.copy.on .pick{border-color:var(--brand);background:var(--brand);color:#181818}
-
-/* 账号/平台勾选 */
-/* 账号管理 / 人员管理 */
-.row{border:1px solid var(--line);background:var(--card2);border-radius:12px;padding:12px;margin-bottom:9px}
-.row .r1{display:flex;align-items:center;gap:8px}
-.row .nm{font-size:14.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.badge{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
-.badge.on{color:var(--brand);border-color:rgba(231,97,38,.5)}
-.badge.off{color:var(--muted);opacity:.7}
-.badge.ok{color:var(--ok);border-color:rgba(70,196,124,.45)}
-.badge.warn{color:var(--warn);border-color:rgba(240,165,0,.45)}
-.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;
-  border:1px solid var(--brand);background:var(--brand-soft);font-size:14px;margin:0 8px 8px 0}
-.tag b{font-weight:600}
-.tag i{font-style:normal;color:var(--muted);font-size:15px;padding:0 2px;cursor:pointer}
-.tag i:hover{color:var(--bad)}
-.urow{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);
-  background:var(--card2);border-radius:14px;margin-bottom:10px}
-.ava{width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:16px;color:#fff;background:linear-gradient(135deg,var(--brand),#a8441a);letter-spacing:0}
-.ava.mute{background:linear-gradient(135deg,#4a4f55,#33373b);color:var(--muted)}
-.uinfo{flex:1;min-width:0}
-.uinfo .n{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.uinfo .s{font-size:12px;color:var(--muted);margin-top:4px}
-.uacts{display:flex;gap:6px;flex:none}
-.seg{display:flex;gap:8px;margin-bottom:4px}
-.seg button{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--line2);background:transparent;
-  color:var(--muted);font-size:13.5px;line-height:1.4}
-.seg button small{font-size:11px;opacity:.75}
- .seg button.on{border-color:var(--brand);color:var(--brand);background:var(--card);box-shadow:none}
-.acc{border:1px solid var(--line);background:var(--card2);border-radius:14px;padding:12px;margin-bottom:10px}
-.acc-top{display:flex;gap:8px;align-items:center}
-.acc-top .inp{margin:0;flex:1}
-.acc-x{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,77,79,.45);
-  background:transparent;color:#ff8a8a;font-size:15px}
-.acc .two{margin-top:8px}
-.acc-fields{margin-top:6px}
-.acc-fields label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
-/* 平台开通 / 充值入口 */
-.guide{display:grid;gap:8px;margin-top:2px}
-.gitem{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);
-  background:var(--card2);border-radius:11px;flex-wrap:wrap}
-.gitem .gn{font-size:14px;font-weight:600;min-width:108px}
-.gitem .gk{font-size:12px;color:var(--muted);flex:1;min-width:140px;line-height:1.5}
-.gitem a{font-size:12.5px;font-weight:700;color:var(--brand);border:1px solid rgba(231,97,38,.42);
-  background:var(--brand-soft);padding:6px 10px;border-radius:8px;text-decoration:none;white-space:nowrap}
-.gitem a:hover{background:rgba(231,97,38,.24)}
-.acc-acts{display:flex;gap:8px;margin-top:10px}
-.fold summary{cursor:pointer;font-size:14px;color:var(--muted);padding:4px 0;list-style:none}
-.fold summary::-webkit-details-marker{display:none}
-.fold summary::before{content:'▸ ';color:var(--brand)}
-.fold[open] summary::before{content:'▾ '}
-.row .meta{font-size:12px;color:var(--muted);margin-top:6px;word-break:break-all;line-height:1.6}
-.row .acts{display:flex;gap:8px;margin-top:9px}
-.mini{font-size:12.5px;padding:6px 12px;border-radius:8px;border:1px solid var(--line2);color:#d5d7d9}
-.mini.b{border-color:var(--brand);color:var(--brand)}
-.mini.d{border-color:rgba(255,77,79,.45);color:#ff8a8a}
-.form{display:grid;gap:9px}
-.form label{font-size:12.5px;color:var(--muted);margin-bottom:-4px}
-.form .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.chips{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.chip{border:1px solid var(--line2);border-radius:11px;background:var(--bg2);padding:11px 10px;position:relative;text-align:left}
-.chip b{display:block;font-size:14px;font-weight:600}
-.chip span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
-.chip.on{border-color:var(--brand);background:var(--card);box-shadow:none}
-.chip.on b{color:var(--brand)}
-.chip .ck{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;
-  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
-.chip.on .ck{border-color:var(--brand);background:var(--brand);color:#181818;font-weight:700}
-.chip[disabled]{opacity:.45}
-
-/* 任务 */
-.task{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px;margin-bottom:10px}
-.task .r1{display:flex;align-items:center;gap:8px}
-.task .tt{font-size:14.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.st{font-size:11.5px;padding:3px 8px;border-radius:20px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
-.st.queued,.st.scripted{color:var(--warn);border-color:rgba(255,176,32,.4)}
-.st.rendering,.st.publishing{color:var(--brand);border-color:rgba(255,96,32,.45)}
-.st.done{color:var(--ok);border-color:rgba(47,208,122,.4)}
-.st.failed{color:var(--bad);border-color:rgba(255,93,93,.4)}
-.task .note{font-size:12.5px;color:var(--muted);margin-top:7px;word-break:break-all}
-.task .acts{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
-.task video{width:100%;border-radius:10px;margin-top:9px;background:#000}
-
-/* 进度条 */
-.bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:9px}
-.bar i{display:block;height:100%;width:35%;background:var(--brand);animation:mv 1.4s infinite linear}
-@keyframes mv{0%{transform:translateX(-100%)}100%{transform:translateX(320%)}}
-
-.empty{text-align:center;color:var(--muted);font-size:13.5px;padding:26px 0}
-.mask{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:40;padding:20px}
-.mask .box{background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:22px 18px;width:100%;max-width:360px}
-.mask h4{margin:0 0 4px;font-size:17px}
-.mask p{margin:0 0 14px;color:var(--muted);font-size:13px}
-.foot{color:var(--muted);font-size:12px;text-align:center;padding:6px 0 20px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(28px + env(safe-area-inset-bottom));
-  background:var(--card2);border:1px solid var(--line2);color:#fff;font-size:13.5px;padding:10px 16px;border-radius:20px;
-  z-index:60;max-width:88vw;text-align:center}
-
-/* ---------- 大屏 / 平板适配（6–12 寸） ---------- */
-@media (min-width:700px){
-  .wrap{max-width:860px}
-  .tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-  body{font-size:16px}
-  .hint,.flow{font-size:13.5px}
-}
-@media (min-width:1000px){
-  .wrap{max-width:1080px;padding-left:22px;padding-right:22px}
-  .top{padding-left:22px;padding-right:22px}
-  .tile{padding:16px 14px}
-  .tile b{font-size:18px}
-  .card{padding:18px 18px}
-  .logo{width:48px;height:48px;flex:0 0 48px}
-  .brandtxt b{font-size:19px}
-}
-@media (min-width:1400px){
-  .wrap{max-width:1220px}
-}
-@media (max-aspect-ratio: 1/1) and (min-height:1000px){
-  .wrap{max-width:900px}
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+h1,h2,h3,.display{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:600;line-height:1.15}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 18px}
+header.site{position:sticky;top:0;z-index:50;background:rgba(36,39,42,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;color:#fff;text-decoration:none}
+.brand .mark{width:36px;height:36px;border-radius:50%;object-fit:cover;display:block}
+.brand small{display:block;font-family:'Manrope',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.nav a.back{font-size:14px;font-weight:700;color:var(--muted);padding:8px 0}
+.nav a.back:hover{color:var(--orange2)}
+main{padding:34px 0 60px}
+.eyebrow{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--orange);margin-bottom:10px}
+h1{font-size:clamp(24px,4vw,34px);margin-bottom:6px}
+.sub{color:var(--muted);font-size:14.5px;margin-bottom:28px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:18px}
+.card h3{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
+input[type=text],input[type=password],input[type=url],textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 13px;outline:none}
+input:focus,textarea:focus{border-color:var(--orange)}
+textarea{min-height:84px;resize:vertical}
+.hint{font-size:12px;color:var(--faint);margin-top:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.plats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:860px){.plats{grid-template-columns:repeat(2,1fr)}}
+.plat{border:1.5px solid var(--border2);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;user-select:none}
+.plat .ico{font-size:20px;line-height:1}
+.plat .nm{display:block;font-size:12px;font-weight:700;margin-top:6px}
+.plat .st{display:block;font-size:10.5px;color:var(--faint);margin-top:2px}
+.plat.on{border-color:var(--orange);background:var(--orange-soft)}
+.plat.on::after{content:"✓";position:absolute;top:6px;right:8px;color:var(--orange);font-weight:800}
+.plat .warn{display:none}
+.plat.no .warn{display:block;color:var(--faint);font-size:9.5px;margin-top:3px}
+.field{margin-bottom:14px}
+.row{margin-bottom:14px}
+.upload-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.upload-row input[type=url]{flex:1;min-width:200px}
+.upbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:13px;font-weight:700;padding:11px 16px;cursor:pointer;min-height:42px;white-space:nowrap;transition:border-color .15s,background .15s}
+.upbtn:hover{border-color:var(--orange);color:var(--orange2)}
+.upbtn:disabled{opacity:.5;cursor:wait}
+.upbtn.busy::before{content:"";width:12px;height:12px;border:2px solid var(--faint);border-top-color:var(--orange);border-radius:50%;display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16px;padding:15px 30px;border-radius:6px;cursor:pointer;border:1px solid transparent;min-height:52px;width:100%;transition:transform .15s,background .2s,opacity .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange2)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#result{margin-top:16px;display:none}
+#result.ok{border:1px solid var(--green);background:rgba(53,176,107,.1);border-radius:8px;padding:14px 16px;color:#d8f3e3}
+#result.err{border:1px solid var(--red);background:rgba(224,92,74,.1);border-radius:8px;padding:14px 16px;color:#f6d6d0}
+#login{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:30px 26px;text-align:center}
+.login-box h2{font-size:22px;margin-bottom:6px}
+.login-box p{color:var(--muted);font-size:13px;margin-bottom:20px}
+.login-box input{margin-bottom:12px}
+.login-box .err{color:var(--red);font-size:12.5px;min-height:18px;margin-bottom:8px}
+.login-box .btn{background:var(--orange);color:#fff;font-weight:800}
+footer.site{border-top:1px solid var(--border);padding:22px 0;color:var(--faint);font-size:12.5px;text-align:center}
 </style>
 </head>
 <body>
 
-<div class="top">
-  <img class="logo" src="/assets/logo.png" alt="9A">
-  <div class="brandtxt"><b>9A Battery</b><span>WORKBENCH</span></div>
-  <div class="right">
-    <span id="who" class="lnk"></span>
-    <a id="btnSwitch" class="lnk" href="javascript:void(0)" style="margin-left:10px;display:none">切换账号</a>
+<div id="login">
+  <div class="login-box">
+    <img src="assets/logo.webp" alt="9A" style="width:52px;height:52px;border-radius:50%;margin:0 auto 14px">
+    <h2>发布助手</h2>
+    <p>9A Battery · 内部发布工具</p>
+    <input type="password" id="pass" placeholder="输入访问密码" autocomplete="off">
+    <div class="err" id="loginErr"></div>
+    <button class="btn" onclick="tryLogin()">进入</button>
   </div>
 </div>
 
-<div class="wrap">
-  <!-- 未登录 -->
-  <div id="loginBox" class="card" style="display:none">
-    <div class="hd"><img class="hdlogo" src="/assets/logo.png" alt="9A"><h3>登录工作台</h3></div>
-    <div style="display:grid;gap:10px">
-      <input id="lu" class="inp" placeholder="用户名" autocomplete="username">
-      <input id="lp" class="inp" type="password" placeholder="口令" autocomplete="current-password">
-      <button id="lbtn" class="btn">登 录</button>
-    </div>
-    <div class="hint">公司内部使用：1 个老板 + 2 个运营。口令忘了找管理员重置。</div>
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><img class="mark" src="assets/logo.webp" alt="9A"><span>9A Battery<small>Publish Center</small></span></a>
+    <a class="back" href="index.html">← 返回官网</a>
   </div>
+</header>
 
-  <div id="main" style="display:none">
-    <div class="tiles">
-      <div class="tile on" id="tabCopy"><small>① 先做视频</small><b>视频复刻</b></div>
-      <div class="tile" id="tabPub"><small>② 再发布</small><b>多平台发布</b></div>
-      <div class="tile" id="tabAcc"><small>③ 账号</small><b>发布账号</b></div>
-      <div class="tile" id="tabUser" style="display:none"><small>④ 人员</small><b>员工账号</b></div>
-      <div class="tile" id="tabCS" style="display:block"><small>⑤ 客户</small><b>客服台</b></div>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Publish Center / Центр публикаций</div>
+    <h1>多平台内容发布</h1>
+    <p class="sub">选择平台、填写各平台文案，一键发布。默认文案为俄语（面向俄罗斯及中亚五国市场）。</p>
+
+    <div class="card">
+      <h3><span class="n">1</span> 发布目标（选择要发布的平台）</h3>
+      <div class="plats" id="plats"></div>
+      <div class="hint">未勾选的平台不会发布；默认全部勾选。</div>
     </div>
 
-    <div id="demoBar" style="display:none;background:rgba(240,165,0,.14);border:1px solid #f0a500;color:#f0b64d;padding:10px 12px;border-radius:10px;margin:0 0 10px;font-size:13px;line-height:1.5">演示账号：只能查看，不能生成文案、生成视频、上传素材或发布。</div>
-
-    <!-- ============ 视频复刻 ============ -->
-    <section id="paneCopy">
-      <div class="hint" style="margin:0 0 10px">生成内容为俄语（面向俄罗斯及中亚五国市场）。</div>
-      <div class="flow">
-        <span>丢爆款链接</span><i>→</i><span>传素材</span><i>→</i><span>AI 拆解</span><i>→</i>
-        <b style="color:var(--brand)">3 套文案</b><i>→</i><span>选一套</span><i>→</i><span>生成视频</span><i>→</i><span>预览 / 去发布</span>
+    <div class="card">
+      <h3><span class="n">2</span> 产品信息</h3>
+      <div class="grid2">
+        <div class="field"><label>产品名（选填）</label><input type="text" id="product" placeholder="例如：72V 60Ah 锂电池"></div>
+        <div class="field"><label>整体描述（选填，各平台未填文案时使用）</label><input type="text" id="desc" placeholder="俄语或英语均可"></div>
       </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">1</div><h3>爆款视频链接</h3></div>
-        <input id="link" class="inp" placeholder="https://… （抖音 / TikTok / YouTube 爆款视频链">
-        <div class="hint">把你想复刻的爆款链接粘进来，AI 会读它的脚本、镜头、节奏和钩子。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">2</div><h3>上传你的素材（人物 / 背景 / 声音 / 产品原图）</h3></div>
-        <div class="grid2">
-          <div class="up" id="upPerson"><input type="file" accept="image/*,video/*" hidden><div class="cap"><b>人物素材</b><span>人物 · 视频或图片</span></div></div>
-          <div class="up" id="upScene"><input type="file" accept="image/*,video/*" hidden><div class="cap"><b>背景场景</b><span>背景 · 视频或图片</span></div></div>
-          <div class="up" id="upAudio"><input type="file" accept="audio/*" hidden><div class="cap"><b>配音 / 音频</b><span>声音 · mp3/wav 等</span></div></div>
-          <div class="up" id="upProduct"><input type="file" accept="image/*" hidden><div class="cap"><b>电池 / 车辆</b><span>产品原图 · 图片</span></div></div>
-        </div>
-        <div class="hint">主体用你的原素材，AI 只按爆款结构排顺序、卡节奏，绝不乱改你的东西。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">3</div><h3>开始拆解</h3></div>
-        <input id="topic" class="inp" placeholder="这条视频卖的是什么？例如 72V65Ah 用于 U2 外卖车">
-        <div style="height:10px"></div>
-        <button id="btnAnalyze" class="btn">开始拆解</button>
-        <div class="hint" id="analyzeHint">已上传素材：0</div>
-      </div>
-
-      <div class="card" id="copyCard" style="display:none">
-        <div class="hd"><div class="num">4</div><h3>3 套文案（选一套）</h3></div>
-        <div class="copies" id="copies"></div>
-        <div style="height:12px"></div>
-        <button id="btnGen" class="btn">生成视频</button>
-        <div class="hint" id="genHint">选一套文案再点生成，出片约 3 分钟。</div>
-      </div>
-
-      <div class="card" id="videoCard" style="display:none">
-        <div class="hd"><div class="num">5</div><h3>预览 / 去发布</h3></div>
-        <video id="vid" controls playsinline preload="metadata"></video>
-        <div style="height:12px"></div>
-        <button id="btnGoPub" class="btn dark">去发布这一条</button>
-        <a id="dl" class="btn ghost" style="margin-top:9px" download>下载视频</a>
-      </div>
-    </section>
-
-    <!-- ============ 多平台发布 ============ -->
-    <section id="panePub" style="display:none">
-      <div class="card">
-        <div class="hd"><div class="num">0</div><h3>要发哪一条</h3></div>
-        <div class="chips" style="margin-bottom:10px">
-          <div class="chip on" id="modeTask"><div class="ck">✓</div><b>复刻出的片</b><span>从任务里挑</span></div>
-          <div class="chip" id="modeLocal"><div class="ck"></div><b>人工发布</b><span>手机/电脑选视频</span></div>
-        </div>
-        <div id="boxTask">
-          <select id="taskPick" class="inp">
-            <option value="">— 选一条已出片的视频 —</option>
-          </select>
-          <div class="hint">在上面「视频复刻」做完的视频会自动出现在这里。</div>
-        </div>
-        <div id="boxLocal" style="display:none">
-          <div class="up" id="upLocalVideo"><input type="file" accept="video/*" hidden>
-            <div class="cap"><b>选手机里的视频</b><span>点这里从相册 / 电脑选，单个 ≤60MB</span></div>
-            <button class="clr" id="upLocalClear" title="清空重新选">×</button></div>
-          <div class="hint" id="localHint">不复刻也能发：手机拍的、电脑剪好的，传上来就发。</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">1</div><h3>发布账号（可多选）</h3></div>
-        <div class="chips" id="accChips"></div>
-        <div class="hint" id="accHint">还没建账号。到「③ 发布账号」里加平台账号，可按国家分开建。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">2</div><h3>文案（可自己填，留空自动带）</h3></div>
-        <div class="form">
-          <label>标题</label>
-          <input id="pubTitle" class="inp" placeholder="默认用复刻标题，想改就改">
-          <label>整体描述（所有平台共用）</label>
-          <textarea id="pubDesc" class="inp" rows="3" placeholder="默认用复刻文案（自动带入），留空就行"></textarea>
-          <div id="pubPerPlat"></div>
-          <div class="hint" id="pubPerPlatHint" style="margin:0">勾哪些账号，下面就按平台出现几格文案（同一个平台多个账号共用一格）。</div>
-        </div>
-        <div class="hint" id="pubCopyHint">复刻模式：默认用复刻出来的文案，下面格子留空就行。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">3</div><h3>确认并发布</h3></div>
-        <button id="btnPub" class="btn">确认并发布</button>
-        <div class="hint" id="pubHint">多账号并行发，几十秒内出结果。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">4</div><h3>任务列表</h3></div>
-        <div id="taskList"></div>
-      </div>
-    </section>
-
-    <!-- ============ 发布账号管理 ============ -->
-    <section id="paneAcc" style="display:none">
-      <div class="card">
-        <div class="hd"><div class="num">◎</div><h3>平台开通入口（客户自己点链接去注册）</h3></div>
-        <div class="guide">
-          <div class="gitem"><span class="gn">Telegram</span><span class="gk">注册账号，找 @BotFather 建机器人拿 token，再把机器人拉进群拿 chat_id</span><a href="https://telegram.org/" target="_blank" rel="noopener">去注册</a><a href="https://t.me/BotFather" target="_blank" rel="noopener">建机器人</a></div>
-          <div class="gitem"><span class="gn">Facebook</span><span class="gk">注册个人号 → 建主页 → 开发者后台建应用拿 page_id / token</span><a href="https://www.facebook.com/r.php" target="_blank" rel="noopener">去注册</a><a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">开发者后台</a></div>
-          <div class="gitem"><span class="gn">Instagram</span><span class="gk">注册专业号，绑定到 Facebook 主页，用 Meta 的接口发 Reels</span><a href="https://www.instagram.com/accounts/emailsignup/" target="_blank" rel="noopener">去注册</a><a href="https://developers.facebook.com/docs/instagram-platform" target="_blank" rel="noopener">接口文档</a></div>
-          <div class="gitem"><span class="gn">YouTube</span><span class="gk">注册谷歌账号 → 建频道 → Cloud 控制台建 OAuth 拿 client_id / client_secret / refresh_token</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">去注册</a><a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">建 OAuth 凭据</a></div>
-          <div class="gitem"><span class="gn">VK</span><span class="gk">注册 VK 账号 → 建社区 → 开发者后台拿 token / group_id</span><a href="https://vk.com/" target="_blank" rel="noopener">去注册</a><a href="https://dev.vk.com/" target="_blank" rel="noopener">开发者后台</a></div>
-          <div class="gitem"><span class="gn">TikTok</span><span class="gk">注册账号 → 申请开发者应用，拿到 access_token / open_id 才能发视频</span><a href="https://www.tiktok.com/signup" target="_blank" rel="noopener">去注册</a><a href="https://developers.tiktok.com/" target="_blank" rel="noopener">开发者后台</a></div>
-        </div>
-        <div class="hint">注册好拿到凭据，回到下面「发布账号」点“＋ 加一个账号”填进来，就能用来发。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">¥</div><h3>AI 额度（火山方舟 token，用谁的就充谁的）</h3></div>
-        <div class="guide">
-          <div class="gitem"><span class="gn">火山方舟</span><span class="gk">生成文案和出片都走你自己的方舟账号，额度充在你自己名下，我们这边不代扣</span><a href="https://console.volcengine.com/ark" target="_blank" rel="noopener">控制台</a><a href="https://console.volcengine.com/finance" target="_blank" rel="noopener">去充值</a></div>
-        </div>
-        <div class="hint">充完把 Key 填到下面「三套老凭据」里的 ark_api_key，点保存就生效。</div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><div class="num">+</div><h3>发布账号（<span id="accCount">0</span>）</h3></div>
-        <button id="btnAccAdd" class="btn">＋ 加一个账号</button>
-        <button id="btnAccImportOpen" class="btn ghost" style="margin-top:8px">一键导入</button>
-        <div id="accImportBox" style="display:none;margin-top:10px">
-          <textarea id="accImportText" class="inp" rows="4" placeholder="一行一个：名字|平台|国家|token=xxx,chat_id=yyy
-例：俄罗斯TG主群|tg|RU|token=123:abc,chat_id=-100123"></textarea>
-          <button id="btnAccImport" class="btn ghost" style="margin-top:8px">导入进去</button>
-          <div class="hint" id="accImportHint">平台写 tg/fb/ig/yt/vk/tt；国家可写 RU/KZ/UZ 或留空；每行一个账号。也可粘 JSON 数组。</div>
-          <div style="height:10px"></div>
-          <label>或者上传表格（Excel .xlsx / CSV），一次全部进去</label>
-          <button id="btnAccImportFile" class="btn ghost" style="margin-top:8px">选择表格文件</button>
-          <input id="accImportFile" type="file" accept=".xlsx,.xlsm,.csv" style="display:none">
-          <div class="hint" id="accImportFileHint">表头要有「账号名」「平台」，再加「国家」和各平台凭据列（token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id），用哪列填哪列，空着不管。</div>
-        </div>
-        <div id="accList" style="margin-top:12px"></div>
-        <div class="hint" id="accAdminHint"></div>
-      </div>
-
-      <div class="card">
-        <details class="fold">
-          <summary>三套老凭据（按套别发的那套，平时不用展开）</summary>
-          <div class="chips" id="setPick" style="margin-top:12px"></div>
-          <label style="margin-top:10px">这套用哪些平台（对接好的都在这儿）</label>
-          <div class="chips" id="setPlats"></div>
-          <select id="setPlatAdd" class="inp" style="margin-top:8px"></select>
-          <div id="setFields" class="form"></div>
-          <div style="height:6px"></div>
-          <button id="btnSetSave" class="btn">保存这套凭据</button>
-          <div class="hint" id="setHint">这三套存在数据库 settings 表里，发布页勾哪套就用哪套。填全一套，那套就算可用。</div>
-          <label style="margin-top:14px">批量导入（粘 JSON 或 键=值 都行，带 _2 / _3 后缀就进对应套）</label>
-          <textarea id="setImportText" class="inp" rows="5" placeholder='例如 {"tg_bot_token":"123:abc","tg_chat_id":"-100123","fb_page_token_2":"EAA..."}'></textarea>
-          <button id="btnSetImport" class="btn ghost" style="margin-top:8px">导入到数据库</button>
-          <div class="hint" id="setImportHint"></div>
-        </details>
-      </div>
-    </section>
-
-    <!-- ============ 员工账号管理 ============ -->
-    <section id="paneUser" style="display:none">
-      <div class="card">
-        <div class="hd"><div class="num">+</div><h3 id="userFormTitle">加一个人</h3></div>
-        <div class="form">
-          <div class="two">
-            <div><label>登录名（他登录时输的）</label><input id="usName" class="inp" placeholder="例如 op3"></div>
-            <div><label>显示名（列表里看到的）</label><input id="usShow" class="inp" placeholder="例如 运营三"></div>
+      <div class="grid2">
+        <div class="field">
+          <label>图片链接（选填）</label>
+          <div class="upload-row">
+            <input type="url" id="image_url" placeholder="https://…（产品主图直链）">
+            <button class="upbtn" id="upImg" onclick="pickMedia('image')">📎 选图片上传</button>
           </div>
-          <label>权限</label>
-          <div class="seg" id="roleSeg">
-            <button type="button" data-v="staff" class="on">运营<br><small>只管自己的任务</small></button>
-            <button type="button" data-v="admin">管理员<br><small>能管账号和配置</small></button>
-            <button type="button" data-v="demo">演示<br><small>只能看，不能发</small></button>
+          <div class="hint">可粘贴图片直链，或点「选图片上传」从手机/电脑选图（自动生成链接）。</div>
+        </div>
+        <div class="field">
+          <label>视频链接（选填）</label>
+          <div class="upload-row">
+            <input type="url" id="video_url" placeholder="https://…（视频直链）">
+            <button class="upbtn" id="upVid" onclick="pickMedia('video')">📎 选视频上传</button>
           </div>
-          <select id="usRole" style="display:none"><option value="staff">运营</option><option value="admin">管理员</option><option value="demo">演示</option></select>
-          <label>口令（留空自动生成 8 位）</label>
-          <input id="usPwd" class="inp" placeholder="不想设就留空，保存后口令会显示出来">
-          <button id="btnUserSave" class="btn">存下来</button>
-          <div class="hint" id="userFormHint">口令只在保存那一下显示，抄给他就行；不想要这个人，列表里点「删掉」就没了。</div>
+          <div class="hint">有视频链接时优先发视频；支持从手机/电脑选择视频上传。</div>
         </div>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="hd"><div class="num">≡</div><h3>现有的人（<span id="userCount">0</span>）</h3></div>
-        <div id="userList"></div>
-      </div>
-    </section>
+    <div class="card">
+      <h3><span class="n">3</span> 各平台文案（可分别填写）</h3>
+      <div id="txts"></div>
+    </div>
+
+    <button class="btn btn-primary" id="pubBtn" onclick="publish()">发布到所选平台</button>
+    <div id="result"></div>
   </div>
+</main>
 
-  <div class="foot">9A Battery · WORKBENCH · 内部使用</div>
-</div>
-
+<footer class="site">© 2026 9A Battery · 内部工具 · 请勿外传</footer>
 
 <script>
-/* ---------------- 语言跟随系统（中 / 英 / 俄） ---------------- */
-const I18N = {
-  en: {"切换账号": "Switch account", "登录工作台": "Sign in to Workbench", "登 录": "Sign in", "公司内部使用：1 个老板 + 2 个运营。口令忘了找管理员重置。": "Internal use: 1 owner + 2 operators. Forgotten password — ask the admin to reset.", "① 先做视频": "① Video first", "视频复刻": "Video replicate", "② 再发布": "② Then publish", "多平台发布": "Multi-platform publish", "③ 账号": "③ Accounts", "发布账号": "Accounts", "④ 人员": "④ People", "员工账号": "Staff accounts", "⑤ 客户": "⑤ Clients", "客服台": "Inbox", "演示账号：只能查看，不能生成文案、生成视频、上传素材或发布。": "Demo account: view only — cannot generate copy or video, upload assets or publish.", "生成内容为俄语（面向俄罗斯及中亚五国市场）。": "Content is generated in Russian (Russia & Central Asia).", "丢爆款链接": "Paste viral link", "传素材": "Upload assets", "AI 拆解": "AI breakdown", "3 套文案": "3 scripts", "选一套": "Pick one", "生成视频": "Generate video", "预览 / 去发布": "Preview / publish", "爆款视频链接": "Viral video link", "把你想复刻的爆款链接粘进来，AI 会读它的脚本、镜头、节奏和钩子。": "Paste the viral link you want to replicate; AI reads its script, shots, pacing and hook.", "上传你的素材（人物 / 背景 / 声音 / 产品原图）": "Upload your assets (person / background / audio / product photos)", "人物素材": "Person", "人物 · 视频或图片": "Person · video or image", "背景场景": "Background", "背景 · 视频或图片": "Background · video or image", "配音 / 音频": "Voice / audio", "声音 · mp3/wav 等": "Audio · mp3/wav etc.", "电池 / 车辆": "Battery / vehicle", "产品原图 · 图片": "Product photo · image", "主体用你的原素材，AI 只按爆款结构排顺序、卡节奏，绝不乱改你的东西。": "Your assets stay intact — AI only re-orders them to the viral structure and pacing.", "开始拆解": "Analyze", "已上传素材：": "Assets uploaded: ", "3 套文案（选一套）": "3 scripts (pick one)", "选一套文案再点生成，出片约 3 分钟。": "Pick a script, then generate — about 3 minutes.", "去发布这一条": "Publish this one", "下载视频": "Download video", "要发哪一条": "Which one to publish", "复刻出的片": "Generated videos", "从任务里挑": "Pick from tasks", "人工发布": "Manual upload", "手机/电脑选视频": "Pick video from phone/PC", "— 选一条已出片的视频 —": "— Select a ready video —", "在上面「视频复刻」做完的视频会自动出现在这里。": "Videos finished in Video replicate appear here automatically.", "选手机里的视频": "Choose video from phone", "点这里从相册 / 电脑选，单个 ≤60MB": "Tap to pick from gallery or PC, up to 60 MB each", "不复刻也能发：手机拍的、电脑剪好的，传上来就发。": "No replicate needed: upload your own video and publish.", "发布账号（可多选）": "Accounts (multi-select)", "还没建账号。到「③ 发布账号」里加平台账号，可按国家分开建。": "No accounts yet. Add them under ③ Accounts; you can split by country.", "文案（可自己填，留空自动带）": "Copy (editable; auto-filled if empty)", "标题": "Title", "整体描述（所有平台共用）": "Main description (shared by all platforms)", "勾哪些账号，下面就按平台出现几格文案（同一个平台多个账号共用一格）。": "Each checked platform gets its own copy box (accounts on one platform share a box).", "复刻模式：默认用复刻出来的文案，下面格子留空就行。": "Replicate mode: the generated copy is used; leave the boxes empty.", "确认并发布": "Confirm & publish", "多账号并行发，几十秒内出结果。": "Parallel multi-account publishing, results in tens of seconds.", "任务列表": "Tasks", "平台开通入口（客户自己点链接去注册）": "Platform setup links (register directly)", "注册账号，找 @BotFather 建机器人拿 token，再把机器人拉进群拿 chat_id": "Register, create a bot via @BotFather for the token, add it to the group and take chat_id", "去注册": "Register", "建机器人": "Create bot", "注册个人号 → 建主页 → 开发者后台建应用拿 page_id / token": "Register account → create Page → create app in developer console for page_id / token", "开发者后台": "Dev console", "注册专业号，绑定到 Facebook 主页，用 Meta 的接口发 Reels": "Register a professional account, link it to a Facebook Page, publish Reels via Meta API", "接口文档": "API docs", "注册谷歌账号 → 建频道 → Cloud 控制台建 OAuth 拿 client_id / client_secret / refresh_token": "Google account → create channel → OAuth in Cloud console for client_id / client_secret / refresh_token", "建 OAuth 凭据": "Create OAuth keys", "注册 VK 账号 → 建社区 → 开发者后台拿 token / group_id": "VK account → create community → dev console for token / group_id", "注册账号 → 申请开发者应用，拿到 access_token / open_id 才能发视频": "Register → apply for a developer app; access_token / open_id are required to post videos", "注册好拿到凭据，回到下面「发布账号」点“＋ 加一个账号”填进来，就能用来发。": "Once you have credentials, add the account under Accounts with “+ Add account”.", "AI 额度（火山方舟 token，用谁的就充谁的）": "AI quota (Volcengine Ark token — top up your own)", "火山方舟": "Volcengine Ark", "生成文案和出片都走你自己的方舟账号，额度充在你自己名下，我们这边不代扣": "Copy generation and rendering run on your own Ark account and quota; we never charge it", "控制台": "Console", "去充值": "Top up", "充完把 Key 填到下面「三套老凭据」里的 ark_api_key，点保存就生效。": "After topping up, put the key into ark_api_key under Legacy credentials and save.", "发布账号（": "Accounts (", "＋ 加一个账号": "+ Add account", "一键导入": "Bulk import", "导入进去": "Import", "平台写 tg/fb/ig/yt/vk/tt；国家可写 RU/KZ/UZ 或留空；每行一个账号。也可粘 JSON 数组。": "Platform: tg/fb/ig/yt/vk/tt; country RU/KZ/UZ or empty; one account per line. JSON array also works.", "或者上传表格（Excel .xlsx / CSV），一次全部进去": "Or upload a sheet (Excel .xlsx / CSV) to import all at once", "选择表格文件": "Choose file", "表头要有「账号名」「平台」，再加「国家」和各平台凭据列（token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id），用哪列填哪列，空着不管。": "The sheet needs account name and platform columns, plus country and credential columns (token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id); fill only what you use.", "三套老凭据（按套别发的那套，平时不用展开）": "Legacy credentials (per set; usually collapsed)", "这套用哪些平台（对接好的都在这儿）": "Platforms for this set (all connected ones)", "保存这套凭据": "Save this set", "这三套存在数据库 settings 表里，发布页勾哪套就用哪套。填全一套，那套就算可用。": "The three sets live in the settings table; the publish page uses the checked one. A complete set counts as ready.", "批量导入（粘 JSON 或 键=值 都行，带 _2 / _3 后缀就进对应套）": "Bulk import (JSON or key=value; _2/_3 suffix targets that set)", "导入到数据库": "Import to database", "加一个人": "Add a person", "登录名（他登录时输的）": "Login name (typed at sign-in)", "显示名（列表里看到的）": "Display name (shown in list)", "权限": "Role", "运营": "Operator", "只管自己的任务": "Own tasks only", "管理员": "Admin", "能管账号和配置": "Manages accounts & settings", "演示": "Demo", "只能看，不能发": "View only", "口令（留空自动生成 8 位）": "Password (8 chars auto-generated if empty)", "存下来": "Save", "口令只在保存那一下显示，抄给他就行；不想要这个人，列表里点「删掉」就没了。": "The password is shown once at save — pass it on. To remove a person, click Delete.", "现有的人（": "People (", "）": ")", "9A Battery · WORKBENCH · 内部使用": "9A Battery · WORKBENCH · Internal use", "https://… （抖音 / TikTok / YouTube 爆款视频链": "https://… (Douyin / TikTok / YouTube viral video link)", "一行一个：名字|平台|国家|token=xxx,chat_id=yyy": "One per line: name|platform|country|token=xxx,chat_id=yyy", "例：俄罗斯TG主群|tg|RU|token=123:abc,chat_id=-100123": "e.g. RU TG main|tg|RU|token=123:abc,chat_id=-100123", "不想设就留空，保存后口令会显示出来": "Leave empty to auto-generate; shown after save", "例如 op3": "e.g. op3", "例如 运营三": "e.g. Operator 3", "口令": "Password", "用户名": "Username", "这条视频卖的是什么？例如 72V65Ah 用于 U2 外卖车": "What is this video selling? e.g. 72V65Ah for U2 delivery bikes", "默认用复刻文案（自动带入），留空就行": "Uses the generated copy by default — leave empty", "默认用复刻标题，想改就改": "Uses the generated title by default — edit if needed", "还没有任务": "No tasks yet", "完成": "Done", "预览": "Preview", "复制链接": "Copy link", "删掉": "Delete", "立即清理超期文件": "Clean up expired files", "演示数据（只读）": "Demo data (read-only)", "勾哪些发到哪些账号，可多选，并行发。": "Pick accounts to publish to — multi-select, runs in parallel.", "还没勾账号：先在上面勾 1 个或多个发布账号，这里才会按平台出现文案格。": "No accounts checked: check one or more above and copy boxes appear per platform.", "任务 #": "Task #", "退出登录": "Sign out"},
-  ru: {"切换账号": "Сменить аккаунт", "登录工作台": "Вход в Workbench", "登 录": "Войти", "公司内部使用：1 个老板 + 2 个运营。口令忘了找管理员重置。": "Внутреннее использование: 1 владелец + 2 оператора. Забыли пароль — обратитесь к администратору.", "① 先做视频": "① Сначала видео", "视频复刻": "Видео-ремикс", "② 再发布": "② Затем публикация", "多平台发布": "Публикация на платформы", "③ 账号": "③ Аккаунты", "发布账号": "Аккаунты", "④ 人员": "④ Сотрудники", "员工账号": "Аккаунты сотрудников", "⑤ 客户": "⑤ Клиенты", "客服台": "Заявки", "演示账号：只能查看，不能生成文案、生成视频、上传素材或发布。": "Демо-аккаунт: только просмотр — нельзя создавать текст и видео, загружать материалы или публиковать.", "生成内容为俄语（面向俄罗斯及中亚五国市场）。": "Контент создаётся на русском (Россия и Центральная Азия).", "丢爆款链接": "Вставьте ссылку", "传素材": "Загрузите материалы", "AI 拆解": "ИИ-разбор", "3 套文案": "3 текста", "选一套": "Выберите", "生成视频": "Создать видео", "预览 / 去发布": "Просмотр / публикация", "爆款视频链接": "Ссылка на вирусное видео", "把你想复刻的爆款链接粘进来，AI 会读它的脚本、镜头、节奏和钩子。": "Вставьте ссылку — ИИ разберёт сценарий, кадры, ритм и хук.", "上传你的素材（人物 / 背景 / 声音 / 产品原图）": "Загрузите материалы (человек / фон / звук / фото продукта)", "人物素材": "Человек", "人物 · 视频或图片": "Человек · видео или фото", "背景场景": "Фон", "背景 · 视频或图片": "Фон · видео или фото", "配音 / 音频": "Озвучка / аудио", "声音 · mp3/wav 等": "Звук · mp3/wav и др.", "电池 / 车辆": "Батарея / транспорт", "产品原图 · 图片": "Фото продукта", "主体用你的原素材，AI 只按爆款结构排顺序、卡节奏，绝不乱改你的东西。": "Ваши материалы не меняются — ИИ только выстраивает их по структуре и ритму вирусного видео.", "开始拆解": "Разобрать", "已上传素材：": "Загружено: ", "3 套文案（选一套）": "3 текста (выберите один)", "选一套文案再点生成，出片约 3 分钟。": "Выберите текст и нажмите создать — около 3 минут.", "去发布这一条": "Опубликовать этот", "下载视频": "Скачать видео", "要发哪一条": "Какую публиковать", "复刻出的片": "Готовые видео", "从任务里挑": "Выбрать из задач", "人工发布": "Ручная загрузка", "手机/电脑选视频": "Выбрать видео с телефона/ПК", "— 选一条已出片的视频 —": "— Выберите готовое видео —", "在上面「视频复刻」做完的视频会自动出现在这里。": "Готовые видео из «Видео-ремикс» появятся здесь автоматически.", "选手机里的视频": "Выбрать видео с телефона", "点这里从相册 / 电脑选，单个 ≤60MB": "Нажмите, чтобы выбрать из галереи или с ПК, до 60 МБ", "不复刻也能发：手机拍的、电脑剪好的，传上来就发。": "Без ремикса: загрузите своё видео и публикуйте.", "发布账号（可多选）": "Аккаунты (можно несколько)", "还没建账号。到「③ 发布账号」里加平台账号，可按国家分开建。": "Аккаунтов нет. Добавьте их в ③ Аккаунты, можно по странам.", "文案（可自己填，留空自动带）": "Текст (можно править; пусто — подставится сам)", "标题": "Заголовок", "整体描述（所有平台共用）": "Общее описание (для всех платформ)", "勾哪些账号，下面就按平台出现几格文案（同一个平台多个账号共用一格）。": "Для каждой отмеченной платформы появится своё поле текста.", "复刻模式：默认用复刻出来的文案，下面格子留空就行。": "Режим ремикса: используется готовый текст, поля можно оставить пустыми.", "确认并发布": "Подтвердить и опубликовать", "多账号并行发，几十秒内出结果。": "Публикация в несколько аккаунтов параллельно, результат за десятки секунд.", "任务列表": "Задачи", "平台开通入口（客户自己点链接去注册）": "Ссылки на регистрацию платформ", "注册账号，找 @BotFather 建机器人拿 token，再把机器人拉进群拿 chat_id": "Регистрация, бот через @BotFather для токена, добавьте его в группу и возьмите chat_id", "去注册": "Регистрация", "建机器人": "Создать бота", "注册个人号 → 建主页 → 开发者后台建应用拿 page_id / token": "Аккаунт → создайте Страницу → приложение в кабинете разработчика для page_id / token", "开发者后台": "Кабинет разработчика", "注册专业号，绑定到 Facebook 主页，用 Meta 的接口发 Reels": "Профессиональный аккаунт, привязка к Странице Facebook, публикация Reels через API Meta", "接口文档": "Документация API", "注册谷歌账号 → 建频道 → Cloud 控制台建 OAuth 拿 client_id / client_secret / refresh_token": "Аккаунт Google → создайте канал → OAuth в консоли Cloud для client_id / client_secret / refresh_token", "建 OAuth 凭据": "Создать OAuth-ключи", "注册 VK 账号 → 建社区 → 开发者后台拿 token / group_id": "Аккаунт VK → создайте сообщество → кабинет разработчика для token / group_id", "注册账号 → 申请开发者应用，拿到 access_token / open_id 才能发视频": "Регистрация → заявка на приложение; нужны access_token / open_id для публикации", "注册好拿到凭据，回到下面「发布账号」点“＋ 加一个账号”填进来，就能用来发。": "Получив ключи, добавьте аккаунт ниже в «Аккаунты» через «+ Добавить аккаунт».", "AI 额度（火山方舟 token，用谁的就充谁的）": "Квота ИИ (токен Volcengine Ark — пополняете свой)", "火山方舟": "Volcengine Ark", "生成文案和出片都走你自己的方舟账号，额度充在你自己名下，我们这边不代扣": "Генерация текста и видео идёт через ваш аккаунт Ark и вашу квоту — мы её не расходуем", "控制台": "Консоль", "去充值": "Пополнить", "充完把 Key 填到下面「三套老凭据」里的 ark_api_key，点保存就生效。": "После пополнения вставьте ключ в ark_api_key в «Старые ключи» и сохраните.", "发布账号（": "Аккаунты (", "＋ 加一个账号": "+ Добавить аккаунт", "一键导入": "Массовый импорт", "导入进去": "Импортировать", "平台写 tg/fb/ig/yt/vk/tt；国家可写 RU/KZ/UZ 或留空；每行一个账号。也可粘 JSON 数组。": "Платформа: tg/fb/ig/yt/vk/tt; страна RU/KZ/UZ или пусто; один аккаунт в строке. Можно JSON.", "或者上传表格（Excel .xlsx / CSV），一次全部进去": "Или загрузите таблицу (Excel .xlsx / CSV) — всё сразу", "选择表格文件": "Выбрать файл", "表头要有「账号名」「平台」，再加「国家」和各平台凭据列（token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id），用哪列填哪列，空着不管。": "В таблице нужны колонки имени и платформы, плюс страна и ключи (token / chat_id / page_id / user_id / client_id / client_secret / refresh_token / group_id / access_token / open_id) — заполняйте только нужное.", "三套老凭据（按套别发的那套，平时不用展开）": "Старые ключи (по наборам; обычно свёрнуто)", "这套用哪些平台（对接好的都在这儿）": "Платформы этого набора", "保存这套凭据": "Сохранить набор", "这三套存在数据库 settings 表里，发布页勾哪套就用哪套。填全一套，那套就算可用。": "Три набора хранятся в таблице settings; страница публикации использует отмеченный. Полный набор считается готовым.", "批量导入（粘 JSON 或 键=值 都行，带 _2 / _3 后缀就进对应套）": "Массовый импорт (JSON или ключ=значение; суффикс _2/_3 — нужный набор)", "导入到数据库": "Импортировать в базу", "加一个人": "Добавить сотрудника", "登录名（他登录时输的）": "Логин", "显示名（列表里看到的）": "Отображаемое имя", "权限": "Роль", "运营": "Оператор", "只管自己的任务": "Только свои задачи", "管理员": "Администратор", "能管账号和配置": "Управляет аккаунтами и настройками", "演示": "Демо", "只能看，不能发": "Только просмотр", "口令（留空自动生成 8 位）": "Пароль (8 символов, если пусто)", "存下来": "Сохранить", "口令只在保存那一下显示，抄给他就行；不想要这个人，列表里点「删掉」就没了。": "Пароль показывается только при сохранении — передайте его. Чтобы удалить, нажмите «Удалить».", "现有的人（": "Сотрудники (", "）": ")", "9A Battery · WORKBENCH · 内部使用": "9A Battery · WORKBENCH · Внутреннее использование", "https://… （抖音 / TikTok / YouTube 爆款视频链": "https://… (ссылка на вирусное видео Douyin / TikTok / YouTube)", "一行一个：名字|平台|国家|token=xxx,chat_id=yyy": "Одна строка: имя|платформа|страна|token=xxx,chat_id=yyy", "例：俄罗斯TG主群|tg|RU|token=123:abc,chat_id=-100123": "напр. RU TG группа|tg|RU|token=123:abc,chat_id=-100123", "不想设就留空，保存后口令会显示出来": "Оставьте пусто — пароль появится после сохранения", "例如 op3": "напр. op3", "例如 运营三": "напр. Оператор 3", "口令": "Пароль", "用户名": "Логин", "这条视频卖的是什么？例如 72V65Ah 用于 U2 外卖车": "Что продаёт видео? напр. 72V65Ah для U2", "默认用复刻文案（自动带入），留空就行": "По умолчанию берётся готовый текст — оставьте пусто", "默认用复刻标题，想改就改": "По умолчанию берётся готовый заголовок — можно править", "还没有任务": "Задач пока нет", "完成": "Готово", "预览": "Просмотр", "复制链接": "Копировать ссылку", "删掉": "Удалить", "立即清理超期文件": "Удалить устаревшие файлы", "演示数据（只读）": "Демо-данные (только чтение)", "勾哪些发到哪些账号，可多选，并行发。": "Выберите аккаунты для публикации — можно несколько, параллельно.", "还没勾账号：先在上面勾 1 个或多个发布账号，这里才会按平台出现文案格。": "Аккаунты не выбраны: отметьте выше — поля текста появятся по платформам.", "任务 #": "Задача #", "退出登录": "Выйти"}
-};
-function pickLang(){
-  const q = new URLSearchParams(location.search).get('lang');
-  if(q === 'zh' || q === 'en' || q === 'ru') return q;
-  const saved = localStorage.getItem('9a_lang');
-  if(saved === 'zh' || saved === 'en' || saved === 'ru') return saved;
-  const l = (navigator.language || (navigator.languages && navigator.languages[0]) || 'zh').toLowerCase();
-  if(l.indexOf('ru') === 0) return 'ru';
-  if(l.indexOf('zh') === 0) return 'zh';
-  if(l.indexOf('en') === 0) return 'en';
-  return 'en';
+var PASS='9A@2026';
+var PUBLISH_KEY='805c783b2e4074ab25a71745f7454896';
+var WEBHOOK='https://9a-n8n.cpolar.top/webhook/publish-trigger';
+
+var PLATS=[
+ {k:'tg', nm:'Telegram', ico:'✈️', st:'TG 客户群', def:'9A Battery | Литиевая батарея 72V 60Ah | Активная BMS | Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'ig', nm:'Instagram', ico:'📷', st:'Ins', def:'⚡ Литиевая батарея 72V 60Ah от 9A Battery\nАктивная BMS · CE/UN38.3 · Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'tt', nm:'TikTok', ico:'🎵', st:'TikTok（待接入）', def:'Литиевая батарея 72V 60Ah | 9A Battery | Опт\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'yt', nm:'YouTube', ico:'▶️', st:'YouTube', def:'Литиевая батарея 72V 60Ah | 9A Battery | Активная BMS\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'},
+ {k:'fb', nm:'Facebook', ico:'📘', st:'Facebook', def:'⚡ Литиевая батарея 72V 60Ah от 9A Battery\nАктивная BMS · CE/UN38.3 · Опт для России и Центральной Азии\n\n#9ABattery #72V60Ah #литиеваябатарея #электровелосипед #аккумулятор #опт #доставкапоРоссии #центральнаяАзия'}
+];
+var selected={}; Object.keys(PLATS).forEach(function(i){selected[PLATS[i].k]=true;});
+
+function tryLogin(){
+  var v=document.getElementById('pass').value;
+  if(v===PASS){document.getElementById('login').style.display='none';}
+  else{document.getElementById('loginErr').textContent='密码错误，请重试';}
 }
-const LANG = pickLang();
-function applyLang(){
-  if(LANG === 'zh') { document.documentElement.lang = 'zh-CN'; return; }
-  const d = I18N[LANG] || I18N.en;
-  document.documentElement.lang = LANG;
-  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-  const nodes = []; while(w.nextNode()) nodes.push(w.currentNode);
-  nodes.forEach(function(n){
-    const t = (n.nodeValue || '').trim();
-    if(t && d[t]) n.nodeValue = n.nodeValue.replace(t, d[t]);
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('[placeholder]'), function(el){
-    const t = (el.getAttribute('placeholder') || '').trim();
-    if(t && d[t]) el.setAttribute('placeholder', d[t]);
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+
+function renderPlats(){
+  var box=document.getElementById('plats'); box.innerHTML='';
+  PLATS.forEach(function(p){
+    var d=document.createElement('div');
+    d.className='plat'+(selected[p.k]?' on':'')+(p.k==='tt'?' no':'');
+    d.innerHTML='<span class="ico">'+p.ico+'</span><span class="nm">'+p.nm+'</span><span class="st">'+p.st+'</span>'+(p.k==='tt'?'<span class="warn">审核中</span>':'');
+    d.onclick=function(){selected[p.k]=!selected[p.k]; renderPlats();};
+    box.appendChild(d);
   });
 }
-applyLang();
-function T(s){ return (LANG!=='zh' && I18N[LANG] && I18N[LANG][s]) ? I18N[LANG][s] : s; }
-/* 页面后续动态渲染出来的文案也一并翻 */
-(function(){
-  if(LANG === 'zh') return;
-  const d = I18N[LANG] || I18N.en;
-  function trNode(n){
-    const t = (n.nodeValue || '').trim();
-    if(t && d[t]) n.nodeValue = n.nodeValue.replace(t, d[t]);
-  }
-  function walk(root){
-    if(root.nodeType === 3){ trNode(root); return; }
-    if(root.nodeType !== 1) return;
-    if(root.getAttribute && root.getAttribute('placeholder')){
-      const t = root.getAttribute('placeholder').trim();
-      if(d[t]) root.setAttribute('placeholder', d[t]);
-    }
-    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    while(w.nextNode()) trNode(w.currentNode);
-  }
-  const ob = new MutationObserver(function(ms){
-    ms.forEach(function(m){
-      if(m.type === 'childList'){
-        m.addedNodes.forEach(function(n){ walk(n); });
-      } else if(m.type === 'characterData'){
-        trNode(m.target);
-      }
-    });
+function renderTxts(){
+  var box=document.getElementById('txts'); box.innerHTML='';
+  PLATS.forEach(function(p){
+    var f=document.createElement('div');
+    f.className='field';
+    f.innerHTML='<label>'+(p.nm+' 文案')+(p.k==='tt'?'（TikTok 待接入，可先填）':'')+'</label>'+
+      '<textarea data-k="'+p.k+'" placeholder="留空则使用默认俄语文案">'+(selected[p.k]?p.def:'')+'</textarea>'+
+      '<div class="hint">默认：'+p.def.replace(/\n/g,' ').slice(0,90)+'…</div>';
+    box.appendChild(f);
   });
-  document.addEventListener('DOMContentLoaded', function(){
-    ob.observe(document.body, {childList:true, subtree:true, characterData:true});
+}
+renderPlats(); renderTxts();
+
+function publish(){
+  var btn=document.getElementById('pubBtn');
+  var res=document.getElementById('result');
+  res.className=''; res.style.display='none';
+  if(PUBLISH_KEY.indexOf('__')===0){showRes('err','发布密钥未配置（页面需要填入 n8n 发布密钥后才能发布）。');return;}
+  var chosen=PLATS.filter(function(p){return selected[p.k];});
+  if(!chosen.length){showRes('err','请至少选择一个平台。');return;}
+  var body={
+    title: document.getElementById('product').value || '9A Battery',
+    description: document.getElementById('desc').value || '',
+    image_url: document.getElementById('image_url').value.trim() || '',
+    video_url: document.getElementById('video_url').value.trim() || '',
+    product: document.getElementById('product').value || ''
+  };
+  PLATS.forEach(function(p){
+    var ta=document.querySelector('textarea[data-k="'+p.k+'"]');
+    var v=ta?ta.value.trim():'';
+    body[p.k+'_text']=v || p.def;
   });
-})();
-</script>
-<script>
-(function(){
-  const LS_TOKEN='9a_token', LS_USER='9a_user';
-  let token = localStorage.getItem(LS_TOKEN) || '';
-  let user = null;
-  let assets = [];         // 已上传素材
-  let copies = [];         // 3 套文案
-  let pickedCopy = -1;
-  let curTask = null;      // 当前复刻任务 id
-  let platforms = [];
-  let accounts = [];
-  let pickedAcc = new Set();
-  let perPlatVals = {};   // 每平台单独文案（跟着勾选的账号走）
-  const API_BASE = 'https://9a-studio.cpolar.top';   // 本机跑留空；放到官网 9abms.com/publish.html 时由构建脚本改成后端公网地址
-  const abs = u => (!u ? u : (/^https?:/.test(u) ? u : API_BASE + u));
-  let pubMode = 'task';     // task=复刻出的片 local=人工发布
-  let localVideo = null;    // 人工上传的视频 {name,url}
-  let autoFilled = false;   // 文案是不是复刻自动带进来的
-  let pollTimer = null;
+  btn.disabled=true; btn.textContent='发布中…请稍候';
+  fetch(WEBHOOK,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-publish-key':PUBLISH_KEY},
+    body:JSON.stringify(body)
+  }).then(function(r){return r.text().then(function(t){return {s:r.status,t:t};});})
+  .then(function(o){
+    btn.disabled=false; btn.textContent='发布到所选平台';
+    if(o.s===200){showRes('ok','✅ 发布请求已发送：'+chosen.map(function(p){return p.nm;}).join('、')+'（请到对应平台确认）');}
+    else{showRes('err','发布失败（HTTP '+o.s+'）：'+o.t.slice(0,200));}
+  })
+  .catch(function(e){
+    btn.disabled=false; btn.textContent='发布到所选平台';
+    showRes('err','发布失败：'+(e.message||e));
+  });
+}
+function showRes(cls,msg){
+  var r=document.getElementById('result');
+  r.className=cls; r.style.display='block'; r.textContent=msg;
+}
 
-  const $ = s => document.querySelector(s);
-  const el = (t,c,h) => { const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; };
-  function toast(msg, ms){
-    const t = el('div','toast', msg); document.body.appendChild(t);
-    setTimeout(()=>t.remove(), ms||2600);
-  }
-  async function api(path, opt){
-    opt = opt || {};
-    const headers = {'Content-Type':'application/json'};
-    if(token) headers['X-Token']=token;
-    const r = await fetch(abs(path), {
-      method: opt.body ? 'POST':'GET',
-      headers,
-      body: opt.body ? JSON.stringify(opt.body) : undefined
+// 文件上传：从手机/电脑选图片或视频 → 上传到发布服务器 → 自动填入链接框
+var UPLOAD_WEBHOOK='https://9a-n8n.cpolar.top/webhook/upload-media';
+function pickMedia(kind){
+  var input=document.createElement('input');
+  input.type='file';
+  input.accept=kind==='image'?'image/*':'video/*';
+  var btn=document.getElementById(kind==='image'?'upImg':'upVid');
+  var box=document.getElementById(kind==='image'?'image_url':'video_url');
+  var label=kind==='image'?'📎 选图片上传':'📎 选视频上传';
+  input.onchange=function(){
+    var f=input.files&&input.files[0];
+    if(!f)return;
+    var fd=new FormData();
+    fd.append('file',f);
+    btn.disabled=true; btn.classList.add('busy'); btn.textContent=' 上传中…';
+    fetch(UPLOAD_WEBHOOK,{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
+      if(d&&d.success&&d.url){box.value=d.url;showRes('ok','✅ 上传成功，链接已自动填入'+(kind==='image'?'图片':'视频')+'框。');}
+      else{showRes('err','上传失败：'+(d&&d.error||'服务器无响应'));}
+    })
+    .catch(function(e){
+      btn.disabled=false; btn.classList.remove('busy'); btn.textContent=label;
+      showRes('err','上传失败：'+(e.message||e)+'（请确认发布服务器已启动）');
     });
-    let data = null;
-    try { data = await r.json(); } catch(e){ data = {}; }
-    if(r.status===401){ logoutUI(); throw new Error(data.error||'未登录'); }
-    if(!r.ok) throw new Error(data.error || ('HTTP '+r.status));
-    return data;
-  }
-
-  function netWarn(where, e){
-    const msg = (e && e.message) ? e.message : String(e || '网络异常');
-    toast((where ? where + ' ' : '') + '加载失败：' + msg, 3200);
-  }
-
-  function logoutUI(){
-    token=''; user=null;
-    localStorage.removeItem(LS_TOKEN); localStorage.removeItem(LS_USER);
-    $('#loginBox').style.display='block'; $('#main').style.display='none';
-    $('#who').textContent='';
-    var sw = $('#btnSwitch'); if(sw) sw.style.display='none';
-  }
-
-  var swBtn = document.getElementById('btnSwitch');
-  if (swBtn) swBtn.onclick = function(){
-    logoutUI();
-    $('#lu').value=''; $('#lp').value='';
-    window.scrollTo(0,0);
-    toast('已退出，换账号登录');
   };
-
-  async function doLogin(){
-    const u = $('#lu').value.trim(), p = $('#lp').value;
-    if(!u||!p){ toast('用户名和口令都要填'); return; }
-    try{
-      const d = await api('/api/login', {body:{username:u,password:p}});
-      token = d.token; user = d;
-      localStorage.setItem(LS_TOKEN, token);
-      localStorage.setItem(LS_USER, JSON.stringify(d));
-      showMain();
-    }catch(e){ toast('登录失败：'+e.message); }
-  }
-
-  function showMain(){
-    $('#loginBox').style.display='none'; $('#main').style.display='block';
-    const roleTxt = user.role==='admin' ? ' · 管理员' : (user.role==='demo' ? ' · 演示' : ' · 运营');
-    const nm = user.name || user.username || '';
-    $('#who').textContent = nm + ((roleTxt && nm.trim() !== roleTxt.replace(' ·','').trim()) ? roleTxt : '');
-    var sw1 = $('#btnSwitch'); if(sw1) sw1.style.display='inline';
-    $('#tabUser').style.display = (user && user.role==='admin') ? 'block' : 'none';
-    applyDemoLock();
-    loadAccounts(); loadPlatforms(); loadTasks(); loadPublishedTasks();
-  }
-
-  // 演示账号：界面全部可看，凡是会产生消耗/对外动作的按钮一律锁掉（后端同时返回 403）
-  function applyDemoLock(){
-    const demo = user && user.role === 'demo';
-    $('#demoBar').style.display = demo ? 'block' : 'none';
-    if(!demo) return;
-    ['#btnAnalyze','#btnGen','#btnPub','#btnAccAdd','#btnAccImportOpen','#btnAccImport','#btnAccImportFile',
-     '#btnSetSave','#btnSetImport','#btnUserSave','#upPerson','#upScene','#upAudio',
-     '#upProduct','#upLocalVideo'].forEach(s=>{
-      const el2 = $(s);
-      if(el2){ el2.style.opacity='.4'; el2.style.pointerEvents='none'; }
-    });
-  }
-
-  // ---------- 素材上传 ----------
-  function bindUpload(boxId, kind){
-    const box = $('#'+boxId), inp = box.querySelector('input[type=file]');
-    box.addEventListener('click', e=>{ if(e.target.tagName!=='INPUT') inp.click(); });
-    inp.addEventListener('change', async ()=>{
-      const f = inp.files && inp.files[0]; if(!f) return;
-      if(f.size > 60*1024*1024){ toast('单个文件不能超过 60MB'); inp.value=''; return; }
-      toast('上传中…', 99999);
-      try{
-        const b64 = await fileToB64(f);
-        const d = await api('/api/upload', {body:{name:f.name, data:b64}});
-        document.querySelectorAll('.toast').forEach(t=>t.remove());
-        assets.push({kind, name:d.name, url:d.url, size:d.size});
-        box.classList.add('has');
-        const cap = box.querySelector('.cap');
-        cap.querySelector('span').textContent = d.name.length>18 ? d.name.slice(0,16)+'…' : d.name;
-        if(kind==='product'||kind==='person'||kind==='scene'){
-          if(!box.querySelector('img')){
-            const im = el('img'); im.src = abs(d.url); box.prepend(im);
-          }
-        }
-        $('#analyzeHint').textContent = '已上传素材：'+assets.length;
-        toast('上传好了');
-      }catch(e){ document.querySelectorAll('.toast').forEach(t=>t.remove()); toast('上传失败：'+e.message); }
-      inp.value='';
-    });
-  }
-  function fileToB64(file){
-    return new Promise((res,rej)=>{
-      const fr = new FileReader();
-      fr.onload = ()=>res(String(fr.result));
-      fr.onerror = rej;
-      fr.readAsDataURL(file);
-    });
-  }
-
-  // ---------- 拆解 ----------
-  async function analyze(){
-    const topic = $('#topic').value.trim() || $('#link').value.trim();
-    if(!topic){ toast('先填主题或粘爆款链接'); return; }
-    const btn = $('#btnAnalyze'); btn.disabled = true;
-    $('#copyCard').style.display='none';
-    $('#analyzeHint').innerHTML = 'AI 正在拆解，约 1–2 分钟，别关页面…<div class="bar"><i></i></div>';
-    try{
-      const req = topic + (($('#link').value.trim() && $('#topic').value.trim() && $('#link').value.trim()!==topic)
-        ? '\n参考爆款链接：'+$('#link').value.trim() : '');
-      const d = await api('/api/copies', {body:{topic:req, n:3}});
-      copies = d.items || [];
-      if(!copies.length) throw new Error('没生成出文案');
-      renderCopies();
-    }catch(e){
-      $('#analyzeHint').textContent = '拆解失败：'+e.message;
-    }finally{
-      btn.disabled = false;
-      if(copies.length) $('#analyzeHint').textContent = '已上传素材：'+assets.length;
-    }
-  }
-
-  function renderCopies(){
-    pickedCopy = 0;
-    const box = $('#copies'); box.innerHTML='';
-    copies.forEach((c,i)=>{
-      const d = el('div','copy'+(i===0?' on':''));
-      d.innerHTML = '<div class="pick">'+(i===0?'✓':'')+'</div>'
-        + '<div class="t"></div><div class="c"></div><div class="tag"></div>';
-      d.querySelector('.t').textContent = c.title || ('文案 '+(i+1));
-      d.querySelector('.c').textContent = c.caption || '';
-      d.querySelector('.tag').textContent = (c.hashtags||[]).join(' ');
-      d.addEventListener('click', ()=>{
-        pickedCopy = i;
-        box.querySelectorAll('.copy').forEach((x,j)=>{
-          x.classList.toggle('on', j===i);
-          x.querySelector('.pick').textContent = (j===i?'✓':'');
-        });
-      });
-      box.appendChild(d);
-    });
-    $('#copyCard').style.display='block';
-  }
-
-  // ---------- 生成视频 ----------
-  async function genVideo(){
-    if(pickedCopy<0){ toast('先选一套文案'); return; }
-    const c = copies[pickedCopy];
-    const title = (c.title||$('#topic').value||'9A video').slice(0,80);
-    const btn = $('#btnGen'); btn.disabled = true;
-    $('#videoCard').style.display='none';
-    $('#genHint').innerHTML = '已提交出片，约 3–4 分钟，别关页面…<div class="bar"><i></i></div>';
-    try{
-      const d = await api('/api/tasks', {body:{
-        title, platforms:[], assets, copy:c,
-        accounts:[]
-      }});
-      curTask = d.id;
-      await api('/api/tasks/'+d.id+'/run', {body:{}});
-      pollTask(d.id);
-    }catch(e){
-      $('#genHint').textContent = '出片失败：'+e.message;
-      btn.disabled = false;
-    }
-  }
-
-  function pollTask(id){
-    if(pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(async ()=>{
-      try{
-        const t = await api('/api/tasks/'+id);
-        if(t.status==='done' || t.status==='failed'){
-          clearInterval(pollTimer); pollTimer=null;
-          $('#btnGen').disabled = false;
-          if(t.status==='done' && t.video_url){
-            $('#vid').src = abs(t.video_url);
-            $('#dl').href = abs(t.video_url);
-            $('#videoCard').style.display='block';
-            $('#genHint').textContent = '出片完成。';
-            toast('视频好了');
-            loadPublishedTasks();
-            fillCopyFromTask(String(t.id));
-          }else{
-            $('#genHint').textContent = '出片失败：'+(t.note||'');
-          }
-          loadTasks();
-        }else{
-          $('#genHint').textContent = '当前状态：'+statusText(t.status)+' · '+(t.note||'');
-        }
-      }catch(e){
-        clearInterval(pollTimer); pollTimer=null; $('#btnGen').disabled=false;
-        $('#genHint').textContent = '查询失败：'+e.message;
-      }
-    }, 4000);
-  }
-
-  const ST = {queued:'排队',scripted:'生成文案',rendering:'出片中',publishing:'发布中',done:'完成',failed:'失败',expired:'已清理'};
-  const statusText = s => ST[s] || s || '—';
-
-  // ---------- 套别凭据 ----------
-  let setsData = {}, setFieldsMeta = [], curSet = '1';
-  async function loadSets(){
-    try{
-      const d = await api('/api/sets');
-      setsData = d.sets || {};
-      setFieldsMeta = d.fields || [];
-      if(!(platforms||[]).length){ await loadPlatforms(); }
-      renderSetPick();
-      renderSetFields();
-    }catch(e){ $('#setHint').textContent = '凭据要管理员才能看：' + e.message; }
-  }
-  function renderSetPick(){
-    const box = $('#setPick');
-    if(!box) return;
-    box.innerHTML = '';
-    ['1','2','3'].forEach(no=>{
-      const name = no==='1' ? '第1套' : no==='2' ? '第2套' : '第3套';
-      const c = el('div','chip'+(curSet===no?' on':''), name + (curSet===no?'  ✓':''));
-      c.onclick = ()=>{ curSet = no; renderSetPick(); renderSetFields(); };
-      box.appendChild(c);
-    });
-  }
-  function renderSetFields(){
-    const box = $('#setFields');
-    if(!box) return;
-    box.innerHTML = '';
-    renderSetPlats();
-    setFieldsMeta.forEach(f=>{
-      const l = el('label','', f.label);
-      const i = el('input','inp');
-      i.id = 'setf_' + f.k;
-      i.value = (setsData[curSet]||{})[f.k] || '';
-      box.appendChild(l); box.appendChild(i);
-    });
-  }
-  const SET_PLAT_NAMES = {tg:'Telegram', fb:'Facebook', ig:'Instagram', yt:'YouTube', vk:'VK', tt:'TikTok'};
-  let setPlats = ['tg','fb','ig','yt','vk','tt'];
-  function platNames(){
-    const names = {};
-    (platforms||[]).forEach(p=>{ names[p.code] = p.name || p.code; });
-    Object.keys(SET_PLAT_NAMES).forEach(c=>{ if(!names[c]) names[c] = SET_PLAT_NAMES[c]; });
-    return names;
-  }
-  function renderSetPlats(){
-    const box = $('#setPlats');
-    if(!box) return;
-    box.innerHTML = '';
-    if(!Array.isArray(setsData[curSet + '_plats'])) setsData[curSet + '_plats'] = setPlats.slice();
-    setPlats = setsData[curSet + '_plats'].slice();
-    const names = platNames();
-    const codes = (platforms && platforms.length)
-      ? platforms.filter(p=>p.ready).map(p=>p.code)
-      : Object.keys(SET_PLAT_NAMES);
-    if(!setPlats.length) box.innerHTML = '<div class="hint" style="margin:0">这套还没选平台。</div>';
-    setPlats.forEach(p=>{
-      const tag = el('div','tag');
-      tag.innerHTML = '<b></b><i>✕</i>';
-      tag.querySelector('b').textContent = names[p] || p;
-      tag.querySelector('i').onclick = ()=>{
-        setsData[curSet+'_plats'] = setPlats.filter(x=>x!==p);
-        renderSetPlats();
-      };
-      box.appendChild(tag);
-    });
-    const sel = $('#setPlatAdd');
-    if(sel){
-      sel.innerHTML = '<option value="">＋ 加一个平台…</option>';
-      codes.forEach(c=>{
-        if(setPlats.indexOf(c) >= 0) return;
-        const o = el('option','', names[c] || c);
-        o.value = c; sel.appendChild(o);
-      });
-      sel.value = '';
-      sel.onchange = ()=>{
-        if(sel.value){
-          setsData[curSet+'_plats'] = setPlats.concat([sel.value]);
-          renderSetPlats();
-        }
-      };
-    }
-  }
-  async function saveSet(){
-    const values = {};
-    setFieldsMeta.forEach(f=>{ values[f.k] = $('#setf_'+f.k) ? $('#setf_'+f.k).value : ''; });
-    try{
-      const plats = ((platforms && platforms.length) ? platforms.map(p=>p.code) : Object.keys(SET_PLAT_NAMES))
-        .filter(p=>setPlats.indexOf(p)>=0);
-      const r = await api('/api/sets/save', {body:{no:curSet, values, plats}});
-      toast('第'+curSet+'套已存');
-      $('#setHint').textContent = '第'+curSet+'套：勾选要发的平台 = '
-        + (r.plats||[]).join(' / ').toUpperCase()
-        + '｜凭据齐的平台 = ' + Object.keys(r.ready||{}).filter(k=>(r.ready||{})[k]).join(' / ').toUpperCase()
-        + '（打码的没改就保持原值）';
-      loadSets(); loadAccounts();
-    }catch(e){ toast(e.message); }
-  }
-  async function importSets(){
-    const text = $('#setImportText').value || '';
-    if(!text.trim()){ toast('先贴内容'); return; }
-    try{
-      const r = await api('/api/sets/import', {body:{text}});
-      $('#setImportHint').textContent = '导入 '+(r.saved||[]).length+' 项：'
-        + (r.saved||[]).join('、') + ((r.skipped||[]).length ? '｜跳过：'+(r.skipped||[]).join('、') : '');
-      $('#setImportText').value = '';
-      loadSets(); loadAccounts();
-    }catch(e){ $('#setImportHint').textContent = '导入失败：'+e.message; }
-  }
-
-  // ---------- 账号 / 平台 ----------
-  async function loadAccounts(){
-    try{
-      const d = await api('/api/accounts');
-      accounts = d.accounts || [];
-
-      renderAccounts();
-
-      renderAccList();
-      renderPubPerPlat();
-    }catch(e){ /* 未登录忽略 */ }
-  }
-
-  function renderAccounts(){
-    const box = $('#accChips'); box.innerHTML='';
-    if(!accounts.length){
-      $('#accHint').textContent = '还没建账号。到后台加账号：平台 + 国家 + 凭据，一个账号一项，就能在这里勾选。';
-      return;
-    }
-    $('#accHint').textContent = '勾哪些发到哪些账号，可多选，并行发。';
-    accounts.forEach(a=>{
-      const b = el('button','chip'+(pickedAcc.has(a.id)?' on':''));
-      b.innerHTML = '<div class="ck">'+(pickedAcc.has(a.id)?'✓':'')+'</div><b></b><span></span>';
-      b.querySelector('b').textContent = a.name || a.platform;
-      b.querySelector('span').textContent = (a.market? a.market+' · ':'') + a.platform.toUpperCase();
-      b.addEventListener('click', ()=>{
-        if(pickedAcc.has(a.id)) pickedAcc.delete(a.id); else pickedAcc.add(a.id);
-        renderAccounts();
-        renderPubPerPlat();
-      });
-      box.appendChild(b);
-    });
-  }
-
-  async function loadPlatforms(){
-    try{
-      const d = await api('/api/platforms');
-      platforms = d.platforms || [];
-      if(setsData && setsData[curSet]) renderSetPlats();
-    }catch(e){ netWarn('平台', e); }
-  }
-  // ---------- 发布账号管理 ----------
-  const ACC_FIELDS = {
-    tg: [['token','Bot Token','123456:AA…'],['chat_id','群 / 频道 ID','-100… 或 @name']],
-    fb: [['page_id','主页 ID','1024…'],['token','主页 Access Token','EAAG…']],
-    ig: [['user_id','IG 专业账号 ID','1784…'],['token','关联主页 Token','EAAG…']],
-    yt: [['client_id','OAuth Client ID','…apps.googleusercontent.com'],['client_secret','Client Secret','GOCS…'],['refresh_token','Refresh Token','1//…']],
-    vk: [['token','VK 访问令牌','vk1.a.…'],['group_id','社区 ID','-123456']],
-    tt: [['access_token','TikTok Access Token','act.…'],['open_id','Open ID','-000…']]
-  };
-
-  const ACC_MARKETS = [['','不填'],['RU','俄罗斯 RU'],['KZ','哈萨克 KZ'],['UZ','乌兹别克 UZ'],
-    ['KG','吉尔吉斯 KG'],['TJ','塔吉克 TJ'],['TM','土库曼 TM'],['AE','中东 AE'],['OTHER','其他']];
-  let accDrafts = [];
-  let accSeq = 0;
-
-  function makeAccCard(a, isDraft){
-    const card = el('div','acc');
-    const top = el('div','acc-top');
-    const nm = el('input','inp acc-name');
-    nm.placeholder = '账号名，如 俄罗斯TG主群';
-    nm.value = a.name || '';
-    const x = el('button','acc-x','✕');
-    top.append(nm, x);
-    card.appendChild(top);
-
-    const two = el('div','two');
-    const sel = el('select','inp');
-    (platforms||[]).forEach(p=>{
-      if(!p.ready) return;
-      const o = el('option','', p.name); o.value = p.code; sel.appendChild(o);
-    });
-    if(!(platforms||[]).length){
-      Object.keys(SET_PLAT_NAMES).forEach(c=>{
-        const o = el('option','', SET_PLAT_NAMES[c]); o.value = c; sel.appendChild(o);
-      });
-    }
-    sel.value = a.platform || 'tg';
-    const mk = el('select','inp');
-    ACC_MARKETS.forEach(([v,l])=>{ const o = el('option','', l); o.value = v; mk.appendChild(o); });
-    mk.value = a.market || '';
-    two.append(sel, mk);
-    card.appendChild(two);
-
-    const fields = el('div','acc-fields');
-    const renderFields = ()=>{
-      fields.innerHTML = '';
-      (ACC_FIELDS[sel.value]||[]).forEach(([k,label,ph])=>{
-        fields.appendChild(el('label', null, label));
-        const i = el('input','inp');
-        i.dataset.k = k; i.placeholder = ph; i.autocomplete = 'off';
-        i.value = (a.conf && a.conf[k]) || '';
-        fields.appendChild(i);
-      });
-      if(!(ACC_FIELDS[sel.value]||[]).length){
-        fields.appendChild(el('div','hint','这个平台还没接凭证字段。'));
-      }
-    };
-    renderFields();
-    sel.onchange = renderFields;
-    card.appendChild(fields);
-
-    const save = el('button','mini b','保存这个账号');
-    if(isDraft) save.textContent = '保存这个账号';
-    const rowAct = el('div','acc-acts');
-    rowAct.appendChild(save);
-    card.appendChild(rowAct);
-
-    save.onclick = async ()=>{
-      const name = nm.value.trim();
-      if(!name){ toast('先填账号名'); nm.focus(); return; }
-      const conf = {};
-      fields.querySelectorAll('input[data-k]').forEach(i=>{
-        const v = (i.value||'').trim();
-        if(v) conf[i.dataset.k] = v;
-      });
-      const body = {name, platform:sel.value, market:mk.value, conf};
-      if(!isDraft){ body.id = a.id; body.enabled = !!a.enabled; }
-      save.disabled = true;
-      try{
-        await api('/api/accounts', {body});
-        toast('存好了：'+name);
-        if(isDraft){ accDrafts = accDrafts.filter(d=>d._k !== a._k); }
-        await loadAccounts();
-      }catch(e){ toast('保存失败：'+e.message); }
-      finally{ save.disabled = false; }
-    };
-
-    x.onclick = async ()=>{
-      if(isDraft){ accDrafts = accDrafts.filter(d=>d._k !== a._k); renderAccList(); return; }
-      if(!confirm('把「'+a.name+'」删掉？')) return;
-      try{ await api('/api/accounts/'+a.id+'/delete', {body:{}}); toast('已删'); loadAccounts(); }
-      catch(e){ toast(e.message); }
-    };
-    return card;
-  }
-
-  function renderAccList(){
-    const box = $('#accList'); if(!box) return;
-    const admin = user && user.role === 'admin';
-    $('#accCount').textContent = accounts.length + accDrafts.length;
-    $('#accAdminHint').textContent = admin ? '点 ✕ 就删掉这个账号；每个账号只填它自己平台的 token / ID。'
-                                          : '只有管理员能加删账号，你这里只能看。';
-    box.innerHTML = '';
-    if(!accounts.length && !accDrafts.length){
-      box.innerHTML = '<div class="empty">还没账号，点上面「＋ 加一个账号」</div>';
-      return;
-    }
-    accDrafts.forEach(d=>box.appendChild(makeAccCard(d, true)));
-    accounts.forEach(a=>{
-      if(!admin){
-        const row = el('div','acc');
-        const t2 = el('div','acc-top');
-        t2.appendChild(el('input','inp acc-name', a.name));
-        t2.querySelector('input').disabled = true;
-        row.appendChild(t2);
-        row.appendChild(el('div','hint', ((a.market? a.market+' · ':'') + String(a.platform).toUpperCase())));
-        box.appendChild(row);
-        return;
-      }
-      box.appendChild(makeAccCard(a, false));
-    });
-  }
-
-  function addAccDraft(){
-    accDrafts.unshift({_k: ++accSeq, name:'', platform:'tg', market:'', conf:{}});
-    renderAccList();
-  }
-
-  async function importAccounts(){
-    const text = ($('#accImportText').value||'').trim();
-    if(!text){ toast('先粘内容'); return; }
-    try{
-      const r = await api('/api/accounts/import', {body:{text}});
-      $('#accImportHint').textContent = '导入 '+(r.saved||[]).length+' 个：'+(r.saved||[]).join('、')
-        + ((r.skipped&&r.skipped.length)? ('；跳过 '+r.skipped.join('、')) : '');
-      $('#accImportText').value = '';
-      await loadAccounts();
-    }catch(e){ $('#accImportHint').textContent = '导入失败：'+e.message; }
-  }
-
-  // ---------- 员工账号管理 ----------
-  async function loadUsers(){
-    try{
-      const d = await api('/api/users');
-      renderUserList(d.users||[]);
-    }catch(e){
-      const box = $('#userList'); if(box) box.innerHTML = '<div class="empty">加载失败：' + (e.message||'网络异常') + '，重进一次试试</div>';
-      $('#userCount').textContent = '—';
-      netWarn('人员', e);
-    }
-  }
-  function renderUserList(us){
-    const box = $('#userList'); if(!box) return;
-    $('#userCount').textContent = us.length;
-    if(!us.length){ box.innerHTML = '<div class="empty">还没有人，上面加一个</div>'; return; }
-    box.innerHTML='';
-    us.forEach(u=>{
-      const row = el('div','urow');
-      row.innerHTML = '<div class="ava"></div><div class="uinfo"><div class="n"></div><div class="s"></div></div><div class="uacts"></div>';
-      const who = (u.name || u.username || '?');
-      const ava = row.querySelector('.ava');
-      ava.textContent = who.slice(0,1).toUpperCase();
-      if(!u.active){ ava.classList.add('mute'); }
-      const nm = row.querySelector('.n');
-      const nmTxt = el('span','', who);
-      const bg = el('span','badge ' + (u.role==='admin' ? 'on' : (u.role==='demo' ? 'warn' : 'off')),
-        u.role==='admin' ? '管理员' : (u.role==='demo' ? '演示' : '运营'));
-      nm.append(nmTxt, bg);
-      if(!u.active){ nm.appendChild(el('span','badge off','已停用')); }
-      row.querySelector('.s').textContent = '登录名 ' + u.username;
-
-      const acts = row.querySelector('.uacts');
-      const b1 = el('button','mini b','改口令');
-      b1.onclick = async ()=>{
-        const p = prompt('给「'+who+'」设新口令（留空自动生成）');
-        if(p===null) return;
-        try{
-          const r = await api('/api/users/save', {body:{username:u.username, name:u.name, role:u.role, password:p}});
-          const pw = (r.user && r.user[2]) || p;
-          alert('口令已设置：'+pw+'（记下来，页面不存）');
-          loadUsers();
-        }catch(e){ toast(e.message); }
-      };
-      const b2 = el('button','mini d','删掉');
-      b2.onclick = async ()=>{
-        if(!confirm('把「'+who+'」删掉？删了就登录不了，也不在列表里了。')) return;
-        try{ await api('/api/users/delete', {body:{id:u.id}}); loadUsers(); toast('已删'); }
-        catch(e){ toast(e.message); }
-      };
-      acts.append(b1,b2);
-      box.appendChild(row);
-    });
-  }
-
-  function initRoleSeg(){
-    const seg = $('#roleSeg');
-    if(!seg) return;
-    seg.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = ()=>{
-        seg.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
-        btn.classList.add('on');
-        $('#usRole').value = btn.dataset.v;
-      };
-    });
-  }
-
-  async function saveUser(){
-    const un = $('#usName').value.trim();
-    if(!un){ toast('登录名必填'); return; }
-    try{
-      const r = await api('/api/users/save', {body:{
-        username:un, name:$('#usShow').value.trim(), role:$('#usRole').value, password:$('#usPwd').value
-      }});
-      const pw = (r.user && r.user[2]) || '';
-      $('#userFormHint').textContent = pw ? ('已保存，口令：'+pw+'（抄下来交给本人）') : '已保存。';
-      $('#usName').value=''; $('#usShow').value=''; $('#usPwd').value='';
-      loadUsers();
-    }catch(e){ toast(e.message); }
-  }
-
-
-  async function loadTasks(){
-    try{
-      const d = await api('/api/tasks');
-      renderTasks(d.tasks || [], d.storage || {});
-    }catch(e){ netWarn('任务', e); }
-  }
-  function renderTasks(tasks, storage){
-    const box = $('#taskList');
-    if(!tasks.length){ box.innerHTML = '<div class="empty">还没有任务</div>'; return; }
-    const head = el('div','hint');
-    head.id = 'storageBar';
-    const _mb=(storage.mb||0), _fi=(storage.files||0), _ttl=(storage.ttl_hours||24);
-    head.textContent = (LANG==='ru')
-      ? ('Видео хранятся на TONY в data\\videos · занято '+_mb+' МБ / '+_fi+' файлов · без скачивания удаляются через '+_ttl+' ч')
-      : (LANG==='en')
-      ? ('Videos are stored on TONY in data\\videos · '+_mb+' MB / '+_fi+' files · auto-deleted after '+_ttl+' h without download')
-      : ('视频存在 TONY 这台机器的 data\\videos 里 · 现在占 '+_mb+' MB / '+_fi+' 个文件 · 超过 '+_ttl+' 小时没人下载自动删');
-    box.innerHTML='';
-    box.appendChild(head);
-    tasks.slice(0,30).forEach(t=>{
-      const d = el('div','task');
-      d.innerHTML = '<div class="r1"><div class="tt"></div><div class="st"></div></div><div class="note"></div><div class="acts"></div>';
-      d.querySelector('.tt').textContent = t.title || ('任务 #'+t.id);
-      const st = d.querySelector('.st'); st.textContent = statusText(t.status); st.classList.add(t.status||'');
-      d.querySelector('.note').textContent = t.note || '';
-      const acts = d.querySelector('.acts');
-      const bb = (label, cls, fn)=>{ const b = el('button','mini '+(cls||''), label); b.onclick = fn; acts.appendChild(b); return b; };
-      if(t.status==='done'){
-        bb('预览','b', async ()=>{
-          try{ const dd = await api('/api/tasks/'+t.id);
-            if(dd.video_url){ $('#taskPick').value = String(t.id); openPreview(dd.video_url); }
-            else toast('视频已经清掉了');
-          }catch(e){ toast(e.message); }
-        });
-        bb('复制链接','', async ()=>{
-          const url = abs('/media/task_' + t.id + '.mp4');
-          try{ await navigator.clipboard.writeText(url); toast('链接已复制'); }
-          catch(e){ window.open(url, '_blank'); }
-        });
-      }
-      if(!(user && user.role === 'demo')){
-        bb('删掉','d', async ()=>{
-          if(!confirm('删掉这条任务和它的视频？')) return;
-          try{ await api('/api/tasks/'+t.id+'/delete', {body:{}}); toast('已删除'); loadTasks(); loadPublishedTasks(); }
-          catch(e){ toast(e.message); }
-        });
-      }
-      box.appendChild(d);
-    });
-    if(user && user.role === 'admin'){
-      const b = el('button','btn ghost','立即清理超期文件');
-      b.style.marginTop = '8px';
-      b.onclick = async ()=>{
-        try{
-          const r = await api('/api/storage/clean', {body:{}});
-          toast('清掉 '+(r.removed||0)+' 个文件，省 '+(r.freed_mb||0)+' MB');
-          loadTasks();
-        }catch(e){ toast(e.message); }
-      };
-      box.appendChild(b);
-    }
-  }
-  function openPreview(url){
-    let m = document.querySelector('.mask');
-    if(!m){
-      m = el('div','mask');
-      m.innerHTML = '<div class="box"><h4>预览</h4><video controls playsinline style="width:100%;border-radius:10px;background:#000"></video><div style="height:12px"></div><button class="btn ghost">关闭</button></div>';
-      m.addEventListener('click', e=>{ if(e.target===m || e.target.tagName==='BUTTON') m.remove(); });
-      document.body.appendChild(m);
-    }
-    m.querySelector('video').src = abs(url);
-  }
-
-  async function loadPublishedTasks(){
-    try{
-      const d = await api('/api/tasks');
-      const sel = $('#taskPick');
-      const cur = sel.value;
-      sel.innerHTML = '<option value="">— 选一条已出片的视频 —</option>';
-      (d.tasks||[]).forEach(t=>{
-        if(t.status!=='done') return;
-        const o = el('option'); o.value = String(t.id); o.textContent = '#'+t.id+' · '+(t.title||'').slice(0,34);
-        sel.appendChild(o);
-      });
-      if(cur) sel.value = cur;
-    }catch(e){}
-  }
-
-  // ---------- 发布 ----------
-  // 按「已勾选账号」的平台集合动态渲染单独文案格：勾3个平台出3格，勾5个出5格
-  function renderPubPerPlat(){
-    const box = $('#pubPerPlat');
-    if(!box) return;
-    const plats = [...new Set(accounts.filter(a=>pickedAcc.has(a.id)).map(a=>a.platform))];
-    // 先存一下当前输入，重建不丢
-    box.querySelectorAll('textarea[data-plat]').forEach(ta=>{
-      perPlatVals[ta.dataset.plat] = ta.value;
-    });
-    box.innerHTML = '';
-    const hint = $('#pubPerPlatHint');
-    if(!plats.length){
-      if(hint){ hint.style.display='block'; hint.textContent = '还没勾账号：先在上面勾 1 个或多个发布账号，这里才会按平台出现文案格。'; }
-      return;
-    }
-    if(hint){ hint.style.display='block'; hint.textContent = (LANG==='ru')
-        ? ('Отмечено платформ: '+plats.length+' — для каждой своё поле текста; аккаунты одной платформы делят одно поле; пусто — берётся общее описание.')
-        : (LANG==='en')
-        ? (plats.length+' platforms checked — one copy box each; accounts on one platform share a box; empty uses the main description.')
-        : ('已勾 '+plats.length+' 个平台，对应 '+plats.length+' 格单独文案；同一个平台多个账号共用一格，留空就用上面整体描述。'); }
-    const names = platNames();
-    plats.forEach(p=>{
-      const l = el('label','', (names[p] || p.toUpperCase()) + (LANG==='ru'?' — текст':(LANG==='en'?' copy':'')) + (LANG==='zh'?' 单独文案':''));
-      const ta = el('textarea','inp'); ta.rows = 2; ta.dataset.plat = p;
-      ta.placeholder = (pubMode==='task') ? '复刻文案已带入，留空就用上面整体描述' : '不填就用上面整体描述';
-      ta.value = perPlatVals[p] || '';
-      ta.addEventListener('input', ()=>{ perPlatVals[p] = ta.value; });
-      box.appendChild(l); box.appendChild(ta);
-    });
-  }
-
-  function applyCopyPlaceholders(m){
-    const isTask = (m === 'task');
-    $('#pubTitle').placeholder = isTask ? '默认用复刻标题，想改就改' : '自己写标题，例如 72V 60Ah для U2';
-    $('#pubDesc').placeholder  = isTask ? '默认用复刻文案（自动带入），留空就行' : '自己填文案（俄语优先），所有平台共用';
-    renderPubPerPlat();
-  }
-
-  function setPubMode(m){
-    pubMode = m;
-    $('#modeTask').classList.toggle('on', m==='task');
-    $('#modeTask').querySelector('.ck').textContent = m==='task' ? '✓' : '';
-    $('#modeLocal').classList.toggle('on', m==='local');
-    $('#modeLocal').querySelector('.ck').textContent = m==='local' ? '✓' : '';
-    $('#boxTask').style.display = m==='task' ? 'block' : 'none';
-    $('#boxLocal').style.display = m==='local' ? 'block' : 'none';
-    applyCopyPlaceholders(m);
-    if(m==='task'){
-      fillCopyFromTask($('#taskPick').value);
-      $('#pubCopyHint').textContent = '复刻模式：默认用复刻出来的那套文案，格子留空就行；想改直接改。';
-    }else{
-      if(autoFilled){
-        ['#pubTitle','#pubDesc'].forEach(id=>{ $(id).value=''; });
-        perPlatVals = {}; renderPubPerPlat();
-        autoFilled = false;
-      }
-      $('#pubCopyHint').textContent = '人工发布：文案自己填，哪格留空就用「整体描述」。';
-    }
-  }
-
-  // 复刻选中的那套文案，自动搬到发布页
-  async function fillCopyFromTask(tid){
-    if(!tid) return;
-    try{
-      const t = await api('/api/tasks/'+tid);
-      let c = {};
-      let raw = t.prompt || '';
-      const ix = raw.indexOf('\nASSETS:');
-      if(ix >= 0) raw = raw.slice(0, ix);
-      try{ c = JSON.parse(raw); }catch(e){ c = {}; }
-      $('#pubTitle').value = c.title || t.title || '';
-      $('#pubDesc').value  = c.caption || '';
-      perPlatVals = {};
-      ['tg','ig','fb','yt','vk','tt'].forEach(p=>{ if(c[p+'_text']) perPlatVals[p] = c[p+'_text']; });
-      renderPubPerPlat();
-      autoFilled = true;
-      $('#pubCopyHint').textContent = '已自动填入你在复刻时选的那套文案，可以直接发；想改就改。';
-    }catch(e){}
-  }
-
-  function collectCopy(){    const c = {};
-    const title = $('#pubTitle').value.trim();
-    const desc = $('#pubDesc').value.trim();
-    if(title) c.title = title;
-    if(desc) c.caption = desc;
-    document.querySelectorAll('#pubPerPlat textarea[data-plat]').forEach(ta=>{
-      const v = (ta.value||'').trim();
-      if(v){ c[ta.dataset.plat+'_text'] = v; }
-    });
-    return c;
-  }
-
-  async function publish(){
-    if(!pickedAcc.size){ toast('至少勾一个账号（没有就先到「发布账号」加）'); return; }
-    const plats = [...new Set(accounts.filter(a=>pickedAcc.has(a.id)).map(a=>a.platform))];
-    const btn = $('#btnPub'); btn.disabled = true;
-    $('#pubHint').innerHTML = '发布中…<div class="bar"><i></i></div>';
-    try{
-      if(pubMode === 'local'){
-        if(!localVideo){ toast('先选一个本地视频'); btn.disabled=false; $('#pubHint').textContent='还没选视频。'; return; }
-        const copy = collectCopy();
-        const d = await api('/api/publish-local', {body:{
-          file: localVideo.file, platforms:plats, accounts:[...pickedAcc],
-          title: copy.title||localVideo.name, caption: copy.caption||'', copy
-        }});
-        $('#pubHint').innerHTML = '已提交，正在发（'+ (d.platforms||[]).join('/') +'）…<div class="bar"><i></i></div>';
-        pollLocal(d.job);
-        return;
-      }
-      const tid = $('#taskPick').value || (curTask?String(curTask):'');
-      if(!tid){ toast('先选一条已出片的视频'); btn.disabled=false; $('#pubHint').textContent='还没选视频。'; return; }
-      const copy = collectCopy();
-      const body = {platforms:plats, accounts:[...pickedAcc]};
-      if(Object.keys(copy).length) body.copy = copy;
-      const d = await api('/api/tasks/'+tid+'/publish', {body});
-      toast('已提交发布：'+ (d.platforms||[]).join('/'));
-      setTimeout(()=>{ loadTasks(); }, 1500);
-      $('#pubHint').textContent = '已提交，结果看下面任务列表。';
-    }catch(e){ $('#pubHint').textContent = '发布失败：'+e.message; }
-    finally{ btn.disabled=false; }
-  }
-
-  async function pollLocal(job){
-    for(let i=0;i<90;i++){
-      await new Promise(r=>setTimeout(r, 2000));
-      let d;
-      try{ d = await api('/api/publish-local/'+job); }catch(e){ break; }
-      if(d.state === 'running'){ $('#pubHint').textContent = '还在发…已等 '+d.elapsed+' 秒'; continue; }
-      const r = d.result || {};
-      const txt = Object.keys(r).map(k=>k+'：'+r[k]).join('\n');
-      $('#pubHint').textContent = (d.state==='done' ? '发完了\n' : '出错了\n') + txt;
-      toast(d.state==='done' ? '发完了' : '有报错，看下面');
-      return;
-    }
-    $('#pubHint').textContent = '还没收到结果，等会儿再刷新看看。';
-  }
-
-  // ---------- 事件绑定 ----------
-  $('#lbtn').onclick = doLogin;
-  $('#lp').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-  $('#tabCopy').onclick = ()=>switchTab('copy');
-  $('#tabPub').onclick = ()=>switchTab('pub');
-  $('#tabAcc').onclick = ()=>switchTab('acc');
-  $('#tabUser').onclick = ()=>switchTab('user');
-  $('#tabCS').onclick = () => { location.href = 'cs.html' + (location.search.indexOf('app=1')>-1 ? ('?app=1&nc=' + Date.now()) : ''); };
-  function switchTab(which){
-    setTimeout(function(){ try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){} }, 0);   // 点击后立刻失焦
-    ['copy','pub','acc','user'].forEach(k=>{
-      const tile = $('#tab'+k.charAt(0).toUpperCase()+k.slice(1));
-      const pane = $('#pane'+k.charAt(0).toUpperCase()+k.slice(1));
-      if(tile) tile.classList.toggle('on', k===which);
-      if(pane) pane.style.display = (k===which)?'block':'none';
-    });
-    if(which==='pub'){ loadAccounts(); loadPlatforms(); loadPublishedTasks(); loadTasks(); }
-    if(which==='acc'){ loadAccounts(); loadPlatforms(); loadSets(); }
-    if(which==='user'){ initRoleSeg(); loadUsers(); }
-  }
-  $('#btnAccAdd').onclick = addAccDraft;
-  $('#btnAccImportOpen').onclick = ()=>{
-    const b = $('#accImportBox');
-    b.style.display = (b.style.display === 'none') ? 'block' : 'none';
-  };
-  $('#btnAccImport').onclick = importAccounts;
-  (function(){
-    const btn = $('#btnAccImportFile'), inp = $('#accImportFile');
-    if(!btn || !inp) return;
-    btn.onclick = ()=>inp.click();
-    inp.addEventListener('change', async ()=>{
-      const f = inp.files && inp.files[0]; if(!f) return;
-      const h = $('#accImportFileHint');
-      h.textContent = '正在读表格…';
-      try{
-        const b64 = await fileToB64(f);
-        const r = await api('/api/accounts/import-file', {body:{name:f.name, data:b64}});
-        const s = (r.saved||[]).length, k = (r.skipped||[]).length;
-        h.textContent = '导入完成：' + s + ' 个账号进去了'
-          + (k ? ('，跳过 ' + k + ' 个（' + (r.skipped||[]).join('、') + '）') : '')
-          + ((r.errors||[]).length ? ('；还有问题：' + (r.errors||[]).join('；')) : '');
-        toast('导入完成：' + s + ' 个账号');
-        loadAccounts();
-      }catch(e){ h.textContent = '导入失败：' + e.message; toast('导入失败：' + e.message); }
-      finally{ inp.value = ''; }
-    });
-  })();
-  $('#btnSetSave').onclick = saveSet;
-  $('#btnSetImport').onclick = importSets;
-  $('#btnUserSave').onclick = saveUser;
-  $('#btnAnalyze').onclick = analyze;
-  $('#btnGen').onclick = genVideo;
-  $('#btnPub').onclick = publish;
-  $('#taskPick').addEventListener('change', e=>{ if(pubMode==='task') fillCopyFromTask(e.target.value); });
-  $('#modeTask').onclick = ()=>setPubMode('task');
-  $('#modeLocal').onclick = ()=>setPubMode('local');
-  (function(){
-    const box = $('#upLocalVideo'), inp = box.querySelector('input[type=file]');
-    box.addEventListener('click', e=>{ if(e.target.tagName!=='INPUT') inp.click(); });
-    inp.addEventListener('change', async ()=>{
-      const f = inp.files && inp.files[0]; if(!f) return;
-      if(f.size > 60*1024*1024){ toast('视频不能超过 60MB'); inp.value=''; return; }
-      toast('上传中…', 99999);
-      try{
-        const b64 = await fileToB64(f);
-        const d = await api('/api/upload', {body:{name:f.name, data:b64}});
-        document.querySelectorAll('.toast').forEach(t=>t.remove());
-        localVideo = {file:d.file, url:d.url, name:d.name};
-        box.classList.add('has');
-        box.querySelector('.cap span').textContent = f.name.length>18 ? f.name.slice(0,16)+'…' : f.name;
-        $('#localHint').textContent = '已选：'+f.name+'（'+(f.size/1048576).toFixed(1)+'MB）';
-        if(!$('#pubTitle').value) $('#pubTitle').value = f.name.replace(/\.(mp4|mov|m4v|webm)$/i,'');
-        toast('视频传好了');
-      }catch(e){ document.querySelectorAll('.toast').forEach(t=>t.remove()); toast('上传失败：'+e.message); }
-      finally{ inp.value=''; }
-    });
-    // 清空已选视频，可以重新选（不改其它已填的文案）
-    const clr = $('#upLocalClear');
-    if(clr){
-      clr.addEventListener('click', e=>{
-        e.stopPropagation();      // 别触发外层「点一下选文件」
-        e.preventDefault();
-        localVideo = null;
-        box.classList.remove('has');
-        box.querySelector('.cap b').textContent = '选手机里的视频';
-        box.querySelector('.cap span').textContent = '点这里从相册 / 电脑选，单个 ≤60MB';
-        $('#localHint').textContent = '已清空，再点一次就能重新选。';
-        document.querySelectorAll('.toast').forEach(t=>t.remove());
-        toast('已清空，可以重新选');
-      });
-    }
-  })();
-  $('#btnReload') && ($('#btnReload').onclick = ()=>{ loadTasks(); loadAccounts(); loadPlatforms(); toast('已刷新'); });
-  // APP 式自动刷新（不再需要"刷新"按钮）：回到前台自动拉一次；发布页开着时每 30 秒自动更新任务列表
-  const autoRefresh = ()=>{
-    if(document.hidden) return;
-    if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
-    const pubOn = $('#tabPub') && $('#tabPub').classList.contains('on');
-    if(pubOn){ loadTasks(); }
-  };
-  // 点完立刻失焦：避免 WebView 在卡片外面画直角焦点框
-  document.addEventListener('click', function(e){
-    var t=e.target; if(t && t.closest && t.closest('input,textarea,select')) return;
-    setTimeout(function(){ try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(err){} },0);
-  }, true);
-  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) autoRefresh(); });
-  // APP 壳专用品牌名：网页仍叫 9A Battery，装成 APP 时顶部显示 9A Sales
-  try{
-    if(new URLSearchParams(location.search).get('app')==='1'){
-      var bt=document.querySelector('.brandtxt b'); if(bt) bt.textContent='9A Sales';
-      document.title='9A Sales';
-    }
-  }catch(e){}
-  setInterval(autoRefresh, 30000);
-  $('#btnGoPub').onclick = ()=>{ if(curTask){ $('#taskPick').value=String(curTask); } setPubMode('task'); switchTab('pub'); setTimeout(()=>fillCopyFromTask(curTask?String(curTask):$('#taskPick').value), 300); };
-  bindUpload('upPerson','person'); bindUpload('upScene','scene');
-  bindUpload('upAudio','audio'); bindUpload('upProduct','product');
-
-  // ---------- 启动 ----------
-  (async function boot(){
-    const saved = localStorage.getItem(LS_USER);
-    if(saved){ try{ user = JSON.parse(saved); }catch(e){} }
-    if(!token){ $('#loginBox').style.display='block'; return; }
-    try{
-      user = await api('/api/me');
-      showMain();
-      if(user && user.role === 'admin'){ $('#tabUser').style.display='block'; }
-      const q = (location.search.match(/tab=(copy|pub|acc|user)/)||[])[1];
-      const appMode = new URLSearchParams(location.search).get('app')==='1';
-      if(q==='user' && (!user || user.role!=='admin')) switchTab('copy');
-      else if(q) switchTab(q);
-      else if(appMode){ switchTab('pub'); setTimeout(()=>{ try{ document.activeElement && document.activeElement.blur(); }catch(e){} }, 300); }   // 装成 APP 时一进来就是发布页
-      setTimeout(function(){ try{ applyLang(); }catch(e){} }, 120);   // 登录后把动态出现的文案也翻一遍
-    }catch(e){ $('#loginBox').style.display='block'; }
-  })();
-})();
+  input.click();
+}
 </script>
 </body>
 </html>
