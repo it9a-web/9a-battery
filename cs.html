@@ -44,16 +44,21 @@ h1{font-size:19px;margin:0;font-weight:600}
 .box b{font-size:24px;display:block;line-height:1.25}
 .box span{color:var(--muted);font-size:12.5px;display:block;margin-top:3px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.row{display:grid;grid-template-columns:96px 1fr 84px;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:start}
+.row{display:block;padding:14px 16px;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
+.rh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nm{font-size:14.5px;font-weight:700}
+.un{font-size:12.5px;color:var(--brand);text-decoration:none}
+.rh .sp{flex:1}
 .t{color:var(--muted);font-size:12.5px;white-space:nowrap}
-.who b{display:block;font-size:13.5px}
-.who i{color:var(--muted);font-style:normal;font-size:12px}
-.lv{font-weight:700;text-align:center;border-radius:8px;padding:3px 0;font-size:12.5px}
+.tag{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.lv{font-weight:700;text-align:center;border-radius:8px;padding:2px 9px;font-size:12px}
 .lv.A{background:rgba(231,97,38,.16);color:var(--brand);border:1px solid var(--brand)}
 .lv.B{background:rgba(255,196,0,.12);color:#ffc400;border:1px solid #806200}
 .lv.C{background:rgba(154,161,168,.12);color:var(--muted);border:1px solid var(--line)}
-.msg{grid-column:1/-1;color:#cfd5da;font-size:13px;white-space:pre-wrap;word-break:break-word}
+.msg{color:#cfd5da;font-size:13.5px;line-height:1.55;margin-top:9px;padding:10px 12px;background:rgba(255,255,255,.035);border-radius:9px;white-space:pre-wrap;word-break:break-word}
+.rf{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:12px}
+.rf a{color:var(--brand);text-decoration:none}
 .rsn{color:var(--muted);font-size:12px}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 .pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
@@ -106,7 +111,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;
 function ts2t(ts){
   if(!ts) return '';
   const d = new Date(ts*1000), p = n => String(n).padStart(2,'0');
-  return (d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+  return (d.getMonth()+1)+'月'+p(d.getDate())+'日 '+p(d.getHours())+':'+p(d.getMinutes());
 }
 function render(){
   $('#cAll').textContent = statsTotal !== null ? statsTotal : (filter ? total : (total || rows.length));
@@ -116,14 +121,31 @@ function render(){
     $('#list').innerHTML = '<div class="empty">' + (filter ? '这个等级还没有询盘。' : '还没有询盘。有人私聊机器人后会出现在这里。') + '</div>';
     return;
   }
-  $('#list').innerHTML = rows.map(r=>`
+  $('#list').innerHTML = rows.map(r=>{
+    const un = r.username ? ('https://t.me/' + encodeURIComponent(r.username)) : ('tg://user?id=' + encodeURIComponent(r.tg_id || ''));
+    const unTxt = r.username ? ('@' + esc(r.username)) : ('TG ID ' + esc(r.tg_id || '—'));
+    return `
     <div class="row">
-      <div class="t">${ts2t(r.ts)}</div>
-      <div class="who"><b>${esc(r.name)}</b><i>${r.username?'@'+esc(r.username):'—'} · ${esc(r.lang)}</i></div>
-      <div class="lv ${esc(r.level)}">${esc(r.level)} 级</div>
-      <div class="msg">${esc(r.message)}</div>
-      ${r.error?`<div class="msg" style="color:#ff7b72">${esc(r.error)}</div>`:''}
-    </div>`).join('');
+      <div class="rh">
+        <span class="lv ${esc(r.level)}">${esc(r.level)} 级</span>
+        <span class="nm">${esc(r.name) || '未署名'}</span>
+        <a class="un" href="${un}" target="_blank" rel="noopener">${unTxt}</a>
+        <span class="tag">TG</span>
+        <span class="tag">${esc(r.lang || '—')}</span>
+        <span class="sp"></span>
+        <span class="t">${ts2t(r.ts)}</span>
+      </div>
+      <div class="msg">${esc(r.message) || '（空消息）'}</div>
+      <div class="rf">
+        <span>ID ${esc(r.tg_id || '—')}</span>
+        <span>·</span>
+        <span>${r.replied ? '已自动回复' : '未回复'}</span>
+        ${r.reason?`<span>·</span><span>分级：${esc(r.reason)}</span>`:''}
+        <a href="${un}" target="_blank" rel="noopener">打开对话 →</a>
+      </div>
+      ${r.error?`<div class="msg" style="color:#ff7b72;background:rgba(255,123,114,.08)">${esc(r.error)}</div>`:''}
+    </div>`;
+  }).join('');
 }
 function renderPager(){
   if(!pages || pages <= 1){ $('#pager').innerHTML = ''; return; }
