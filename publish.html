@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="9A WORKBENCH">
 <link rel="manifest" href="https://9a-studio.cpolar.top/manifest.webmanifest">
-<link rel="apple-touch-icon" href="https://9a-studio.cpolar.top/static/logo.png">
-<link rel="icon" href="https://9a-studio.cpolar.top/static/logo.png">
+<link rel="apple-touch-icon" href="/assets/logo.png">
+<link rel="icon" href="/assets/logo.png">
 <!-- 官网 9abms.com/publish.html：整套换成 9A 工作台，接口走 https://9a-studio.cpolar.top -->
 <meta name="robots" content="noindex,nofollow">
 <title>9A Battery · WORKBENCH</title>
@@ -57,6 +57,7 @@ input,select{font:inherit;color:inherit}
 .hd{display:flex;align-items:center;gap:9px;margin-bottom:11px}
 .num{width:24px;height:24px;flex:0 0 24px;border-radius:7px;background:var(--brand);color:#1a1a1a;
   font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.num.w2{width:auto;min-width:24px;padding:0 6px;flex:0 0 auto}
 .hd h3{margin:0;font-size:16px;font-weight:600}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
 
@@ -205,7 +206,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 <body>
 
 <div class="top">
-  <img class="logo" src="https://9a-studio.cpolar.top/static/logo.png" alt="9A">
+  <img class="logo" src="/assets/logo.png" alt="9A">
   <div class="brandtxt"><b>9A Battery</b><span>WORKBENCH</span></div>
   <div class="right">
     <span id="who" class="lnk"></span>
@@ -216,7 +217,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 <div class="wrap">
   <!-- 未登录 -->
   <div id="loginBox" class="card" style="display:none">
-    <div class="hd"><div class="num">9</div><h3>登录工作台</h3></div>
+    <div class="hd"><div class="num w2">9A</div><h3>登录工作台</h3></div>
     <div style="display:grid;gap:10px">
       <input id="lu" class="inp" placeholder="用户名" autocomplete="username">
       <input id="lp" class="inp" type="password" placeholder="口令" autocomplete="current-password">
