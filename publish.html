@@ -486,7 +486,8 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
   function showMain(){
     $('#loginBox').style.display='none'; $('#main').style.display='block';
     const roleTxt = user.role==='admin' ? ' · 管理员' : (user.role==='demo' ? ' · 演示' : '');
-    $('#who').textContent = (user.name||user.username||'') + roleTxt;
+    const nm = user.name || user.username || '';
+    $('#who').textContent = nm + ((roleTxt && nm.trim() !== roleTxt.replace(' ·','').trim()) ? roleTxt : '');
     $('#tabUser').style.display = (user && user.role==='admin') ? 'block' : 'none';
     applyDemoLock();
     loadAccounts(); loadPlatforms(); loadTasks(); loadPublishedTasks();
