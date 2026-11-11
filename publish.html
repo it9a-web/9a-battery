@@ -481,6 +481,11 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     return data;
   }
 
+  function netWarn(where, e){
+    const msg = (e && e.message) ? e.message : String(e || '网络异常');
+    toast((where ? where + ' ' : '') + '加载失败：' + msg, 3200);
+  }
+
   function logoutUI(){
     token=''; user=null;
     localStorage.removeItem(LS_TOKEN); localStorage.removeItem(LS_USER);
@@ -816,7 +821,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
       const d = await api('/api/platforms');
       platforms = d.platforms || [];
       if(setsData && setsData[curSet]) renderSetPlats();
-    }catch(e){}
+    }catch(e){ netWarn('平台', e); }
   }
   // ---------- 发布账号管理 ----------
   const ACC_FIELDS = {
@@ -963,7 +968,11 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     try{
       const d = await api('/api/users');
       renderUserList(d.users||[]);
-    }catch(e){}
+    }catch(e){
+      const box = $('#userList'); if(box) box.innerHTML = '<div class="empty">加载失败：' + (e.message||'网络异常') + '，重进一次试试</div>';
+      $('#userCount').textContent = '—';
+      netWarn('人员', e);
+    }
   }
   function renderUserList(us){
     const box = $('#userList'); if(!box) return;
@@ -1039,7 +1048,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     try{
       const d = await api('/api/tasks');
       renderTasks(d.tasks || [], d.storage || {});
-    }catch(e){}
+    }catch(e){ netWarn('任务', e); }
   }
   function renderTasks(tasks, storage){
     const box = $('#taskList');
