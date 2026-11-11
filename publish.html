@@ -59,6 +59,7 @@ input,select{font:inherit;color:inherit}
   font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .num.w2{width:auto;min-width:24px;padding:0 6px;flex:0 0 auto}
 .hd h3{flex:1;min-width:0;margin:0;font-size:16px;font-weight:600;line-height:1.35}
+.hdlogo{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--card)}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
 
 /* 输入 */
@@ -216,7 +217,7 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
 <div class="wrap">
   <!-- 未登录 -->
   <div id="loginBox" class="card" style="display:none">
-    <div class="hd"><div class="num w2">9A</div><h3>登录工作台</h3></div>
+    <div class="hd"><img class="hdlogo" src="/assets/logo.png" alt="9A"><h3>登录工作台</h3></div>
     <div style="display:grid;gap:10px">
       <input id="lu" class="inp" placeholder="用户名" autocomplete="username">
       <input id="lp" class="inp" type="password" placeholder="口令" autocomplete="current-password">

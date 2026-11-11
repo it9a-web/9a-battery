@@ -67,7 +67,7 @@ h1{font-size:19px;margin:0;font-weight:600}
 <div class="wrap">
   <div class="hd">
     <img class="logo" src="/assets/logo.png" alt="9A Battery">
-    <div><h1>客服台 · 询盘分级</h1><div class="sub">Telegram 私聊自动回复 + A/B/C 分级（已迁到本系统，不再依赖 n8n）</div></div>
+    <div><h1>客服台 · 询盘分级</h1><div class="sub">Telegram 私聊自动回复 + A/B/C 分级</div></div>
     <div class="spacer"></div>
     <span class="sub" id="who"></span>
     <a class="btn ghost" id="backWork" href="/publish.html" style="text-decoration:none">← 工作台</a>
@@ -180,17 +180,18 @@ async function load(){
 let statsTotal = null;
 async function loadCounts(){
   try{
-    const r = await fetch(abs('/api/leads/stats'), {headers:ah()});
-    if(r.status === 200){
+    // 分级计数走列表接口的 total（跟翻页同一套接口，最稳）
+    for(const lv of ['A','B','C']){
+      const r = await fetch(abs('/api/leads?limit=1&page=1&level='+lv), {headers:ah()});
+      if(r.status !== 200) continue;
       const d = await r.json();
-      statsTotal = d.total || 0;
-      $('#cAll').textContent = statsTotal;
-      $('#cA').textContent = d.A || 0;
-      $('#cB').textContent = d.B || 0;
-      document.querySelector('.chip[data-lv="A"]').dataset.cnt = d.A || 0;
-      document.querySelector('.chip[data-lv="B"]').dataset.cnt = d.B || 0;
-      document.querySelector('.chip[data-lv="C"]').dataset.cnt = d.C || 0;
+      const chip = document.querySelector('.chip[data-lv="'+lv+'"]');
+      if(chip) chip.dataset.cnt = String(d.total || 0);
+      if(lv==='A') $('#cA').textContent = d.total || 0;
+      if(lv==='B') $('#cB').textContent = d.total || 0;
     }
+    const all = await fetch(abs('/api/leads?limit=1&page=1'), {headers:ah()});
+    if(all.status === 200){ const d = await all.json(); statsTotal = d.total || 0; $('#cAll').textContent = statsTotal; }
     render();
   }catch(e){}
 }
