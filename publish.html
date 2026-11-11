@@ -60,7 +60,8 @@ input,select{font:inherit;color:inherit}
 .num.w2{width:auto;min-width:24px;padding:0 6px;flex:0 0 auto}
 .hd h3{flex:1;min-width:0;margin:0;font-size:16px;font-weight:600;line-height:1.35}
 .hdlogo{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--card)}
-.tile:focus,.tile:focus-visible{outline:none}
+.tile:focus,.tile:focus-visible,.tile:focus-within{outline:none!important;box-shadow:none!important}
+*{-webkit-tap-highlight-color:transparent}
 .hint{color:var(--muted);font-size:13px;margin-top:8px}
 
 /* 输入 */
@@ -1361,8 +1362,10 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
       showMain();
       if(user && user.role === 'admin'){ $('#tabUser').style.display='block'; }
       const q = (location.search.match(/tab=(copy|pub|acc|user)/)||[])[1];
+      const appMode = new URLSearchParams(location.search).get('app')==='1';
       if(q==='user' && (!user || user.role!=='admin')) switchTab('copy');
       else if(q) switchTab(q);
+      else if(appMode) switchTab('pub');   // 装成 APP 时一进来就是发布页
     }catch(e){ $('#loginBox').style.display='block'; }
   })();
 })();
