@@ -54,7 +54,8 @@ input,select{font:inherit;color:inherit}
 
 /* 卡片 */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 14px;margin-bottom:13px}
-.hd{display:flex;align-items:center;gap:9px;margin-bottom:11px}.num{width:24px;height:24px;flex:0 0 24px;border-radius:7px;background:var(--brand);color:#1a1a1a;
+.hd{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:9px;margin-bottom:11px}
+.num{width:24px;height:24px;border-radius:7px;background:var(--brand);color:#1a1a1a;
   font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .num.w2{width:auto;min-width:24px;padding:0 6px;flex:0 0 auto}
 .hd h3{flex:1;min-width:0;margin:0;font-size:16px;font-weight:600;line-height:1.35}
@@ -1336,6 +1337,13 @@ textarea.inp{height:88px;padding:10px 12px;line-height:1.5;resize:vertical}
     if(pubOn){ loadTasks(); }
   };
   document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) autoRefresh(); });
+  // APP 壳专用品牌名：网页仍叫 9A Battery，装成 APP 时顶部显示 9A Sales
+  try{
+    if(new URLSearchParams(location.search).get('app')==='1'){
+      var bt=document.querySelector('.brandtxt b'); if(bt) bt.textContent='9A Sales';
+      document.title='9A Sales';
+    }
+  }catch(e){}
   setInterval(autoRefresh, 30000);
   $('#btnGoPub').onclick = ()=>{ if(curTask){ $('#taskPick').value=String(curTask); } setPubMode('task'); switchTab('pub'); setTimeout(()=>fillCopyFromTask(curTask?String(curTask):$('#taskPick').value), 300); };
   bindUpload('upPerson','person'); bindUpload('upScene','scene');
