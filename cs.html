@@ -10,7 +10,9 @@
 <link rel="apple-touch-icon" href="/assets/logo.png">
 <style>
 :root{--bg:#23262a;--card:#2b2f34;--line:#3a3f45;--brand:#e76126;--txt:#e8eaec;--muted:#9aa1a8}
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
+*:focus,*:focus-visible,*:focus-within{outline:none!important}
 body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.6 "Segoe UI",system-ui,"Microsoft YaHei",sans-serif}
 .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 40px}
 .hd{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
