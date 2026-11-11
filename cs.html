@@ -85,6 +85,7 @@ let token = localStorage.getItem(LS_TOKEN) || '';
 const abs = u => (!u ? u : (/^https?:/.test(u) ? u : API_BASE + u));
 const ah = () => (token ? {'X-Token': token} : {});
 const PAGE_SIZE = 20;
+const BACK_URL = '/publish.html';      // 没登录就回工作台登录，不许直接进这页
 let page = 1, filter = '', total = 0, pages = 1, rows = [];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -137,7 +138,9 @@ async function load(){
         const m = await mr.json();
         $('#who').textContent = '当前账号：' + (m.name || m.username) + '（' + m.role + '）';
       }else{
-        $('#who').textContent = '当前未登录';
+        // 没登录：不在这页停留，直接送回工作台去登录
+        location.replace(BACK_URL);
+        return;
       }
     }catch(e){}
     const url = '/api/leads?limit='+PAGE_SIZE+'&page='+page+(filter?('&level='+filter):'');
