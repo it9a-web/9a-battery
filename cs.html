@@ -107,7 +107,7 @@ function ts2t(ts){
   return (d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
 }
 function render(){
-  $('#cAll').textContent = filter ? total : (total || rows.length);
+  $('#cAll').textContent = statsTotal !== null ? statsTotal : (filter ? total : (total || rows.length));
   $('#cA').textContent = document.querySelector('.chip[data-lv="A"]').dataset.cnt || 0;
   $('#cB').textContent = document.querySelector('.chip[data-lv="B"]').dataset.cnt || 0;
   if(!rows.length){
@@ -162,7 +162,7 @@ async function load(){
       $('#pager').innerHTML = ''; btn.disabled=false; return;
     }
     if(r.status === 403){
-      $('#list').innerHTML = '<div class="empty">客服询盘只对管理员开放，当前登录的是演示账号。<a style="color:#e76126" href="/publish.html">换管理员账号登录</a> 后登录后这页会自动更新。</div>';
+      $('#list').innerHTML = '<div class="empty">客服询盘只对管理员开放，当前登录的是演示账号。<a style="color:#e76126" href="/publish.html">换管理员账号登录</a>，登录后这页会自动更新。</div>';
       $('#pager').innerHTML = ''; btn.disabled=false; return;
     }
     const d = await r.json();
@@ -177,16 +177,20 @@ async function load(){
     $('#list').innerHTML = '<div class="empty">读取失败：'+esc(e.message)+'</div>';
   }finally{ btn.disabled = false; }
 }
+let statsTotal = null;
 async function loadCounts(){
   try{
-    for(const lv of ['A','B','C']){
-      const r = await fetch(abs('/api/leads?limit=1&page=1&level='+lv), {headers:ah()});
-      if(r.status !== 200) continue;
+    const r = await fetch(abs('/api/leads/stats'), {headers:ah()});
+    if(r.status === 200){
       const d = await r.json();
-      document.querySelector('.chip[data-lv="'+lv+'"]').dataset.cnt = d.total || 0;
+      statsTotal = d.total || 0;
+      $('#cAll').textContent = statsTotal;
+      $('#cA').textContent = d.A || 0;
+      $('#cB').textContent = d.B || 0;
+      document.querySelector('.chip[data-lv="A"]').dataset.cnt = d.A || 0;
+      document.querySelector('.chip[data-lv="B"]').dataset.cnt = d.B || 0;
+      document.querySelector('.chip[data-lv="C"]').dataset.cnt = d.C || 0;
     }
-    const all = await fetch(abs('/api/leads?limit=1&page=1'), {headers:ah()});
-    if(all.status === 200){ const d = await all.json(); $('#cAll').textContent = d.total || 0; }
     render();
   }catch(e){}
 }
